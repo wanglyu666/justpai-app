@@ -1,0 +1,76 @@
+<template>
+  <Transition
+    :name="SLIDE_OVER_TRANSITION_NAME"
+    @after-leave="handleAfterLeave"
+  >
+    <view v-if="show" class="slide-over-panel page-safe-top" :style="panelStyle">
+      <slot />
+    </view>
+  </Transition>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+import {
+  SLIDE_OVER_DURATION_MS,
+  SLIDE_OVER_EASING,
+  SLIDE_OVER_TRANSITION_NAME,
+} from '@/utils/slideOverTransition';
+
+const props = withDefaults(
+  defineProps<{
+    show: boolean;
+    zIndex?: number;
+  }>(),
+  {
+    zIndex: 1000,
+  },
+);
+
+const panelStyle = computed(() => ({
+  zIndex: props.zIndex,
+}));
+
+const emit = defineEmits<{
+  closed: [];
+}>();
+
+const handleAfterLeave = () => {
+  emit('closed');
+};
+
+defineExpose({
+  duration: SLIDE_OVER_DURATION_MS,
+  easing: SLIDE_OVER_EASING,
+});
+</script>
+
+<style>
+/* 进入/退出：均从右侧滑入滑出，底层页面始终保留 */
+.slide-over-enter-active,
+.slide-over-leave-active {
+  transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+
+.slide-over-enter-from,
+.slide-over-leave-to {
+  transform: translateX(100%);
+}
+
+.slide-over-enter-to,
+.slide-over-leave-from {
+  transform: translateX(0);
+}
+
+.slide-over-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #F4F5F7;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+</style>

@@ -48,11 +48,6 @@ const list = ref([
     pagePath: 'pages/manage/index',
     iconPath: '/static/tabbar/manage.svg',
     selectedIconPath: '/static/tabbar/manage-active.svg'
-  },
-  {
-    pagePath: 'pages/profile/index',
-    iconPath: '/static/tabbar/profile.svg',
-    selectedIconPath: '/static/tabbar/profile-active.svg'
   }
 ]);
 

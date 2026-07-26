@@ -1,5 +1,5 @@
 <template>
-  <view class="container empty-state">
+  <view class="container page-safe-top empty-state">
     <image src="/static/icons/users.svg" mode="aspectFit" style="width: 48px; height: 48px; margin-bottom: 16px;"></image>
     <text class="empty-text">功能开发中...</text>
     <CustomTabBar currentPath="pages/manage/index" />

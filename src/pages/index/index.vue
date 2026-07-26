@@ -1,9 +1,20 @@
 <template>
-  <view class="container">
+  <view class="container page-safe-top">
     <!-- Header -->
     <view class="header">
-      <view class="header-right">
-        <view class="icon-btn">
+      <view class="avatar-btn" @click="goToProfile">
+        <image
+          src="https://api.dicebear.com/7.x/notionists/svg?seed=Admin&backgroundColor=f8aba6"
+          mode="aspectFill"
+          class="avatar-img"
+        ></image>
+      </view>
+      <view class="header-actions">
+        <view class="action-item">
+          <image src="/static/bell.svg" mode="aspectFit" class="icon"></image>
+        </view>
+        <view class="action-divider"></view>
+        <view class="action-item">
           <image src="/static/scan.svg" mode="aspectFit" class="icon"></image>
         </view>
       </view>
@@ -11,83 +22,190 @@
 
     <!-- Banner Carousel -->
     <view class="section banner-section">
-      <scroll-view scroll-x="true" class="scroll-view_H" :show-scrollbar="false">
-        <view class="banner-item active">
-          <view class="banner-decor1"></view>
-          <view class="banner-decor2"></view>
-          <text class="banner-title">释放你的\n潜能</text>
-          <text class="banner-subtitle">新功能已上线</text>
-        </view>
-        <view class="banner-item normal">
-          <text class="banner-title dark">提升你的\n工作流</text>
-          <text class="banner-subtitle dark-sub">探索最新更新</text>
-        </view>
-      </scroll-view>
+      <swiper
+        class="banner-swiper"
+        :indicator-dots="true"
+        :autoplay="true"
+        :interval="4000"
+        :duration="500"
+        indicator-color="rgba(22, 51, 0, 0.2)"
+        indicator-active-color="#163300"
+        circular
+      >
+        <swiper-item v-for="(banner, index) in banners" :key="index">
+          <view class="banner-item">
+            <image :src="banner.image" mode="aspectFill" class="banner-image"></image>
+          </view>
+        </swiper-item>
+      </swiper>
     </view>
 
     <!-- To-Do List -->
     <view class="section">
-      <view class="card">
-        <view class="card-header">
-          <text class="card-title">待办事项</text>
-          <view class="add-btn">
-            <text class="add-icon">+</text>
-            <text class="add-text">添加任务</text>
-          </view>
-        </view>
-        <view class="todo-list">
-          <view class="todo-item" v-for="(todo, index) in todos" :key="todo.id" @click="toggleTodo(todo.id)" :class="{ 'no-border': index === todos.length - 1 }">
-            <view class="checkbox" :class="{ 'checked': todo.completed }">
-              <text v-if="todo.completed" class="check-icon">✓</text>
+      <view class="todo-panel">
+        <view class="todo-panel-header" @click="toggleTodoPanel">
+          <view class="progress-ring">
+            <svg class="progress-svg" viewBox="0 0 52 52">
+              <circle class="progress-track" cx="26" cy="26" r="22" />
+              <circle
+                class="progress-bar"
+                cx="26"
+                cy="26"
+                r="22"
+                :stroke-dasharray="progressDasharray"
+              />
+            </svg>
+            <view class="progress-ring-inner">
+              <text class="progress-text">{{ completedCount }}/{{ todos.length }}</text>
             </view>
-            <text class="todo-text" :class="{ 'completed': todo.completed }">{{ todo.text }}</text>
+          </view>
+          <view class="todo-panel-header-text">
+            <text class="todo-panel-title">今日待办</text>
+            <text class="todo-panel-desc">完成以下任务，提升工作效率</text>
+          </view>
+          <text class="todo-panel-chevron" :class="{ collapsed: todoCollapsed }">⌃</text>
+        </view>
+
+        <view class="todo-task-list" v-show="!todoCollapsed">
+          <view class="todo-task-card" v-for="todo in todos" :key="todo.id">
+            <view class="todo-icon-circle">
+              <image :src="todo.icon" mode="aspectFit" class="todo-icon-img"></image>
+            </view>
+            <view class="todo-task-content">
+              <text class="todo-task-title">{{ todo.title }}</text>
+              <text class="todo-task-desc">{{ todo.desc }}</text>
+            </view>
           </view>
         </view>
       </view>
     </view>
 
     <!-- Latest News -->
-    <view class="section">
+    <view class="news-section">
       <text class="section-title">最新动态</text>
-      <scroll-view scroll-x="true" class="scroll-view_H" :show-scrollbar="false">
-        <view class="news-item active">
-          <text class="news-title">全新 AI 功能提升效率</text>
-          <text class="news-desc">使用新工具，体验高达 40% 的工作流加速。</text>
-          <text class="news-time">2 分钟前</text>
-        </view>
-        <view class="news-item normal">
-          <text class="news-title dark">2024 全球科技展望</text>
-          <text class="news-desc dark-sub">参加即将举行的全球科技大会。</text>
-          <text class="news-time">1 小时前</text>
+      <scroll-view scroll-x="true" class="news-scroll" :show-scrollbar="false">
+        <view class="news-slide" v-for="item in newsItems" :key="item.id">
+          <view class="news-text">
+            <text class="news-date">{{ item.date }}</text>
+            <text class="news-title">{{ item.title }}</text>
+          </view>
+          <view class="news-cover">
+            <image :src="item.image" mode="aspectFill" class="news-cover-img"></image>
+          </view>
         </view>
       </scroll-view>
     </view>
 
     <!-- Custom TabBar -->
     <CustomTabBar currentPath="pages/index/index" />
+
+    <SlideOverPanel :show="profileVisible">
+      <ProfileContent @back="closeProfile" />
+    </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
+import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import ProfileContent from '@/components/ProfileContent.vue';
+import { useSlideOver } from '@/composables/useSlideOver';
 
 onShow(() => {
   uni.hideTabBar({ animation: false });
 });
 
+const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
+
+const todoCollapsed = ref(false);
+
 const todos = ref([
-  { id: 1, text: '上午10点团队同步会议', completed: true },
-  { id: 2, text: '完成项目报告 - 第二阶段', completed: false },
-  { id: 3, text: '致电客户获取反馈', completed: false },
+  {
+    id: 1,
+    title: '团队同步会议',
+    desc: '上午10点与团队进行项目进度同步，确认本周目标与分工。',
+    icon: '/static/icons/users.svg',
+    completed: false,
+  },
+  {
+    id: 2,
+    title: '完成项目报告',
+    desc: '整理第二阶段数据与分析结论，提交项目组审阅。',
+    icon: '/static/icons/file-text.svg',
+    completed: false,
+  },
+  {
+    id: 3,
+    title: '致电客户获取反馈',
+    desc: '跟进重点客户使用情况，记录问题并安排后续支持。',
+    icon: '/static/icons/help-circle.svg',
+    completed: false,
+  },
 ]);
 
-const toggleTodo = (id: number) => {
-  const todo = todos.value.find(t => t.id === id);
-  if (todo) {
-    todo.completed = !todo.completed;
+const PROGRESS_RADIUS = 22;
+const PROGRESS_CIRCUMFERENCE = 2 * Math.PI * PROGRESS_RADIUS;
+
+const completedCount = computed(() => todos.value.filter((todo) => todo.completed).length);
+
+const progressDasharray = computed(() => {
+  const total = todos.value.length || 1;
+  const done = completedCount.value;
+  let filled = (done / total) * PROGRESS_CIRCUMFERENCE;
+
+  if (done === 0) {
+    filled = 12;
+  } else if (done === total) {
+    filled = PROGRESS_CIRCUMFERENCE;
   }
+
+  return `${filled} ${PROGRESS_CIRCUMFERENCE - filled}`;
+});
+
+const toggleTodoPanel = () => {
+  todoCollapsed.value = !todoCollapsed.value;
+};
+
+const banners = ref([
+  {
+    id: 1,
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    id: 2,
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop',
+  },
+  {
+    id: 3,
+    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200&auto=format&fit=crop',
+  },
+]);
+
+const newsItems = ref([
+  {
+    id: 1,
+    date: '2026-07-25',
+    title: '全新 AI 功能提升效率，体验高达 40% 的工作流加速',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 2,
+    date: '2026-07-20',
+    title: '2024 全球科技展望，参加即将举行的全球科技大会',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 3,
+    date: '2026-07-15',
+    title: '团队协作功能全面升级，多人实时编辑更高效',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop',
+  },
+]);
+
+const goToProfile = () => {
+  openProfile();
 };
 </script>
 
@@ -96,10 +214,26 @@ const toggleTodo = (id: number) => {
   padding-bottom: 20px;
 }
 .header {
-  padding: 40px 24px 20px;
+  padding: 0 24px 20px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+}
+.avatar-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
 }
 .icon-btn {
   width: 44px;
@@ -111,6 +245,26 @@ const toggleTodo = (id: number) => {
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+.header-actions {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  border-radius: 22px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.action-item {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.action-divider {
+  width: 1px;
+  height: 20px;
+  background-color: #e5e7eb;
+}
 .icon {
   width: 22px;
   height: 22px;
@@ -121,147 +275,153 @@ const toggleTodo = (id: number) => {
   margin-bottom: 30px;
 }
 .banner-section {
-  padding: 0;
+  padding: 0 24px;
 }
-.scroll-view_H {
-  white-space: nowrap;
-  width: 100%;
+.banner-swiper {
+  height: 160px;
+  border-radius: 24px;
+  overflow: hidden;
 }
 .banner-item {
-  display: inline-block;
-  width: 80%;
+  width: 100%;
+  height: 100%;
   border-radius: 24px;
-  padding: 28px;
-  margin-right: 16px;
-  position: relative;
   overflow: hidden;
   box-sizing: border-box;
 }
-.banner-item:first-child {
-  margin-left: 24px;
-}
-.banner-item.active {
-  background-color: #EBF6E4;
-}
-.banner-item.normal {
-  background-color: #ffffff;
-  border: 1px solid #f0f0f0;
-}
-.banner-decor1 {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background-color: rgba(159, 232, 112, 0.4);
-  filter: blur(20px);
-}
-.banner-decor2 {
-  position: absolute;
-  bottom: -30px;
-  left: -30px;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-color: rgba(159, 232, 112, 0.4);
-  filter: blur(15px);
-}
-.banner-title {
+.banner-image {
+  width: 100%;
+  height: 100%;
   display: block;
-  font-size: 28px;
-  font-weight: 900;
-  color: #163300;
-  line-height: 1.2;
-  position: relative;
-  z-index: 10;
-  margin-bottom: 16px;
-}
-.banner-title.dark {
-  color: #111827;
-}
-.banner-subtitle {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #163300;
-  opacity: 0.8;
-  position: relative;
-  z-index: 10;
-}
-.banner-subtitle.dark-sub {
-  color: #6b7280;
 }
 
-.card {
+.todo-panel {
+  background-color: #eef0ea;
+  border-radius: 24px;
+  padding: 18px 16px;
+}
+.todo-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress-ring {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+.progress-svg {
+  width: 52px;
+  height: 52px;
+  transform: rotate(-90deg);
+}
+.progress-track {
+  fill: none;
+  stroke: #9fe870;
+  stroke-width: 6;
+}
+.progress-bar {
+  fill: none;
+  stroke: #163300;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.progress-ring-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   background-color: #ffffff;
-  border-radius: 28px;
-  padding: 24px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.card-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #111827;
-}
-.add-btn {
-  display: flex;
-  align-items: center;
-}
-.add-icon {
-  color: #4B732B;
-  font-size: 18px;
-  margin-right: 4px;
-  font-weight: bold;
-}
-.add-text {
-  color: #4B732B;
-  font-size: 14px;
-  font-weight: 600;
-}
-.todo-item {
-  display: flex;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid #f3f4f6;
-}
-.todo-item.no-border {
-  border-bottom: none;
-}
-.checkbox {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  border: 2px solid #e5e7eb;
-  margin-right: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
 }
-.checkbox.checked {
-  background-color: #9FE870;
-  border: none;
-}
-.check-icon {
-  color: #163300;
+.progress-text {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 900;
+  color: #163300;
 }
-.todo-text {
-  font-size: 15px;
-  font-weight: 500;
-  color: #374151;
+.todo-panel-header-text {
+  flex: 1;
+  min-width: 0;
 }
-.todo-text.completed {
-  color: #9ca3af;
-  text-decoration: line-through;
+.todo-panel-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+}
+.todo-panel-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+.todo-panel-chevron {
+  font-size: 18px;
+  color: #111827;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.todo-panel-chevron.collapsed {
+  transform: rotate(180deg);
+}
+.todo-task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.todo-task-card {
+  display: flex;
+  align-items: flex-start;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+.todo-icon-circle {
+  width: 56px;
+  height: 56px;
+  margin-right: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.todo-icon-img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0);
+}
+.todo-task-content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
+.todo-task-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.35;
+  margin-bottom: 6px;
+}
+.todo-task-desc {
+  display: block;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
 }
 
 .section-title {
@@ -271,49 +431,57 @@ const toggleTodo = (id: number) => {
   color: #111827;
   margin-bottom: 16px;
 }
-.news-item {
-  display: inline-flex;
-  flex-direction: column;
-  width: 70%;
-  border-radius: 24px;
-  padding: 20px;
-  margin-right: 16px;
-  box-sizing: border-box;
-  white-space: normal;
+
+.news-section {
+  margin-bottom: 30px;
 }
-.news-item:first-child {
+.news-section .section-title {
+  padding: 0 24px;
+}
+.news-scroll {
+  white-space: nowrap;
+  width: 100%;
+}
+.news-slide {
+  display: inline-block;
+  width: 82%;
+  vertical-align: top;
+  margin-right: 12px;
+  white-space: normal;
+  box-sizing: border-box;
+}
+.news-slide:first-child {
   margin-left: 24px;
 }
-.news-item.active {
-  background-color: #F2F7ED;
+.news-slide:last-child {
+  margin-right: 24px;
 }
-.news-item.normal {
-  background-color: #ffffff;
-  border: 1px solid #f0f0f0;
+.news-text {
+  margin-bottom: 12px;
+}
+.news-date {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 6px;
 }
 .news-title {
-  font-size: 17px;
+  display: block;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 8px;
-  color: #163300;
-}
-.news-title.dark {
   color: #111827;
+  line-height: 1.4;
 }
-.news-desc {
-  font-size: 13px;
-  color: #4b5563;
-  margin-bottom: 20px;
-  line-height: 1.5;
-  flex-grow: 1;
+.news-cover {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #e5e7eb;
 }
-.news-desc.dark-sub {
-  color: #6b7280;
-}
-.news-time {
-  font-size: 11px;
-  color: #9ca3af;
-  font-weight: 600;
-  align-self: flex-end;
+.news-cover-img {
+  width: 100%;
+  height: 100%;
 }
 </style>
