@@ -10,7 +10,7 @@
         ></image>
       </view>
       <view class="header-actions">
-        <view class="action-item">
+        <view class="action-item" @click="goToMessages">
           <image src="/static/bell.svg" mode="aspectFit" class="icon"></image>
         </view>
         <view class="action-divider"></view>
@@ -102,6 +102,9 @@
     <SlideOverPanel :show="profileVisible">
       <ProfileContent @back="closeProfile" />
     </SlideOverPanel>
+    <SlideOverPanel :show="messagesVisible" :z-index="1100">
+      <MessagesContent @back="closeMessages" />
+    </SlideOverPanel>
   </view>
 </template>
 
@@ -111,6 +114,7 @@ import { onShow } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import ProfileContent from '@/components/ProfileContent.vue';
+import MessagesContent from '@/components/MessagesContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 onShow(() => {
@@ -118,6 +122,7 @@ onShow(() => {
 });
 
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
+const { visible: messagesVisible, open: openMessages, close: closeMessages } = useSlideOver();
 
 const todoCollapsed = ref(false);
 
@@ -206,6 +211,10 @@ const newsItems = ref([
 
 const goToProfile = () => {
   openProfile();
+};
+
+const goToMessages = () => {
+  openMessages();
 };
 </script>
 

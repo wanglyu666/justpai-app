@@ -1,0 +1,170 @@
+<template>
+  <view class="messages-content">
+    <view class="page-header">
+      <view class="icon-btn" @click="handleBack">
+        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon-img"></image>
+      </view>
+    </view>
+
+    <view class="content">
+      <text class="page-title">消息</text>
+      <text class="page-desc">查看系统通知与重要提醒</text>
+
+      <view class="message-list">
+        <view class="message-card" v-for="item in messages" :key="item.id">
+          <view class="message-icon-circle">
+            <image :src="item.icon" mode="aspectFit" class="message-icon-img"></image>
+          </view>
+          <view class="message-card-content">
+            <text class="message-card-title">{{ item.title }}</text>
+            <text class="message-card-desc">{{ item.desc }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const emit = defineEmits<{
+  back: [];
+}>();
+
+const messages = ref([
+  {
+    id: 1,
+    title: '系统通知',
+    desc: '您的企业账号资料已提交，预计 1-3 个工作日内完成审核。',
+    icon: '/static/bell.svg',
+  },
+  {
+    id: 2,
+    title: '任务提醒',
+    desc: '今日还有 3 项待办未完成，建议优先处理团队同步会议。',
+    icon: '/static/icons/file-text.svg',
+  },
+  {
+    id: 3,
+    title: '账户安全',
+    desc: '检测到您近期修改了登录密码，如非本人操作请及时联系客服。',
+    icon: '/static/icons/shield.svg',
+  },
+  {
+    id: 4,
+    title: '平台公告',
+    desc: '全新 AI 功能已上线，可在工作台体验效率提升相关能力。',
+    icon: '/static/icons/book-open.svg',
+  },
+]);
+
+const handleBack = () => {
+  emit('back');
+};
+</script>
+
+<style scoped>
+.messages-content {
+  min-height: 100%;
+  padding-bottom: 40px;
+  box-sizing: border-box;
+}
+
+.page-header {
+  padding: 0 24px;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.header-icon-img {
+  width: 20px;
+  height: 20px;
+}
+
+.content {
+  padding: 32px 24px 0;
+}
+
+.page-title {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.page-desc {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.message-card {
+  display: flex;
+  align-items: flex-start;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.message-icon-circle {
+  width: 44px;
+  height: 44px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-icon-img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0);
+}
+
+.message-card-content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 0;
+}
+
+.message-card-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.message-card-desc {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.45;
+}
+</style>
