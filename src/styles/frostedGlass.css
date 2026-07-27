@@ -1,0 +1,32 @@
+/**
+ * 磨砂玻璃全局样式类
+ * 参数来源：src/utils/frostedGlass.ts
+ * H5 下由 App.vue 注入 CSS 变量；也可直接使用 getFrostedGlassStyle() 绑定 :style
+ */
+.frosted-glass {
+  border: 1px solid var(--frosted-glass-default-border);
+  background-color: var(--frosted-glass-default-bg);
+  backdrop-filter: var(--frosted-glass-default-backdrop);
+  -webkit-backdrop-filter: var(--frosted-glass-default-backdrop);
+  box-shadow: var(--frosted-glass-default-shadow);
+}
+
+.frosted-glass--tabbar {
+  border-color: var(--frosted-glass-tabbar-border);
+  background-color: var(--frosted-glass-tabbar-bg);
+  backdrop-filter: var(--frosted-glass-tabbar-backdrop);
+  -webkit-backdrop-filter: var(--frosted-glass-tabbar-backdrop);
+  box-shadow: var(--frosted-glass-tabbar-shadow);
+}
+
+.frosted-glass--modal-panel {
+  border-color: var(--frosted-glass-modalPanel-border);
+  background-color: var(--frosted-glass-modalPanel-bg);
+  backdrop-filter: var(--frosted-glass-modalPanel-backdrop);
+  -webkit-backdrop-filter: var(--frosted-glass-modalPanel-backdrop);
+  box-shadow: var(--frosted-glass-modalPanel-shadow);
+}
+
+.frosted-overlay {
+  background-color: var(--frosted-glass-overlay-bg);
+}

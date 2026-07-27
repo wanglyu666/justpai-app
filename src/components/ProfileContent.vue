@@ -116,6 +116,30 @@
         />
       </FadeTransition>
     </BottomSheetPanel>
+    <BottomSheetPanel :show="registerFlowVisible" :z-index="1100">
+      <RegisterInfoContent @back="closeRegisterFlow" />
+    </BottomSheetPanel>
+    <BottomSheetPanel :show="invoiceFlowVisible" :z-index="1100">
+      <InvoiceInfoContent @back="closeInvoiceFlow" />
+    </BottomSheetPanel>
+    <BottomSheetPanel :show="addressFlowVisible" :z-index="1100" @closed="resetAddressFlow">
+      <AddressInfoContent ref="addressInfoRef" @back="closeAddressFlow" />
+    </BottomSheetPanel>
+    <BottomSheetPanel :show="uploadFlowVisible" :z-index="1100" @closed="resetUploadFlow">
+      <FadeTransition mode="out-in">
+        <UploadMaterialsContent
+          v-if="uploadStep === 'form'"
+          key="upload-form"
+          @back="closeUploadFlow"
+          @next="goUploadSuccessStep"
+        />
+        <UploadSuccessContent
+          v-else
+          key="upload-success"
+          @back="closeUploadFlow"
+        />
+      </FadeTransition>
+    </BottomSheetPanel>
   </view>
 </template>
 
@@ -130,6 +154,11 @@ import PhoneNumberChangeContent from '@/components/PhoneNumberChangeContent.vue'
 import PhoneChangeSuccessContent from '@/components/PhoneChangeSuccessContent.vue';
 import AccountDeleteConfirmContent from '@/components/AccountDeleteConfirmContent.vue';
 import AccountDeleteSuccessContent from '@/components/AccountDeleteSuccessContent.vue';
+import RegisterInfoContent from '@/components/RegisterInfoContent.vue';
+import InvoiceInfoContent from '@/components/InvoiceInfoContent.vue';
+import AddressInfoContent from '@/components/AddressInfoContent.vue';
+import UploadMaterialsContent from '@/components/UploadMaterialsContent.vue';
+import UploadSuccessContent from '@/components/UploadSuccessContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const emit = defineEmits<{
@@ -140,9 +169,15 @@ const emit = defineEmits<{
 const { visible: passwordFlowVisible, open: openPasswordFlow, close: closePasswordFlow } = useSlideOver();
 const { visible: phoneFlowVisible, open: openPhoneFlow, close: closePhoneFlow } = useSlideOver();
 const { visible: deleteFlowVisible, open: openDeleteFlow, close: closeDeleteFlow } = useSlideOver();
+const { visible: registerFlowVisible, open: openRegisterFlow, close: closeRegisterFlow } = useSlideOver();
+const { visible: invoiceFlowVisible, open: openInvoiceFlow, close: closeInvoiceFlow } = useSlideOver();
+const { visible: addressFlowVisible, open: openAddressFlow, close: closeAddressFlow } = useSlideOver();
+const { visible: uploadFlowVisible, open: openUploadFlow, close: closeUploadFlow } = useSlideOver();
+const addressInfoRef = ref<InstanceType<typeof AddressInfoContent> | null>(null);
 const passwordStep = ref<'verify' | 'password' | 'success'>('verify');
 const phoneStep = ref<'verify' | 'change' | 'success'>('verify');
 const deleteStep = ref<'verify' | 'confirm' | 'success'>('verify');
+const uploadStep = ref<'form' | 'success'>('form');
 
 const menuGroups = ref([
   {
@@ -207,6 +242,22 @@ const handleItemClick = (item: { id: string }) => {
     deleteStep.value = 'verify';
     openDeleteFlow();
   }
+
+  if (item.id === 'register') {
+    openRegisterFlow();
+  }
+
+  if (item.id === 'invoice') {
+    openInvoiceFlow();
+  }
+
+  if (item.id === 'address') {
+    openAddressFlow();
+  }
+
+  if (item.id === 'upload') {
+    openUploadFlow();
+  }
 };
 
 const goPasswordStep = () => {
@@ -251,6 +302,18 @@ const goDeleteSuccessStep = () => {
 
 const resetDeleteFlow = () => {
   deleteStep.value = 'verify';
+};
+
+const resetAddressFlow = () => {
+  addressInfoRef.value?.reset();
+};
+
+const goUploadSuccessStep = () => {
+  uploadStep.value = 'success';
+};
+
+const resetUploadFlow = () => {
+  uploadStep.value = 'form';
 };
 </script>
 

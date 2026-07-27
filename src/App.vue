@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
+import { injectFrostedGlassCssVars } from '@/utils/frostedGlass';
+
 onLaunch(() => {
   console.log("App Launch");
+  injectFrostedGlassCssVars();
   uni.hideTabBar({ animation: false });
 });
 onShow(() => {
@@ -13,6 +16,8 @@ onHide(() => {
 });
 </script>
 <style>
+@import '@/styles/frostedGlass.css';
+
 /* Global styles */
 page,
 html,

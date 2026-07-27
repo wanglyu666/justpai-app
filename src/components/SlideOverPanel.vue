@@ -3,8 +3,10 @@
     :name="SLIDE_OVER_TRANSITION_NAME"
     @after-leave="handleAfterLeave"
   >
-    <view v-if="show" class="slide-over-panel page-safe-top" :style="panelStyle">
-      <slot />
+    <view v-if="show" class="slide-over-panel" :style="panelStyle">
+      <view class="slide-over-scroll page-safe-top">
+        <slot />
+      </view>
     </view>
   </Transition>
 </template>
@@ -70,7 +72,17 @@ defineExpose({
   width: 100%;
   height: 100%;
   background-color: #F4F5F7;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 滚动放在内层，外层固定铺底色，弹性越界时仍显示个人中心背景而不露出首页 */
+.slide-over-scroll {
+  height: 100%;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  background-color: #F4F5F7;
   box-sizing: border-box;
 }
 </style>

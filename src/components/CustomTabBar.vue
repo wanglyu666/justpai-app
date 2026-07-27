@@ -1,6 +1,6 @@
 <template>
   <view class="tabbar-wrapper">
-    <view class="tabbar">
+    <view class="tabbar frosted-glass frosted-glass--tabbar" :style="tabbarGlassStyle">
       <view 
         class="tab-item" 
         v-for="(item, index) in list" 
@@ -20,6 +20,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { getFrostedGlassStyle } from '@/utils/frostedGlass';
+
+const tabbarGlassStyle = getFrostedGlassStyle('tabbar');
 
 const props = defineProps({
   currentPath: {
@@ -73,13 +76,8 @@ const switchTab = (item: any) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-radius: 32px;
   padding: 8px 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .tab-item {
