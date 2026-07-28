@@ -4,7 +4,7 @@
     <view class="header">
       <text class="page-title">商店</text>
       <view class="header-actions">
-        <view class="action-item">
+        <view class="action-item" @click="openCart">
           <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="action-icon" />
         </view>
         <view class="action-divider"></view>
@@ -94,6 +94,10 @@
         @back="closeProductDetail"
       />
     </SlideOverPanel>
+
+    <SlideOverPanel :show="cartVisible" :z-index="1100">
+      <CartContent @back="closeCart" />
+    </SlideOverPanel>
   </view>
 </template>
 
@@ -103,13 +107,16 @@ import { onShow } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import ProductDetailContent, { type ProductDetail } from '@/components/ProductDetailContent.vue';
+import CartContent from '@/components/CartContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { storeProducts } from '@/data/storeProducts';
 
 onShow(() => {
   uni.hideTabBar({ animation: false });
 });
 
 const { visible: detailVisible, open: openDetail, close: closeDetail } = useSlideOver();
+const { visible: cartVisible, open: openCart, close: closeCart } = useSlideOver();
 const selectedProduct = ref<ProductDetail | null>(null);
 
 const openProductDetail = (product: ProductDetail) => {
@@ -131,71 +138,7 @@ const categories = ref([
   { id: 'accessories', name: '配饰' },
 ]);
 
-const products = ref<ProductDetail[]>([
-  {
-    id: 1,
-    name: 'Pull & Bear 男士都市秋季系列',
-    price: '189.00',
-    image: 'https://images.unsplash.com/photo-1551028711-00167b16eac5?q=80&w=600&auto=format&fit=crop',
-    brand: 'P&B',
-    brandShort: 'P&B',
-    brandHandle: '@pull&bearofficial',
-    rating: 4.8,
-    description: '可调节抽绳设计的 Kandinsky 风格许可夹克，罗纹袖口与下摆，搭配对比色图形细节，适合都市日常穿搭。',
-    images: [
-      'https://images.unsplash.com/photo-1551028711-00167b16eac5?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1490114538077-9a67f2532570?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1576995853123-5a10305d93b0?q=80&w=800&auto=format&fit=crop',
-    ],
-  },
-  {
-    id: 2,
-    name: 'Zara 经典羊毛大衣系列',
-    price: '299.00',
-    image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=600&auto=format&fit=crop',
-    brand: 'Zara',
-    brandShort: 'ZR',
-    brandHandle: '@zaraofficial',
-    rating: 4.6,
-    description: '经典剪裁羊毛混纺大衣，挺括肩线与简约翻领设计，兼顾保暖与商务休闲场景。',
-    images: [
-      'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1548036492-050f511a5b82?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=800&auto=format&fit=crop',
-    ],
-  },
-  {
-    id: 3,
-    name: 'Uniqlo 轻薄羽绒外套',
-    price: '399.00',
-    image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=600&auto=format&fit=crop',
-    brand: 'Uniqlo',
-    brandShort: 'UQ',
-    brandHandle: '@uniqlo',
-    rating: 4.7,
-    description: '超轻量羽绒填充，便携收纳设计，防风面料与简洁外观，适合换季与旅行穿着。',
-    images: [
-      'https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1551028711-00167b16eac5?q=80&w=800&auto=format&fit=crop',
-    ],
-  },
-  {
-    id: 4,
-    name: 'H&M 复古牛仔夹克',
-    price: '159.00',
-    image: 'https://images.unsplash.com/photo-1576995853123-5a10305d93b0?q=80&w=600&auto=format&fit=crop',
-    brand: 'H&M',
-    brandShort: 'HM',
-    brandHandle: '@hm',
-    rating: 4.5,
-    description: '复古水洗牛仔面料，经典版型与金属纽扣细节，轻松搭配 T 恤或卫衣打造休闲造型。',
-    images: [
-      'https://images.unsplash.com/photo-1576995853123-5a10305d93b0?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1490114538077-9a67f2532570?q=80&w=800&auto=format&fit=crop',
-    ],
-  },
-]);
+const products = ref<ProductDetail[]>(storeProducts);
 </script>
 
 <style scoped>

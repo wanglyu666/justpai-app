@@ -3,20 +3,32 @@
     <Transition :name="MODAL_TRANSITION_NAME" @after-leave="handleAfterLeave">
       <view v-if="show" class="modal-root" @click="handleMaskClick">
         <view class="modal-dim frosted-overlay" :style="overlayStyle"></view>
-        <view class="modal-panel" @click.stop>
+        <view class="modal-panel" :class="{ 'modal-panel-compact': compact }" @click.stop>
           <view class="modal-glass frosted-glass frosted-glass--modal-panel" :style="glassStyle"></view>
-          <view class="modal-content">
-            <view class="modal-body">
+          <view class="modal-content" :class="{ 'modal-content-compact': compact }">
+            <view class="modal-body" :class="{ 'modal-body-compact': compact }">
+              <image
+                v-if="icon"
+                :src="icon"
+                mode="aspectFit"
+                class="modal-icon"
+                :class="{ 'modal-icon-large': compact }"
+              />
               <text class="modal-title">{{ title }}</text>
               <text v-if="message" class="modal-message">{{ message }}</text>
             </view>
 
-            <view class="modal-actions">
-              <view class="cancel-btn" @click="handleCancel">
+            <view v-if="showCancel || showConfirm" class="modal-actions">
+              <view v-if="showCancel" class="cancel-btn" @click="handleCancel">
                 <text class="cancel-btn-text">{{ cancelText }}</text>
               </view>
-              <view class="confirm-btn" @click="handleConfirm">
-                <text class="confirm-btn-text">{{ confirmText }}</text>
+              <view
+                v-if="showConfirm"
+                class="confirm-btn"
+                :class="{ 'confirm-btn-success': tone === 'success' }"
+                @click="handleConfirm"
+              >
+                <text class="confirm-btn-text" :class="{ 'confirm-btn-text-success': tone === 'success' }">{{ confirmText }}</text>
               </view>
             </view>
           </view>
@@ -42,15 +54,25 @@ const props = withDefaults(
     show: boolean;
     title?: string;
     message?: string;
+    icon?: string;
     cancelText?: string;
     confirmText?: string;
+    showCancel?: boolean;
+    showConfirm?: boolean;
+    tone?: 'danger' | 'success';
+    compact?: boolean;
     closeOnMask?: boolean;
   }>(),
   {
     title: '确认删除',
     message: '',
+    icon: '',
     cancelText: '取消',
     confirmText: '确认',
+    showCancel: true,
+    showConfirm: true,
+    tone: 'danger',
+    compact: false,
     closeOnMask: true,
   },
 );
@@ -133,6 +155,10 @@ defineExpose({
   overflow: hidden;
 }
 
+.modal-panel-compact {
+  max-width: 260px;
+}
+
 .modal-glass {
   position: absolute;
   top: 0;
@@ -151,9 +177,30 @@ defineExpose({
   box-sizing: border-box;
 }
 
+.modal-content-compact {
+  padding: 22px 16px 16px;
+}
+
 .modal-body {
   padding: 8px 8px 28px;
   text-align: center;
+}
+
+.modal-body-compact {
+  padding: 4px 4px 8px;
+}
+
+.modal-icon {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 16px;
+  display: block;
+}
+
+.modal-icon-large {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 12px;
 }
 
 .modal-title {
@@ -206,9 +253,17 @@ defineExpose({
   justify-content: center;
 }
 
+.confirm-btn-success {
+  background-color: #9fe870;
+}
+
 .confirm-btn-text {
   font-size: 16px;
   font-weight: 700;
   color: #ffffff;
+}
+
+.confirm-btn-text-success {
+  color: #163300;
 }
 </style>

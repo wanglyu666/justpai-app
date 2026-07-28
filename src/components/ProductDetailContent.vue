@@ -110,28 +110,109 @@
           </view>
         </view>
         <view class="action-buttons">
-          <view class="consult-btn">
+          <view class="consult-btn" @click="openConsultFlow">
             <text class="consult-btn-text">咨询</text>
           </view>
-          <view class="cart-btn">
+          <view class="cart-btn" @click="openCartSuccessModal">
             <text class="cart-btn-text">加入购物车</text>
           </view>
         </view>
       </view>
     </view>
+
+    <BottomSheetPanel :show="consultFlowVisible" :z-index="1100" @closed="resetConsultFlow">
+      <FadeTransition mode="out-in">
+        <ConsultFormContent
+          v-if="consultStep === 'form'"
+          key="consult-form"
+          @back="closeConsultFlow"
+          @next="goConsultSuccessStep"
+        />
+        <ConsultSuccessContent
+          v-else
+          key="consult-success"
+          @back="closeConsultFlow"
+        />
+      </FadeTransition>
+    </BottomSheetPanel>
+
+    <FrostedConfirmModal
+      :show="cartSuccessVisible"
+      title="已加入购物车"
+      icon="/static/images/check-mark.png"
+      :show-cancel="false"
+      :show-confirm="false"
+      tone="success"
+      compact
+      @cancel="closeCartSuccessModal"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, getCurrentInstance, onMounted } from 'vue';
+import { ref, computed, watch, nextTick, getCurrentInstance, onMounted, onUnmounted } from 'vue';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
 import { SLIDE_OVER_EASING } from '@/utils/slideOverTransition';
 import FadeTransition from '@/components/FadeTransition.vue';
+import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
+import ConsultFormContent from '@/components/ConsultFormContent.vue';
+import ConsultSuccessContent from '@/components/ConsultSuccessContent.vue';
+import FrostedConfirmModal from '@/components/FrostedConfirmModal.vue';
+import { useSlideOver } from '@/composables/useSlideOver';
+import { useCart } from '@/composables/useCart';
 
 const TAB_PANEL_HEIGHT_DURATION_MS = 320;
 
 const headerGlassStyle = getFrostedGlassStyle('default');
 const footerGlassStyle = getFrostedGlassStyle('tabbar');
+
+const { visible: consultFlowVisible, open: openConsultFlow, close: closeConsultFlow } = useSlideOver();
+const { addToCart } = useCart();
+const consultStep = ref<'form' | 'success'>('form');
+const cartSuccessVisible = ref(false);
+let cartSuccessTimer: ReturnType<typeof setTimeout> | null = null;
+
+const clearCartSuccessTimer = () => {
+  if (cartSuccessTimer) {
+    clearTimeout(cartSuccessTimer);
+    cartSuccessTimer = null;
+  }
+};
+
+const openCartSuccessModal = () => {
+  addToCart(
+    props.product,
+    {
+      model: selectedParams.value.model,
+      spec: selectedParams.value.spec,
+      color: selectedParams.value.color,
+    },
+    quantity.value,
+  );
+  clearCartSuccessTimer();
+  cartSuccessVisible.value = true;
+  cartSuccessTimer = setTimeout(() => {
+    cartSuccessVisible.value = false;
+    cartSuccessTimer = null;
+  }, 1000);
+};
+
+const closeCartSuccessModal = () => {
+  clearCartSuccessTimer();
+  cartSuccessVisible.value = false;
+};
+
+onUnmounted(() => {
+  clearCartSuccessTimer();
+});
+
+const goConsultSuccessStep = () => {
+  consultStep.value = 'success';
+};
+
+const resetConsultFlow = () => {
+  consultStep.value = 'form';
+};
 
 export interface ProductDetail {
   id: number;
