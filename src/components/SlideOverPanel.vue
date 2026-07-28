@@ -4,7 +4,10 @@
     @after-leave="handleAfterLeave"
   >
     <view v-if="show" class="slide-over-panel" :style="panelStyle">
-      <view class="slide-over-scroll page-safe-top">
+      <view
+        class="slide-over-scroll"
+        :class="edgeToEdge ? 'slide-over-edge' : 'page-safe-top'"
+      >
         <slot />
       </view>
     </view>
@@ -23,9 +26,11 @@ const props = withDefaults(
   defineProps<{
     show: boolean;
     zIndex?: number;
+    edgeToEdge?: boolean;
   }>(),
   {
     zIndex: 1000,
+    edgeToEdge: false,
   },
 );
 
@@ -84,5 +89,9 @@ defineExpose({
   overscroll-behavior-y: contain;
   background-color: #F4F5F7;
   box-sizing: border-box;
+}
+
+.slide-over-edge {
+  padding-top: calc(8px + env(safe-area-inset-top, 0px));
 }
 </style>

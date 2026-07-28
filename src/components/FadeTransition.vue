@@ -1,5 +1,10 @@
 <template>
-  <Transition :name="FADE_TRANSITION_NAME" :mode="mode">
+  <Transition
+    :name="FADE_TRANSITION_NAME"
+    :mode="mode"
+    @after-enter="(el) => emit('afterEnter', el)"
+    @after-leave="(el) => emit('afterLeave', el)"
+  >
     <slot />
   </Transition>
 </template>
@@ -19,6 +24,11 @@ withDefaults(
     mode: 'out-in',
   },
 );
+
+const emit = defineEmits<{
+  afterEnter: [el: Element];
+  afterLeave: [el: Element];
+}>();
 
 defineExpose({
   duration: FADE_DURATION_MS,

@@ -1,0 +1,715 @@
+<template>
+  <view class="product-detail">
+    <view class="hero-section">
+      <view class="detail-header">
+        <view class="icon-btn frosted-glass" :style="headerGlassStyle" @click="handleBack">
+          <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+        </view>
+        <view class="icon-btn frosted-glass" :style="headerGlassStyle">
+          <image src="/static/icons/heart-outline.svg" mode="aspectFit" class="header-icon" />
+        </view>
+      </view>
+
+      <swiper
+        class="hero-swiper"
+        :indicator-dots="false"
+        :current="currentImage"
+        @change="onSwiperChange"
+        circular
+      >
+        <swiper-item v-for="(img, index) in product.images" :key="index">
+          <view class="hero-image-wrap">
+            <image :src="img" mode="aspectFill" class="hero-image" />
+          </view>
+        </swiper-item>
+      </swiper>
+      <view class="hero-meta-bar">
+        <view class="hero-meta-left">
+          <view class="stars">
+            <text
+              v-for="star in 5"
+              :key="star"
+              class="star"
+              :class="{ filled: star <= Math.round(product.rating) }"
+            >★</text>
+          </view>
+          <text class="hero-rating-value">{{ product.rating.toFixed(1) }}</text>
+        </view>
+        <text class="hero-meta-price">¥ {{ product.price }}</text>
+      </view>
+      <view class="hero-dots">
+        <view
+          v-for="(_, index) in product.images"
+          :key="index"
+          class="hero-dot"
+          :class="{ active: currentImage === index }"
+        />
+      </view>
+    </view>
+
+    <view class="info-section">
+      <text class="product-title">{{ product.name }}</text>
+
+      <view class="detail-tabs">
+        <view class="tab-bar">
+          <view
+            v-for="tab in tabs"
+            :key="tab.id"
+            :id="`tab-item-${tab.id}`"
+            class="tab-item"
+            :class="{ active: activeTab === tab.id }"
+            @click="switchTab(tab.id)"
+          >
+            <text class="tab-label">{{ tab.label }}</text>
+          </view>
+          <view class="tab-indicator-slider" :style="indicatorStyle" />
+        </view>
+
+        <view class="tab-panel">
+          <view class="tab-panel-body-wrap" :style="tabPanelStyle">
+            <FadeTransition mode="out-in" @after-enter="measureTabPanelHeight">
+              <view v-if="activeTab === 'params'" key="params" class="param-list tab-panel-body">
+                <view v-for="group in paramGroups" :key="group.key" class="param-row">
+                  <text class="param-label">{{ group.label }}</text>
+                  <scroll-view scroll-x class="param-options-scroll" :show-scrollbar="false">
+                    <view class="param-options">
+                      <view
+                        v-for="option in group.options"
+                        :key="option"
+                        class="param-chip"
+                        :class="{ active: selectedParams[group.key] === option }"
+                        @click="selectParam(group.key, option)"
+                      >
+                        <text class="param-chip-text">{{ option }}</text>
+                      </view>
+                    </view>
+                  </scroll-view>
+                </view>
+              </view>
+              <view v-else key="detail" class="detail-list tab-panel-body">
+                <view v-for="item in detailItems" :key="item.label" class="detail-row">
+                  <text class="detail-label">{{ item.label }}</text>
+                  <text class="detail-value">{{ item.value }}</text>
+                </view>
+              </view>
+            </FadeTransition>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="detail-footer">
+      <view class="action-bar frosted-glass frosted-glass--tabbar" :style="footerGlassStyle">
+        <view class="qty-counter">
+          <view class="qty-btn" @click="decreaseQty">
+            <text class="qty-btn-text">−</text>
+          </view>
+          <text class="qty-value">{{ formattedQty }}</text>
+          <view class="qty-btn" @click="increaseQty">
+            <text class="qty-btn-text">+</text>
+          </view>
+        </view>
+        <view class="action-buttons">
+          <view class="consult-btn">
+            <text class="consult-btn-text">咨询</text>
+          </view>
+          <view class="cart-btn">
+            <text class="cart-btn-text">加入购物车</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, watch, nextTick, getCurrentInstance, onMounted } from 'vue';
+import { getFrostedGlassStyle } from '@/utils/frostedGlass';
+import { SLIDE_OVER_EASING } from '@/utils/slideOverTransition';
+import FadeTransition from '@/components/FadeTransition.vue';
+
+const TAB_PANEL_HEIGHT_DURATION_MS = 320;
+
+const headerGlassStyle = getFrostedGlassStyle('default');
+const footerGlassStyle = getFrostedGlassStyle('tabbar');
+
+export interface ProductDetail {
+  id: number;
+  name: string;
+  price: string;
+  image: string;
+  brand: string;
+  brandShort: string;
+  brandHandle: string;
+  rating: number;
+  description: string;
+  fullDescription?: string;
+  images: string[];
+}
+
+const props = defineProps<{
+  product: ProductDetail;
+}>();
+
+const tabs = [
+  { id: 'params', label: '商品参数' },
+  { id: 'detail', label: '详细信息' },
+] as const;
+
+type TabId = (typeof tabs)[number]['id'];
+type ParamKey = 'brand' | 'model' | 'spec' | 'color';
+
+const activeTab = ref<TabId>('params');
+const instance = getCurrentInstance();
+
+const indicatorStyle = ref({
+  transform: 'translateX(0px)',
+  width: '0px',
+});
+
+const panelHeight = ref(0);
+
+const tabPanelStyle = computed(() => {
+  const style: Record<string, string> = {
+    overflow: 'hidden',
+  };
+
+  if (panelHeight.value > 0) {
+    style.height = `${panelHeight.value}px`;
+    style.transition = `height ${TAB_PANEL_HEIGHT_DURATION_MS}ms ${SLIDE_OVER_EASING}`;
+  }
+
+  return style;
+});
+
+const measureTabPanelHeight = () => {
+  if (!instance) return;
+
+  nextTick(() => {
+    uni.createSelectorQuery()
+      .in(instance)
+      .select('.tab-panel-body')
+      .boundingClientRect()
+      .exec((res) => {
+        const rect = res?.[0] as { height?: number } | null;
+        if (rect?.height !== undefined) {
+          panelHeight.value = rect.height;
+        }
+      });
+  });
+};
+
+const updateTabIndicator = () => {
+  if (!instance) return;
+
+  nextTick(() => {
+    uni.createSelectorQuery()
+      .in(instance)
+      .select(`#tab-item-${activeTab.value}`)
+      .boundingClientRect()
+      .select('.tab-bar')
+      .boundingClientRect()
+      .exec((res) => {
+        const tabRect = res?.[0] as { left?: number; width?: number } | null;
+        const barRect = res?.[1] as { left?: number } | null;
+        if (!tabRect?.width || barRect?.left === undefined || tabRect.left === undefined) return;
+
+        indicatorStyle.value = {
+          transform: `translateX(${tabRect.left - barRect.left}px)`,
+          width: `${tabRect.width}px`,
+        };
+      });
+  });
+};
+
+const switchTab = (id: TabId) => {
+  if (activeTab.value === id) return;
+  activeTab.value = id;
+  updateTabIndicator();
+};
+
+onMounted(() => {
+  updateTabIndicator();
+  measureTabPanelHeight();
+});
+
+const paramGroups = computed(() => [
+  {
+    key: 'brand' as ParamKey,
+    label: '品牌',
+    options: [props.product.brand, 'H&M', 'Uniqlo', 'P&B'],
+  },
+  {
+    key: 'model' as ParamKey,
+    label: '型号',
+    options: ['标准款', '修身款', '宽松款'],
+  },
+  {
+    key: 'spec' as ParamKey,
+    label: '规格',
+    options: ['XS', 'S', 'M', 'L', 'XL'],
+  },
+  {
+    key: 'color' as ParamKey,
+    label: '颜色',
+    options: ['黑色', '驼色', '灰色', '藏青'],
+  },
+]);
+
+const selectedParams = ref<Record<ParamKey, string>>({
+  brand: '',
+  model: '',
+  spec: '',
+  color: '',
+});
+
+watch(
+  () => props.product.id,
+  () => {
+    selectedParams.value = {
+      brand: props.product.brand,
+      model: '标准款',
+      spec: 'M',
+      color: '驼色',
+    };
+  },
+  { immediate: true },
+);
+
+const selectParam = (key: ParamKey, value: string) => {
+  selectedParams.value[key] = value;
+};
+
+const detailItems = computed(() => [
+  { label: '品牌', value: props.product.brand },
+  { label: '材质', value: '羊毛混纺' },
+  { label: '适用季节', value: '秋冬' },
+  { label: '版型', value: '标准版型' },
+  { label: '产地', value: '中国' },
+]);
+
+const emit = defineEmits<{
+  back: [];
+}>();
+
+const currentImage = ref(0);
+const quantity = ref(1);
+
+const formattedQty = computed(() => String(quantity.value).padStart(2, '0'));
+
+const decreaseQty = () => {
+  if (quantity.value > 1) {
+    quantity.value -= 1;
+  }
+};
+
+const increaseQty = () => {
+  quantity.value += 1;
+};
+
+const onSwiperChange = (e: { detail: { current: number } }) => {
+  currentImage.value = e.detail.current;
+};
+
+const handleBack = () => {
+  emit('back');
+};
+</script>
+
+<style scoped>
+.product-detail {
+  min-height: 100%;
+  padding-bottom: 120px;
+  box-sizing: border-box;
+}
+
+.detail-header {
+  position: absolute;
+  top: 36px;
+  left: 20px;
+  right: 20px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+.header-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.hero-section {
+  position: relative;
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.hero-swiper {
+  height: 440px;
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-image-wrap {
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: #e5e7eb;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-dots {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+}
+
+.hero-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.45);
+  transition: all 0.2s ease;
+}
+
+.hero-dot.active {
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+}
+
+.hero-meta-bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 72%;
+  z-index: 4;
+  height: 66px;
+  border-radius: 999px;
+  background-color: #9fe870;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(22, 51, 0, 0.12);
+}
+
+.hero-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-rating-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #163300;
+}
+
+.hero-meta-price {
+  font-size: 22px;
+  font-weight: 800;
+  color: #163300;
+}
+
+.info-section {
+  position: relative;
+  z-index: 2;
+  padding: 42px 24px 0;
+}
+
+.product-title {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.hero-meta-bar .star {
+  font-size: 18px;
+  color: rgba(22, 51, 0, 0.2);
+  line-height: 1;
+}
+
+.hero-meta-bar .star.filled {
+  color: #fbbf24;
+}
+
+.detail-tabs {
+  margin-top: 16px;
+}
+
+.tab-bar {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-item {
+  position: relative;
+  padding-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.tab-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #9ca3af;
+  line-height: 1.3;
+  transition: color 200ms ease, font-weight 200ms ease;
+}
+
+.tab-item.active .tab-label {
+  font-weight: 800;
+  color: #111827;
+}
+
+.tab-indicator-slider {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 2px;
+  background-color: #9fe870;
+  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1), width 320ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform, width;
+}
+
+.tab-panel {
+  padding-top: 16px;
+}
+
+.tab-panel-body-wrap {
+  overflow: hidden;
+  will-change: height;
+}
+
+.param-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.param-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.param-row:last-child {
+  border-bottom: none;
+}
+
+.param-label {
+  width: 40px;
+  flex-shrink: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.param-options-scroll {
+  flex: 1;
+  width: 0;
+  white-space: nowrap;
+}
+
+.param-options {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.param-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  box-sizing: border-box;
+}
+
+.param-chip.active {
+  border-color: #9fe870;
+  background-color: #9fe870;
+}
+
+.param-chip-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.param-chip.active .param-chip-text {
+  color: #163300;
+  font-weight: 700;
+}
+
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.detail-label {
+  font-size: 14px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+  text-align: right;
+}
+
+.detail-footer {
+  position: fixed;
+  left: 24px;
+  right: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 32px;
+  padding: 8px 10px 8px 14px;
+  min-height: 60px;
+  box-sizing: border-box;
+}
+
+.qty-counter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn-text {
+  font-size: 22px;
+  line-height: 1;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.qty-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  min-width: 24px;
+  text-align: center;
+  line-height: 1;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.consult-btn {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 22px;
+  background-color: rgba(159, 232, 112, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.consult-btn-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #163300;
+  white-space: nowrap;
+}
+
+.cart-btn {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 22px;
+  background-color: #9fe870;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cart-btn-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #163300;
+  white-space: nowrap;
+}
+</style>
