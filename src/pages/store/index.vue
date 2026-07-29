@@ -8,8 +8,8 @@
           <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="action-icon" />
         </view>
         <view class="action-divider"></view>
-        <view class="action-item">
-          <image src="/static/icons/heart-outline.svg" mode="aspectFit" class="action-icon" />
+        <view class="action-item" @click="openOrders">
+          <image src="/static/icons/order.svg" mode="aspectFit" class="action-icon" />
         </view>
       </view>
     </view>
@@ -25,7 +25,7 @@
           placeholder-class="search-placeholder"
         />
       </view>
-      <view class="filter-btn">
+      <view class="filter-btn" @click="openFilterModal">
         <image src="/static/icons/filter.svg" mode="aspectFit" class="filter-icon" />
       </view>
     </view>
@@ -61,29 +61,33 @@
     </scroll-view>
 
     <!-- Products -->
-    <view class="section-header">
-      <text class="section-title">普通商品</text>
-    </view>
-
-    <view class="product-grid">
-      <view
-        v-for="product in products"
-        :key="product.id"
-        class="product-card"
-        @click="openProductDetail(product)"
-      >
-        <view class="product-image-wrap">
-          <image :src="product.image" mode="aspectFill" class="product-image" />
+    <FadeTransition mode="out-in">
+      <view :key="productListKey" class="product-section">
+        <view class="section-header">
+          <text class="section-title">{{ sectionTitle }}</text>
         </view>
-        <view class="product-meta">
-          <text class="product-price">¥ {{ product.price }}</text>
-          <view class="wishlist-btn" @click.stop>
-            <image src="/static/icons/heart-outline.svg" mode="aspectFit" class="heart-icon" />
+
+        <view class="product-grid">
+          <view
+            v-for="product in displayedProducts"
+            :key="product.id"
+            class="product-card"
+            @click="openProductDetail(product)"
+          >
+            <view class="product-image-wrap">
+              <image :src="product.image" mode="aspectFill" class="product-image" />
+            </view>
+            <view class="product-meta">
+              <text class="product-price">¥ {{ product.price }}</text>
+              <view class="wishlist-btn" @click.stop>
+                <image src="/static/icons/heart-outline.svg" mode="aspectFit" class="heart-icon" />
+              </view>
+            </view>
+            <text class="product-name">{{ product.name }}</text>
           </view>
         </view>
-        <text class="product-name">{{ product.name }}</text>
       </view>
-    </view>
+    </FadeTransition>
 
     <CustomTabBar currentPath="pages/store/index" />
 
@@ -98,18 +102,37 @@
     <SlideOverPanel :show="cartVisible" :z-index="1100">
       <CartContent @back="closeCart" />
     </SlideOverPanel>
+
+    <SlideOverPanel :show="ordersVisible" :z-index="1100">
+      <OrderContent @back="closeOrders" />
+    </SlideOverPanel>
+
+    <StoreFilterModal
+      :show="filterVisible"
+      :product-type="displayProductType"
+      :annual-region="displayAnnualRegion"
+      @apply="handleFilterApply"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import ProductDetailContent, { type ProductDetail } from '@/components/ProductDetailContent.vue';
 import CartContent from '@/components/CartContent.vue';
+import OrderContent from '@/components/OrderContent.vue';
+import StoreFilterModal, { type StoreFilterResult } from '@/components/StoreFilterModal.vue';
+import FadeTransition from '@/components/FadeTransition.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
-import { storeProducts } from '@/data/storeProducts';
+import {
+  storeProducts,
+  annualRegions,
+  getAnnualProductsByRegion,
+  type AnnualRegionId,
+} from '@/data/storeProducts';
 
 onShow(() => {
   uni.hideTabBar({ animation: false });
@@ -117,7 +140,37 @@ onShow(() => {
 
 const { visible: detailVisible, open: openDetail, close: closeDetail } = useSlideOver();
 const { visible: cartVisible, open: openCart, close: closeCart } = useSlideOver();
+const { visible: ordersVisible, open: openOrders, close: closeOrders } = useSlideOver();
+const { visible: filterVisible, open: openFilterModal, close: closeFilterModal } = useSlideOver();
 const selectedProduct = ref<ProductDetail | null>(null);
+
+const displayProductType = ref<'ordinary' | 'annual'>('ordinary');
+const displayAnnualRegion = ref<AnnualRegionId>('north');
+
+const displayedProducts = computed(() => {
+  if (displayProductType.value === 'ordinary') {
+    return storeProducts;
+  }
+  return getAnnualProductsByRegion(displayAnnualRegion.value);
+});
+
+const sectionTitle = computed(() => {
+  if (displayProductType.value === 'ordinary') {
+    return '普通商品';
+  }
+  const region = annualRegions.find((item) => item.id === displayAnnualRegion.value);
+  return region ? `${region.name}商品` : '年框商品';
+});
+
+const productListKey = computed(
+  () => `${displayProductType.value}-${displayAnnualRegion.value}`,
+);
+
+const handleFilterApply = (result: StoreFilterResult) => {
+  displayProductType.value = result.productType;
+  displayAnnualRegion.value = result.annualRegion;
+  closeFilterModal();
+};
 
 const openProductDetail = (product: ProductDetail) => {
   selectedProduct.value = product;
@@ -137,8 +190,6 @@ const categories = ref([
   { id: 'jeans', name: '牛仔裤' },
   { id: 'accessories', name: '配饰' },
 ]);
-
-const products = ref<ProductDetail[]>(storeProducts);
 </script>
 
 <style scoped>
@@ -331,6 +382,10 @@ const products = ref<ProductDetail[]>(storeProducts);
 .section-header {
   padding: 0 24px;
   margin-bottom: 16px;
+}
+
+.product-section {
+  min-height: 1px;
 }
 
 .section-title {

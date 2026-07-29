@@ -1,16 +1,37 @@
 <template>
   <view class="cart-page">
     <view class="page-header">
-      <view class="icon-btn" @click="handleBack">
-        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+      <view class="header-top-row">
+        <view class="icon-btn" @click="handleBack">
+          <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+        </view>
+        <text class="header-title">购物车</text>
+        <view class="icon-btn icon-btn--delete" :class="{ active: hasSelection }" @click="handleDeleteSelected">
+          <image
+            :src="hasSelection ? '/static/icons/trash-red.svg' : '/static/icons/trash.svg'"
+            mode="aspectFit"
+            class="header-icon"
+          />
+        </view>
       </view>
-      <text class="header-title">购物车</text>
-      <view class="icon-btn icon-btn--delete" :class="{ active: hasSelection }" @click="handleDeleteSelected">
-        <image
-          :src="hasSelection ? '/static/icons/trash-red.svg' : '/static/icons/trash.svg'"
-          mode="aspectFit"
-          class="header-icon"
-        />
+      <view class="product-toggle">
+        <view class="toggle-track">
+          <view class="toggle-thumb" :class="{ right: activeProductType === 'annual' }" />
+          <view
+            class="toggle-item"
+            :class="{ active: activeProductType === 'ordinary' }"
+            @click="activeProductType = 'ordinary'"
+          >
+            <text class="toggle-text">普通产品</text>
+          </view>
+          <view
+            class="toggle-item"
+            :class="{ active: activeProductType === 'annual' }"
+            @click="activeProductType = 'annual'"
+          >
+            <text class="toggle-text">年框产品</text>
+          </view>
+        </view>
       </view>
     </view>
 
@@ -18,12 +39,14 @@
       <view class="list-wrap">
         <scroll-view scroll-y class="cart-list" :show-scrollbar="false">
           <view class="list-top-spacer" />
-          <view
-            v-for="item in cartItems"
-            :key="item.cartKey"
-            class="cart-item-shell"
-            :class="{ 'cart-item-shell--removing': removingKeys.includes(item.cartKey) }"
-          >
+          <FadeTransition mode="out-in">
+            <view :key="activeProductType" class="cart-list-group">
+              <view
+                v-for="item in visibleCartItems"
+                :key="item.cartKey"
+                class="cart-item-shell"
+                :class="{ 'cart-item-shell--removing': removingKeys.includes(item.cartKey) }"
+              >
             <view class="cart-card">
               <view
                 class="select-circle"
@@ -65,10 +88,12 @@
             </view>
           </view>
 
-          <view v-if="cartItems.length === 0" class="empty-state">
-            <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="empty-icon" />
-            <text class="empty-text">购物车还是空的</text>
-          </view>
+              <view v-if="visibleCartItems.length === 0" class="empty-state">
+                <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="empty-icon" />
+                <text class="empty-text">{{ emptyText }}</text>
+              </view>
+            </view>
+          </FadeTransition>
         </scroll-view>
         <view class="list-mask list-mask-top" />
         <view class="list-mask list-mask-bottom" />
@@ -110,7 +135,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useCart } from '@/composables/useCart';
+import { useCart, type CartProductType } from '@/composables/useCart';
 import { useSlideOver } from '@/composables/useSlideOver';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FadeTransition from '@/components/FadeTransition.vue';
@@ -123,9 +148,10 @@ const emit = defineEmits<{
   back: [];
 }>();
 
-const { cartItems, increaseQty, decreaseQty, removeSelected, toggleSelect } = useCart();
+const { cartItems, increaseQty, decreaseQty, removeByKeys, toggleSelect } = useCart();
 const removingKeys = ref<string[]>([]);
 const isDeleting = ref(false);
+const activeProductType = ref<CartProductType>('ordinary');
 const { visible: consultFlowVisible, open: openConsultFlow, close: closeConsultFlow } = useSlideOver();
 const consultStep = ref<'form' | 'success'>('form');
 
@@ -137,8 +163,16 @@ const resetConsultFlow = () => {
   consultStep.value = 'form';
 };
 
+const visibleCartItems = computed(() =>
+  cartItems.value.filter((item) => item.productType === activeProductType.value),
+);
+
+const emptyText = computed(() =>
+  activeProductType.value === 'ordinary' ? '暂无普通产品' : '暂无年框产品',
+);
+
 const orderAmount = computed(() => {
-  const total = cartItems.value.reduce(
+  const total = visibleCartItems.value.reduce(
     (sum, item) => {
       if (!item.selected) return sum;
       return sum + Number(item.price) * item.quantity;
@@ -148,7 +182,7 @@ const orderAmount = computed(() => {
   return total.toFixed(2);
 });
 
-const hasSelection = computed(() => cartItems.value.some((item) => item.selected));
+const hasSelection = computed(() => visibleCartItems.value.some((item) => item.selected));
 
 const handleBack = () => {
   emit('back');
@@ -157,7 +191,7 @@ const handleBack = () => {
 const handleDeleteSelected = async () => {
   if (!hasSelection.value || isDeleting.value) return;
 
-  const keys = cartItems.value
+  const keys = visibleCartItems.value
     .filter((item) => item.selected)
     .map((item) => item.cartKey);
 
@@ -166,7 +200,7 @@ const handleDeleteSelected = async () => {
 
   await new Promise((resolve) => setTimeout(resolve, FADE_DURATION_MS));
 
-  removeSelected();
+  removeByKeys(keys);
   removingKeys.value = [];
   isDeleting.value = false;
 };
@@ -195,11 +229,87 @@ const handleCheckout = () => {
 }
 
 .page-header {
-  padding: 0 24px 12px;
+  padding: 0 24px 16px;
+  flex-shrink: 0;
+}
+
+.header-top-row {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
+  height: 44px;
+}
+
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 44px;
+  pointer-events: none;
+}
+
+.product-toggle {
+  width: 156px;
+  margin-top: 16px;
+}
+
+.toggle-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 4px;
+  border-radius: 999px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  border-radius: 999px;
+  background-color: #9fe870;
+  transition: left 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.toggle-thumb.right {
+  left: calc(50%);
+}
+
+.toggle-item {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  line-height: 1;
+  transition: color 280ms cubic-bezier(0.32, 0.72, 0, 1);
+  white-space: nowrap;
+}
+
+.toggle-item.active .toggle-text {
+  color: #163300;
+  font-weight: 700;
+}
+
+.cart-list-group {
+  min-height: 1px;
 }
 
 .icon-btn {
@@ -229,14 +339,6 @@ const handleCheckout = () => {
 .header-icon {
   width: 20px;
   height: 20px;
-}
-
-.header-title {
-  flex: 1;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 800;
-  color: #111827;
 }
 
 .cart-body {

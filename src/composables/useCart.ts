@@ -1,6 +1,8 @@
 import { ref } from 'vue';
 import type { ProductDetail } from '@/components/ProductDetailContent.vue';
 
+export type CartProductType = 'ordinary' | 'annual';
+
 export type CartItem = {
   cartKey: string;
   productId: number;
@@ -11,6 +13,7 @@ export type CartItem = {
   spec: string;
   quantity: number;
   selected: boolean;
+  productType: CartProductType;
 };
 
 type CartParams = {
@@ -51,6 +54,7 @@ export function useCart() {
       spec: buildSpecLabel(params),
       quantity,
       selected: false,
+      productType: product.productType ?? 'ordinary',
     });
   };
 
@@ -83,6 +87,11 @@ export function useCart() {
     cartItems.value = cartItems.value.filter((item) => !item.selected);
   };
 
+  const removeByKeys = (keys: string[]) => {
+    const keySet = new Set(keys);
+    cartItems.value = cartItems.value.filter((item) => !keySet.has(item.cartKey));
+  };
+
   return {
     cartItems,
     addToCart,
@@ -90,6 +99,7 @@ export function useCart() {
     decreaseQty,
     removeItem,
     removeSelected,
+    removeByKeys,
     toggleSelect,
   };
 }

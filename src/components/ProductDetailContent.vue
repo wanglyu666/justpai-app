@@ -24,18 +24,19 @@
         </swiper-item>
       </swiper>
       <view class="hero-meta-bar">
-        <view class="hero-meta-left">
-          <view class="stars">
-            <text
-              v-for="star in 5"
-              :key="star"
-              class="star"
-              :class="{ filled: star <= Math.round(product.rating) }"
-            >★</text>
+        <view class="hero-meta-side hero-meta-side-left">
+          <view class="hero-rating-block">
+            <view class="hero-rating-row">
+              <text class="hero-star">★</text>
+              <text class="hero-rating-value">{{ product.rating.toFixed(1) }}</text>
+            </view>
+            <text class="hero-rating-label">推荐指数</text>
           </view>
-          <text class="hero-rating-value">{{ product.rating.toFixed(1) }}</text>
         </view>
-        <text class="hero-meta-price">¥ {{ product.price }}</text>
+        <view class="hero-meta-divider" />
+        <view class="hero-meta-side hero-meta-side-right">
+          <text class="hero-meta-price">¥ {{ product.price }}</text>
+        </view>
       </view>
       <view class="hero-dots">
         <view
@@ -104,7 +105,7 @@
           <view class="qty-btn" @click="decreaseQty">
             <text class="qty-btn-text">−</text>
           </view>
-          <text class="qty-value">{{ formattedQty }}</text>
+          <FlipQty :value="quantity" size="md" />
           <view class="qty-btn" @click="increaseQty">
             <text class="qty-btn-text">+</text>
           </view>
@@ -158,6 +159,7 @@ import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import ConsultFormContent from '@/components/ConsultFormContent.vue';
 import ConsultSuccessContent from '@/components/ConsultSuccessContent.vue';
 import FrostedConfirmModal from '@/components/FrostedConfirmModal.vue';
+import FlipQty from '@/components/FlipQty.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { useCart } from '@/composables/useCart';
 
@@ -226,6 +228,8 @@ export interface ProductDetail {
   description: string;
   fullDescription?: string;
   images: string[];
+  productType?: 'ordinary' | 'annual';
+  annualRegion?: 'north' | 'south' | 'east' | 'west';
 }
 
 const props = defineProps<{
@@ -376,8 +380,6 @@ const emit = defineEmits<{
 const currentImage = ref(0);
 const quantity = ref(1);
 
-const formattedQty = computed(() => String(quantity.value).padStart(2, '0'));
-
 const decreaseQty = () => {
   if (quantity.value > 1) {
     quantity.value -= 1;
@@ -493,33 +495,85 @@ const handleBack = () => {
   transform: translate(-50%, 50%);
   width: 72%;
   z-index: 4;
-  height: 66px;
+  min-height: 66px;
   border-radius: 999px;
   background-color: #9fe870;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
+  padding: 10px 14px;
   box-sizing: border-box;
   box-shadow: 0 4px 16px rgba(22, 51, 0, 0.12);
 }
 
-.hero-meta-left {
+.hero-meta-side-left {
+  flex: 0 0 38%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  min-width: 0;
+}
+
+.hero-meta-side-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
+.hero-meta-divider {
+  width: 1px;
+  height: 32px;
+  background-color: rgba(22, 51, 0, 0.18);
+  flex-shrink: 0;
+  margin-left: -6px;
+  margin-right: 4px;
+}
+
+.hero-rating-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hero-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-rating-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(22, 51, 0, 0.55);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hero-star {
+  font-size: 18px;
+  color: #fbbf24;
+  line-height: 1;
 }
 
 .hero-rating-value {
   font-size: 18px;
   font-weight: 800;
   color: #163300;
+  line-height: 1;
 }
 
 .hero-meta-price {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   color: #163300;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .info-section {
@@ -535,22 +589,6 @@ const handleBack = () => {
   color: #111827;
   line-height: 1.3;
   margin-bottom: 4px;
-}
-
-.stars {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.hero-meta-bar .star {
-  font-size: 18px;
-  color: rgba(22, 51, 0, 0.2);
-  line-height: 1;
-}
-
-.hero-meta-bar .star.filled {
-  color: #fbbf24;
 }
 
 .detail-tabs {
@@ -738,15 +776,6 @@ const handleBack = () => {
   line-height: 1;
   color: #9ca3af;
   font-weight: 400;
-}
-
-.qty-value {
-  font-size: 18px;
-  font-weight: 800;
-  color: #111827;
-  min-width: 24px;
-  text-align: center;
-  line-height: 1;
 }
 
 .action-buttons {

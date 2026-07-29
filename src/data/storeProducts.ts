@@ -1,5 +1,14 @@
 import type { ProductDetail } from '@/components/ProductDetailContent.vue';
 
+export type AnnualRegionId = 'north' | 'south' | 'east' | 'west';
+
+export const annualRegions: { id: AnnualRegionId; name: string }[] = [
+  { id: 'north', name: '北区年框' },
+  { id: 'south', name: '南区年框' },
+  { id: 'east', name: '东区年框' },
+  { id: 'west', name: '西区年框' },
+];
+
 export const storeProducts: ProductDetail[] = [
   {
     id: 1,
@@ -126,3 +135,145 @@ export const storeProducts: ProductDetail[] = [
     ],
   },
 ];
+
+export const annualProducts: ProductDetail[] = [
+  {
+    id: 101,
+    name: '北区企业年框 · 标准版',
+    price: '9800.00',
+    image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 4.9,
+    productType: 'annual',
+    annualRegion: 'north',
+    description: '北区年度框架基础服务包，覆盖华北区域常规采购与标准交付。',
+    images: [
+      'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+  {
+    id: 102,
+    name: '北区企业年框 · 旗舰版',
+    price: '16800.00',
+    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 4.8,
+    productType: 'annual',
+    annualRegion: 'north',
+    description: '北区旗舰年框，更高采购额度与优先排期，适合华北大型企业。',
+    images: [
+      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+  {
+    id: 103,
+    name: '南区联合年框 · 成长版',
+    price: '12800.00',
+    image: 'https://images.unsplash.com/photo-1542744173-8e161e947009?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 4.7,
+    productType: 'annual',
+    annualRegion: 'south',
+    description: '南区成长型年框方案，适配华南中小企业扩张期采购需求。',
+    images: [
+      'https://images.unsplash.com/photo-1542744173-8e161e947009?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+  {
+    id: 104,
+    name: '南区联合年框 · 尊享版',
+    price: '22800.00',
+    image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 5.0,
+    productType: 'annual',
+    annualRegion: 'south',
+    description: '南区尊享年框，含定制化方案与专属运营协同支持。',
+    images: [
+      'https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1542744173-8e161e947009?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+  {
+    id: 105,
+    name: '东区品牌年框 · 定制版',
+    price: '19800.00',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 4.9,
+    productType: 'annual',
+    annualRegion: 'east',
+    description: '东区品牌联合年框，覆盖华东市场联名企划与季度上新。',
+    images: [
+      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+  {
+    id: 106,
+    name: '东区品牌年框 · 进阶版',
+    price: '28800.00',
+    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 4.8,
+    productType: 'annual',
+    annualRegion: 'east',
+    description: '东区进阶年框，全链路品牌运营与区域联合营销支持。',
+    images: [
+      'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+  {
+    id: 107,
+    name: '西区供应链年框 · 标准版',
+    price: '11800.00',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 4.6,
+    productType: 'annual',
+    annualRegion: 'west',
+    description: '西区供应链年框，稳定供货与物流协同，适合西部区域分销。',
+    images: [
+      'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+  {
+    id: 108,
+    name: '西区供应链年框 · 旗舰版',
+    price: '20800.00',
+    image: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=600&auto=format&fit=crop',
+    brand: 'JustPAI',
+    brandShort: 'JP',
+    brandHandle: '@justpai',
+    rating: 4.7,
+    productType: 'annual',
+    annualRegion: 'west',
+    description: '西区旗舰供应链年框，更高配额与跨区调拨优先权。',
+    images: [
+      'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop',
+    ],
+  },
+];
+
+export const getAnnualProductsByRegion = (regionId: AnnualRegionId) =>
+  annualProducts.filter((product) => product.annualRegion === regionId);

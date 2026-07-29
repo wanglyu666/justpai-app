@@ -1,9 +1,10 @@
 <template>
-  <view class="flip-qty">
+  <view class="flip-qty" :class="`flip-qty--${size}`" :style="rootStyle">
     <view
       v-for="(state, index) in digitStates"
       :key="index"
       class="flip-digit-viewport"
+      :style="viewportStyle"
     >
       <view
         class="flip-digit-track"
@@ -14,17 +15,15 @@
             : 'none',
         }"
       >
-        <text class="flip-digit-cell">{{ state.cells[0] }}</text>
-        <text class="flip-digit-cell">{{ state.cells[1] }}</text>
+        <text class="flip-digit-cell" :style="cellStyle">{{ state.cells[0] }}</text>
+        <text class="flip-digit-cell" :style="cellStyle">{{ state.cells[1] }}</text>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue';
-
-const CELL_HEIGHT = 14;
+import { ref, watch, nextTick, computed } from 'vue';
 
 type DigitState = {
   cells: [string, string];
@@ -32,9 +31,38 @@ type DigitState = {
   animating: boolean;
 };
 
-const props = defineProps<{
-  value: number;
-}>();
+const SIZE_CONFIG = {
+  sm: { cellHeight: 14, cellWidth: 9, fontSize: 14, minWidth: 22 },
+  md: { cellHeight: 18, cellWidth: 11, fontSize: 18, minWidth: 24 },
+} as const;
+
+const props = withDefaults(
+  defineProps<{
+    value: number;
+    size?: keyof typeof SIZE_CONFIG;
+  }>(),
+  {
+    size: 'sm',
+  },
+);
+
+const config = computed(() => SIZE_CONFIG[props.size]);
+const cellHeight = computed(() => config.value.cellHeight);
+
+const rootStyle = computed(() => ({
+  minWidth: `${config.value.minWidth}px`,
+}));
+
+const viewportStyle = computed(() => ({
+  height: `${config.value.cellHeight}px`,
+  width: `${config.value.cellWidth}px`,
+}));
+
+const cellStyle = computed(() => ({
+  height: `${config.value.cellHeight}px`,
+  lineHeight: `${config.value.cellHeight}px`,
+  fontSize: `${config.value.fontSize}px`,
+}));
 
 const padValue = (value: number) => String(value).padStart(2, '0');
 
@@ -63,6 +91,7 @@ const animateDigit = async (
 ) => {
   if (oldDigit === newDigit) return;
 
+  const height = cellHeight.value;
   state.animating = false;
 
   if (goingUp) {
@@ -70,14 +99,14 @@ const animateDigit = async (
     state.offsetPx = 0;
   } else {
     state.cells = [newDigit, oldDigit];
-    state.offsetPx = -CELL_HEIGHT;
+    state.offsetPx = -height;
   }
 
   await nextTick();
   await waitFrame();
 
   state.animating = true;
-  state.offsetPx = goingUp ? -CELL_HEIGHT : 0;
+  state.offsetPx = goingUp ? -height : 0;
 
   await new Promise((resolve) => setTimeout(resolve, 250));
 
@@ -109,12 +138,9 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 22px;
 }
 
 .flip-digit-viewport {
-  height: 14px;
-  width: 9px;
   overflow: hidden;
 }
 
@@ -124,9 +150,6 @@ watch(
 }
 
 .flip-digit-cell {
-  height: 14px;
-  line-height: 14px;
-  font-size: 14px;
   font-weight: 800;
   color: #111827;
   text-align: center;
