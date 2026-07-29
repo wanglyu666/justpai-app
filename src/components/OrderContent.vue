@@ -38,14 +38,22 @@
       <scroll-view scroll-y class="order-list" :show-scrollbar="false">
         <view class="list-top-spacer" />
         <template v-if="visibleOrders.length">
-          <OrderPendingCard
-            v-for="order in visibleOrders"
-            :key="order.id"
-            :order="order"
-            class="order-card-item"
-            @detail="handleOrderDetail"
-            @pay="handleOrderPay"
-          />
+          <template v-for="order in visibleOrders" :key="order.id">
+            <OrderPendingCard
+              v-if="order.status === 'pending'"
+              :order="order"
+              class="order-card-item"
+              @detail="handleOrderDetail"
+              @pay="handleOrderPay"
+            />
+            <OrderSignedCard
+              v-else-if="order.status === 'signed'"
+              :order="order"
+              class="order-card-item"
+              @detail="handleSignedDetail"
+              @refund="handleOrderRefund"
+            />
+          </template>
         </template>
         <view v-else class="empty-state">
           <text class="empty-text">暂无订单</text>
@@ -53,13 +61,45 @@
         <view class="list-bottom-spacer" />
       </scroll-view>
     </view>
+
+    <BottomSheetPanel :show="refundFlowVisible" :z-index="1200" @closed="resetRefundFlow">
+      <FadeTransition mode="out-in">
+        <RefundFormContent
+          v-if="refundStep === 'form'"
+          key="refund-form"
+          :order="refundOrder"
+          @back="closeRefundFlow"
+          @submit="goRefundSuccessStep"
+        />
+        <RefundSuccessContent
+          v-else
+          key="refund-success"
+          @back="closeRefundFlow"
+        />
+      </FadeTransition>
+    </BottomSheetPanel>
+
+    <BottomSheetPanel :show="detailFlowVisible" :z-index="1200" @closed="resetDetailFlow">
+      <OrderDetailContent
+        v-if="detailOrder"
+        :order="detailOrder"
+        @back="closeDetailFlow"
+      />
+    </BottomSheetPanel>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, getCurrentInstance, nextTick } from 'vue';
 import OrderPendingCard from '@/components/OrderPendingCard.vue';
-import { getOrdersByStatus, type OrderStatusId } from '@/data/orders';
+import OrderSignedCard from '@/components/OrderSignedCard.vue';
+import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
+import FadeTransition from '@/components/FadeTransition.vue';
+import RefundFormContent from '@/components/RefundFormContent.vue';
+import RefundSuccessContent from '@/components/RefundSuccessContent.vue';
+import OrderDetailContent from '@/components/OrderDetailContent.vue';
+import { useSlideOver } from '@/composables/useSlideOver';
+import { getOrdersByStatus, getOrderById, type OrderRecord, type OrderStatusId } from '@/data/orders';
 
 type OrderStatusTabId = OrderStatusId;
 
@@ -83,6 +123,11 @@ const emit = defineEmits<{
 const instance = getCurrentInstance();
 const activeStatus = ref<OrderStatusTabId>('all');
 const visibleOrders = computed(() => getOrdersByStatus(activeStatus.value));
+const { visible: refundFlowVisible, open: openRefundFlow, close: closeRefundFlow } = useSlideOver();
+const refundOrder = ref<OrderRecord | null>(null);
+const refundStep = ref<'form' | 'success'>('form');
+const { visible: detailFlowVisible, open: openDetailFlow, close: closeDetailFlow } = useSlideOver();
+const detailOrder = ref<OrderRecord | null>(null);
 const scrollLeft = ref(0);
 const thumbStyle = ref({
   transform: 'translateX(0px)',
@@ -192,10 +237,14 @@ const handleBack = () => {
 };
 
 const handleOrderDetail = (orderId: string) => {
-  uni.showToast({
-    title: `订单详情 ${orderId}`,
-    icon: 'none',
-  });
+  const order = getOrderById(orderId);
+  if (!order) return;
+  detailOrder.value = order;
+  openDetailFlow();
+};
+
+const resetDetailFlow = () => {
+  detailOrder.value = null;
 };
 
 const handleOrderPay = (orderId: string) => {
@@ -203,6 +252,29 @@ const handleOrderPay = (orderId: string) => {
     title: `前往支付 ${orderId}`,
     icon: 'none',
   });
+};
+
+const handleSignedDetail = (orderId: string) => {
+  uni.showToast({
+    title: `签约详情 ${orderId}`,
+    icon: 'none',
+  });
+};
+
+const handleOrderRefund = (orderId: string) => {
+  const order = getOrderById(orderId);
+  if (!order) return;
+  refundOrder.value = order;
+  openRefundFlow();
+};
+
+const resetRefundFlow = () => {
+  refundOrder.value = null;
+  refundStep.value = 'form';
+};
+
+const goRefundSuccessStep = () => {
+  refundStep.value = 'success';
 };
 </script>
 

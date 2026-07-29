@@ -33,14 +33,11 @@
     <!-- Promo Banner -->
     <view class="banner-wrap">
       <view class="banner-card">
-        <view class="banner-content">
-          <text class="banner-title">男士时尚系列</text>
-          <text class="banner-subtitle">最高 60% 折扣</text>
-        </view>
+        <view class="banner-glass frosted-glass" :style="bannerGlassStyle" />
         <image
           class="banner-image"
-          src="https://images.unsplash.com/photo-1490114538077-9a67f2532570?q=80&w=800&auto=format&fit=crop"
-          mode="aspectFill"
+          src="/static/images/post2.png"
+          mode="aspectFit"
         />
       </view>
     </view>
@@ -127,12 +124,15 @@ import OrderContent from '@/components/OrderContent.vue';
 import StoreFilterModal, { type StoreFilterResult } from '@/components/StoreFilterModal.vue';
 import FadeTransition from '@/components/FadeTransition.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { getFrostedGlassStyle } from '@/utils/frostedGlass';
 import {
   storeProducts,
   annualRegions,
   getAnnualProductsByRegion,
   type AnnualRegionId,
 } from '@/data/storeProducts';
+
+const bannerGlassStyle = getFrostedGlassStyle('default');
 
 onShow(() => {
   uni.hideTabBar({ animation: false });
@@ -299,45 +299,23 @@ const categories = ref([
   height: 200px;
   border-radius: 24px;
   overflow: hidden;
-  background-color: #1a1a1a;
+  box-sizing: border-box;
 }
 
-.banner-content {
+.banner-glass {
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 55%;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 24px;
-  background: linear-gradient(90deg, #111827 0%, rgba(17, 24, 39, 0.85) 70%, transparent 100%);
-}
-
-.banner-title {
-  display: block;
-  font-size: 22px;
-  font-weight: 800;
-  color: #ffffff;
-  line-height: 1.25;
-  margin-bottom: 8px;
-}
-
-.banner-subtitle {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .banner-image {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 55%;
+  position: relative;
+  z-index: 1;
+  width: 100%;
   height: 100%;
+  display: block;
 }
 
 .category-scroll {

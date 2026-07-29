@@ -1,9 +1,9 @@
 <template>
   <view class="order-card">
     <view class="card-meta-row">
-      <text class="deadline-text">{{ order.payDeadline }}</text>
+      <text class="deadline-text">{{ order.signedAt }}</text>
       <view class="status-badge">
-        <text class="status-badge-text">待支付</text>
+        <text class="status-badge-text">已签约</text>
       </view>
     </view>
 
@@ -28,11 +28,11 @@
     <view class="card-divider" />
 
     <view class="card-actions">
-      <view class="action-btn action-btn--secondary" @click="emit('detail', order.id)">
-        <text class="action-btn-text">订单详情</text>
+      <view class="action-btn action-btn--secondary" @click="emit('refund', order.id)">
+        <text class="action-btn-text">申请退款</text>
       </view>
-      <view class="action-btn action-btn--primary" @click="emit('pay', order.id)">
-        <text class="action-btn-text action-btn-text--primary">前往支付</text>
+      <view class="action-btn action-btn--primary" @click="emit('detail', order.id)">
+        <text class="action-btn-text action-btn-text--primary">签约详情</text>
       </view>
     </view>
   </view>
@@ -47,7 +47,7 @@ defineProps<{
 
 const emit = defineEmits<{
   detail: [orderId: string];
-  pay: [orderId: string];
+  refund: [orderId: string];
 }>();
 </script>
 
@@ -77,7 +77,7 @@ const emit = defineEmits<{
   height: 22px;
   padding: 0 10px;
   border-radius: 999px;
-  background-color: #dbeafe;
+  background-color: #dcfce7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 .status-badge-text {
   font-size: 11px;
   font-weight: 700;
-  color: #2563eb;
+  color: #166534;
   line-height: 1;
 }
 
