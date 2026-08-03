@@ -1,31 +1,44 @@
 <template>
-  <view class="order-detail">
+  <view class="refund-detail">
     <view class="page-header">
       <view class="header-top-row">
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="header-title">订单详情</text>
+        <text class="header-title">退款详情</text>
         <view class="header-placeholder" />
       </view>
     </view>
 
     <scroll-view scroll-y class="detail-scroll" :show-scrollbar="false">
       <view class="step-card">
-        <view class="step-row">
-          <template v-for="(step, index) in steps" :key="step.id">
-            <view class="step-item">
-              <view class="step-icon" :class="{ active: currentStepIndex >= index }">
-                <image :src="step.icon" mode="aspectFit" class="step-icon-img" />
+        <view class="refund-progress-track">
+          <template v-for="(step, index) in progressSteps" :key="step.id">
+            <view class="refund-progress-item">
+              <view class="refund-node" :class="`refund-node--${step.status}`">
+                <image
+                  v-if="step.status === 'completed'"
+                  src="/static/icons/check.svg"
+                  mode="aspectFit"
+                  class="refund-node-check"
+                />
+                <text v-else class="refund-node-num">{{ index + 1 }}</text>
               </view>
-              <text class="step-text" :class="{ active: currentStepIndex >= index }">
+              <text class="refund-label" :class="`refund-label--${step.status}`">
                 {{ step.label }}
+              </text>
+              <text
+                v-if="step.subText"
+                class="refund-sub"
+                :class="`refund-sub--${step.subTone ?? 'muted'}`"
+              >
+                {{ step.subText }}
               </text>
             </view>
             <view
-              v-if="index < steps.length - 1"
-              class="step-connector"
-              :class="{ active: currentStepIndex > index }"
+              v-if="index < progressSteps.length - 1"
+              class="refund-line"
+              :class="{ active: index < refund.currentStep }"
             />
           </template>
         </view>
@@ -42,8 +55,16 @@
             <text class="meta-value">{{ order.contractNo }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">订单状态</text>
-            <text class="meta-value">{{ statusLabel }}</text>
+            <text class="meta-label">退款状态</text>
+            <text class="meta-value">{{ refundStatusLabel }}</text>
+          </view>
+          <view class="meta-row">
+            <text class="meta-label">退款原因</text>
+            <text class="meta-value">{{ refund.reason }}</text>
+          </view>
+          <view class="meta-row">
+            <text class="meta-label">申请时间</text>
+            <text class="meta-value">{{ refund.submittedAt }}</text>
           </view>
           <view class="meta-row">
             <text class="meta-label">联系人</text>
@@ -57,16 +78,12 @@
             <text class="meta-label">服务地址</text>
             <text class="meta-value meta-value-wrap">{{ order.serviceAddress }}</text>
           </view>
-          <view class="meta-row">
-            <text class="meta-label">下单时间</text>
-            <text class="meta-value">{{ order.orderTime }}</text>
-          </view>
-          <view v-if="order.payDeadline" class="meta-row">
-            <text class="meta-label">支付截止时间</text>
-            <text class="meta-value">{{ order.payDeadline }}</text>
+          <view class="meta-row meta-row-top">
+            <text class="meta-label">备注</text>
+            <text class="meta-value meta-value-wrap">{{ refundRemark }}</text>
           </view>
           <view class="meta-row meta-row-amount">
-            <text class="meta-label">订单金额</text>
+            <text class="meta-label">退款金额</text>
             <text class="meta-value meta-value-strong">¥{{ order.amount }}</text>
           </view>
         </view>
@@ -74,12 +91,12 @@
 
       <view class="section-card">
         <view class="section-head">
-          <text class="section-title">产品信息</text>
-          <text class="section-hint">共 {{ order.itemCount }} 件商品</text>
+          <text class="section-title">退款商品</text>
+          <text class="section-hint">共 {{ refundItems.length }} 件商品</text>
         </view>
 
         <view class="product-list">
-          <view v-for="item in lineItems" :key="item.id" class="detail-item-card">
+          <view v-for="item in refundItems" :key="item.id" class="detail-item-card">
             <view class="item-main-row">
               <view class="item-title-block">
                 <text class="item-name">{{ item.subjectName }}</text>
@@ -111,40 +128,67 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { OrderRecord } from '@/data/orders';
+import type { OrderRefundRecord } from '@/composables/useOrderRefunds';
 import { getRefundItemsForOrder } from '@/data/refundForm';
+
+type StepStatus = 'completed' | 'current' | 'pending';
 
 const props = defineProps<{
   order: OrderRecord;
+  refund: OrderRefundRecord;
 }>();
 
 const emit = defineEmits<{
   back: [];
 }>();
 
-const currentStepIndex = 0;
-
-const steps = [
-  { id: 'signed', label: '签约', icon: '/static/icons/file-text.svg' },
-  { id: 'pay', label: '支付', icon: '/static/icons/order.svg' },
-  { id: 'service', label: '服务', icon: '/static/icons/shopping-bag.svg' },
-  { id: 'done', label: '完成', icon: '/static/icons/check.svg' },
+const stepDefs = [
+  { id: 'submit', label: '提交申请' },
+  { id: 'review', label: '平台审核', currentSub: '处理中' },
+  { id: 'process', label: '退款处理' },
+  { id: 'done', label: '退款完成' },
 ];
 
-const statusLabels: Record<OrderRecord['status'], string> = {
-  pending: '待支付',
-  signed: '已签约',
-  service: '服务中',
-  completed: '已完工',
-  cancelled: '已取消',
-  reviewed: '已评价',
-};
+const progressSteps = computed(() =>
+  stepDefs.map((step, index) => {
+    let status: StepStatus = 'pending';
+    if (index < props.refund.currentStep) status = 'completed';
+    else if (index === props.refund.currentStep) status = 'current';
 
-const statusLabel = computed(() => statusLabels[props.order.status]);
+    let subText = '';
+    let subTone: 'muted' | 'active' | undefined;
+
+    if (status === 'completed' && step.id === 'submit') {
+      subText = '已提交';
+      subTone = 'muted';
+    } else if (status === 'current' && step.currentSub) {
+      subText = step.currentSub;
+      subTone = 'active';
+    }
+
+    return {
+      ...step,
+      status,
+      subText,
+      subTone,
+    };
+  }),
+);
+
+const refundStatusLabel = computed(() => {
+  const labels = ['提交申请', '平台审核中', '退款处理中', '退款完成'];
+  return labels[props.refund.currentStep] ?? '平台审核中';
+});
 
 const contactName = computed(() => props.order.contactName ?? '管理员');
 const contactPhone = computed(() => props.order.contactPhone ?? '138-0013-8000');
+const refundRemark = computed(() => props.refund.remarks.trim() || '无');
 
-const lineItems = computed(() => getRefundItemsForOrder(props.order.id));
+const refundItems = computed(() => {
+  const allItems = getRefundItemsForOrder(props.order.id);
+  if (!props.refund.itemIds.length) return allItems;
+  return allItems.filter((item) => props.refund.itemIds.includes(item.id));
+});
 
 const handleBack = () => {
   emit('back');
@@ -152,7 +196,7 @@ const handleBack = () => {
 </script>
 
 <style scoped>
-.order-detail {
+.refund-detail {
   min-height: 100%;
   height: 100%;
   display: flex;
@@ -222,62 +266,99 @@ const handleBack = () => {
   margin-bottom: 16px;
 }
 
-.step-row {
+.refund-progress-track {
   display: flex;
   align-items: flex-start;
 }
 
-.step-item {
+.refund-progress-item {
   width: 64px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
-.step-icon {
+.refund-node {
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  background-color: #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
-.step-icon.active {
+.refund-node--completed {
   background-color: #9fe870;
 }
 
-.step-icon-img {
-  width: 18px;
-  height: 18px;
-  filter: brightness(0.35);
+.refund-node--current {
+  background-color: #ffffff;
+  border: 2px solid #9fe870;
 }
 
-.step-icon.active .step-icon-img {
+.refund-node--pending {
+  background-color: #f3f4f6;
+  border: none;
+}
+
+.refund-node-check {
+  width: 18px;
+  height: 18px;
   filter: brightness(0) saturate(100%) invert(8%) sepia(41%) saturate(1097%) hue-rotate(62deg) brightness(98%) contrast(103%);
 }
 
-.step-text {
-  font-size: 14px;
-  color: #9ca3af;
-  line-height: 1.2;
+.refund-node-num {
+  font-size: 15px;
+  font-weight: 700;
+  color: #374151;
+  line-height: 1;
 }
 
-.step-text.active {
+.refund-node--pending .refund-node-num {
+  color: #9ca3af;
+}
+
+.refund-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #9ca3af;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.refund-label--completed,
+.refund-label--current {
+  color: #163300;
+}
+
+.refund-sub {
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.refund-sub--muted {
+  color: #9ca3af;
+}
+
+.refund-sub--active {
   color: #163300;
   font-weight: 700;
 }
 
-.step-connector {
+.refund-line {
   flex: 1;
   height: 2px;
   background-color: #e5e7eb;
   margin-top: 19px;
+  min-width: 0;
 }
 
-.step-connector.active {
+.refund-line.active {
   background-color: #9fe870;
 }
 

@@ -1,9 +1,9 @@
 <template>
   <view class="order-card">
     <view class="card-meta-row">
-      <text class="deadline-text">{{ order.signedAt }}</text>
+      <text class="deadline-text">{{ order.completedAt }}</text>
       <view class="status-badge">
-        <text class="status-badge-text">已签约</text>
+        <text class="status-badge-text">已完工</text>
       </view>
     </view>
 
@@ -28,11 +28,20 @@
     <view class="card-divider" />
 
     <view class="card-actions">
-      <view class="action-btn action-btn--secondary" @click="emit('refund', order.id)">
-        <text class="action-btn-text">{{ refundSubmitted ? '退款详情' : '申请退款' }}</text>
+      <view class="action-btn action-btn--secondary" @click="emit('detail', order.id)">
+        <text class="action-btn-text">订单详情</text>
       </view>
-      <view class="action-btn action-btn--primary" @click="emit('detail', order.id)">
-        <text class="action-btn-text action-btn-text--primary">签约详情</text>
+      <view
+        class="action-btn"
+        :class="reviewSubmitted ? 'action-btn--secondary' : 'action-btn--primary'"
+        @click="emit('review', order.id)"
+      >
+        <text
+          class="action-btn-text"
+          :class="{ 'action-btn-text--primary': !reviewSubmitted }"
+        >
+          {{ reviewSubmitted ? '查看评价' : '去评价' }}
+        </text>
       </view>
     </view>
   </view>
@@ -43,12 +52,12 @@ import type { OrderRecord } from '@/data/orders';
 
 defineProps<{
   order: OrderRecord;
-  refundSubmitted?: boolean;
+  reviewSubmitted?: boolean;
 }>();
 
 const emit = defineEmits<{
   detail: [orderId: string];
-  refund: [orderId: string];
+  review: [orderId: string];
 }>();
 </script>
 
@@ -78,7 +87,7 @@ const emit = defineEmits<{
   height: 22px;
   padding: 0 10px;
   border-radius: 999px;
-  background-color: #dcfce7;
+  background-color: #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -88,7 +97,7 @@ const emit = defineEmits<{
 .status-badge-text {
   font-size: 11px;
   font-weight: 700;
-  color: #166534;
+  color: #374151;
   line-height: 1;
 }
 

@@ -1,9 +1,9 @@
 <template>
   <view class="order-card">
     <view class="card-meta-row">
-      <text class="deadline-text">{{ order.signedAt }}</text>
+      <text class="deadline-text">{{ order.serviceStartedAt }}</text>
       <view class="status-badge">
-        <text class="status-badge-text">已签约</text>
+        <text class="status-badge-text">服务中</text>
       </view>
     </view>
 
@@ -28,11 +28,8 @@
     <view class="card-divider" />
 
     <view class="card-actions">
-      <view class="action-btn action-btn--secondary" @click="emit('refund', order.id)">
-        <text class="action-btn-text">{{ refundSubmitted ? '退款详情' : '申请退款' }}</text>
-      </view>
       <view class="action-btn action-btn--primary" @click="emit('detail', order.id)">
-        <text class="action-btn-text action-btn-text--primary">签约详情</text>
+        <text class="action-btn-text">订单详情</text>
       </view>
     </view>
   </view>
@@ -43,12 +40,10 @@ import type { OrderRecord } from '@/data/orders';
 
 defineProps<{
   order: OrderRecord;
-  refundSubmitted?: boolean;
 }>();
 
 const emit = defineEmits<{
   detail: [orderId: string];
-  refund: [orderId: string];
 }>();
 </script>
 
@@ -78,7 +73,7 @@ const emit = defineEmits<{
   height: 22px;
   padding: 0 10px;
   border-radius: 999px;
-  background-color: #dcfce7;
+  background-color: #fef3c7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -88,7 +83,7 @@ const emit = defineEmits<{
 .status-badge-text {
   font-size: 11px;
   font-weight: 700;
-  color: #166534;
+  color: #d97706;
   line-height: 1;
 }
 
@@ -181,7 +176,6 @@ const emit = defineEmits<{
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
 }
 
 .action-btn {
@@ -198,20 +192,11 @@ const emit = defineEmits<{
   background-color: #9fe870;
 }
 
-.action-btn--secondary {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-}
-
 .action-btn-text {
   font-size: 13px;
   font-weight: 700;
   color: #163300;
   line-height: 1;
   white-space: nowrap;
-}
-
-.action-btn-text--primary {
-  color: #163300;
 }
 </style>

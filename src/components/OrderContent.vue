@@ -49,9 +49,31 @@
             <OrderSignedCard
               v-else-if="order.status === 'signed'"
               :order="order"
+              :refund-submitted="hasRefund(order.id)"
               class="order-card-item"
               @detail="handleSignedDetail"
               @refund="handleOrderRefund"
+            />
+            <OrderServiceCard
+              v-else-if="order.status === 'service'"
+              :order="order"
+              class="order-card-item"
+              @detail="handleOrderDetail"
+            />
+            <OrderCompletedCard
+              v-else-if="order.status === 'completed'"
+              :order="order"
+              :review-submitted="hasReview(order.id)"
+              class="order-card-item"
+              @detail="handleOrderDetail"
+              @review="handleOrderReview"
+            />
+            <OrderCancelledCard
+              v-else-if="order.status === 'cancelled'"
+              :order="order"
+              class="order-card-item"
+              @detail="handleOrderDetail"
+              @reorder="handleOrderReorder"
             />
           </template>
         </template>
@@ -69,7 +91,7 @@
           key="refund-form"
           :order="refundOrder"
           @back="closeRefundFlow"
-          @submit="goRefundSuccessStep"
+          @submit="handleRefundSubmit"
         />
         <RefundSuccessContent
           v-else
@@ -79,12 +101,42 @@
       </FadeTransition>
     </BottomSheetPanel>
 
+    <BottomSheetPanel :show="refundDetailFlowVisible" :z-index="1200" @closed="resetRefundDetailFlow">
+      <RefundDetailContent
+        v-if="refundDetailOrder && refundDetailRecord"
+        :order="refundDetailOrder"
+        :refund="refundDetailRecord"
+        @back="closeRefundDetailFlow"
+      />
+    </BottomSheetPanel>
+
     <BottomSheetPanel :show="detailFlowVisible" :z-index="1200" @closed="resetDetailFlow">
       <OrderDetailContent
         v-if="detailOrder"
         :order="detailOrder"
         @back="closeDetailFlow"
       />
+    </BottomSheetPanel>
+
+    <BottomSheetPanel :show="reviewFlowVisible" :z-index="1200" @closed="resetReviewFlow">
+      <FadeTransition mode="out-in">
+        <OrderReviewContent
+          v-if="(reviewStep === 'form' || reviewStep === 'view') && reviewOrder"
+          :key="reviewStep === 'view' ? 'review-view' : 'review-form'"
+          :order="reviewOrder"
+          :editable="reviewStep === 'form'"
+          :existing-rating="reviewRecord?.rating"
+          :existing-content="reviewRecord?.content"
+          :submitted-at="reviewRecord?.submittedAt"
+          @back="closeReviewFlow"
+          @submit="handleReviewSubmit"
+        />
+        <OrderReviewSuccessContent
+          v-else-if="reviewStep === 'success'"
+          key="review-success"
+          @back="closeReviewFlow"
+        />
+      </FadeTransition>
     </BottomSheetPanel>
   </view>
 </template>
@@ -93,12 +145,20 @@
 import { ref, computed, onMounted, getCurrentInstance, nextTick } from 'vue';
 import OrderPendingCard from '@/components/OrderPendingCard.vue';
 import OrderSignedCard from '@/components/OrderSignedCard.vue';
+import OrderServiceCard from '@/components/OrderServiceCard.vue';
+import OrderCompletedCard from '@/components/OrderCompletedCard.vue';
+import OrderCancelledCard from '@/components/OrderCancelledCard.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FadeTransition from '@/components/FadeTransition.vue';
 import RefundFormContent from '@/components/RefundFormContent.vue';
 import RefundSuccessContent from '@/components/RefundSuccessContent.vue';
+import RefundDetailContent from '@/components/RefundDetailContent.vue';
 import OrderDetailContent from '@/components/OrderDetailContent.vue';
+import OrderReviewContent from '@/components/OrderReviewContent.vue';
+import OrderReviewSuccessContent from '@/components/OrderReviewSuccessContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { useOrderRefunds } from '@/composables/useOrderRefunds';
+import { useOrderReviews } from '@/composables/useOrderReviews';
 import { getOrdersByStatus, getOrderById, type OrderRecord, type OrderStatusId } from '@/data/orders';
 
 type OrderStatusTabId = OrderStatusId;
@@ -122,12 +182,32 @@ const emit = defineEmits<{
 
 const instance = getCurrentInstance();
 const activeStatus = ref<OrderStatusTabId>('all');
-const visibleOrders = computed(() => getOrdersByStatus(activeStatus.value));
+const { hasRefund, getRefund, submitRefund } = useOrderRefunds();
+const { hasReview, getReview, submitReview } = useOrderReviews();
+const visibleOrders = computed(() => {
+  const orders = getOrdersByStatus(activeStatus.value);
+  if (activeStatus.value === 'reviewed') {
+    const reviewedCompleted = getOrdersByStatus('completed').filter((order) => hasReview(order.id));
+    return [...reviewedCompleted, ...orders];
+  }
+  return orders;
+});
 const { visible: refundFlowVisible, open: openRefundFlow, close: closeRefundFlow } = useSlideOver();
 const refundOrder = ref<OrderRecord | null>(null);
 const refundStep = ref<'form' | 'success'>('form');
+const { visible: refundDetailFlowVisible, open: openRefundDetailFlow, close: closeRefundDetailFlow } = useSlideOver();
+const refundDetailOrder = ref<OrderRecord | null>(null);
+const refundDetailRecord = computed(() =>
+  refundDetailOrder.value ? getRefund(refundDetailOrder.value.id) : null,
+);
 const { visible: detailFlowVisible, open: openDetailFlow, close: closeDetailFlow } = useSlideOver();
 const detailOrder = ref<OrderRecord | null>(null);
+const { visible: reviewFlowVisible, open: openReviewFlow, close: closeReviewFlow } = useSlideOver();
+const reviewOrder = ref<OrderRecord | null>(null);
+const reviewStep = ref<'form' | 'view' | 'success'>('form');
+const reviewRecord = computed(() =>
+  reviewOrder.value ? getReview(reviewOrder.value.id) : null,
+);
 const scrollLeft = ref(0);
 const thumbStyle = ref({
   transform: 'translateX(0px)',
@@ -254,6 +334,39 @@ const handleOrderPay = (orderId: string) => {
   });
 };
 
+const handleOrderReorder = (orderId: string) => {
+  uni.showToast({
+    title: `再次下单 ${orderId}`,
+    icon: 'none',
+  });
+};
+
+const handleOrderReview = (orderId: string) => {
+  const order = getOrderById(orderId);
+  if (!order) return;
+
+  reviewOrder.value = order;
+  reviewStep.value = hasReview(orderId) ? 'view' : 'form';
+  openReviewFlow();
+};
+
+const resetReviewFlow = () => {
+  reviewOrder.value = null;
+  reviewStep.value = 'form';
+};
+
+const handleReviewSubmit = (payload: {
+  orderId: string;
+  rating: number;
+  content: string;
+}) => {
+  submitReview(payload.orderId, {
+    rating: payload.rating,
+    content: payload.content,
+  });
+  reviewStep.value = 'success';
+};
+
 const handleSignedDetail = (orderId: string) => {
   uni.showToast({
     title: `签约详情 ${orderId}`,
@@ -264,6 +377,13 @@ const handleSignedDetail = (orderId: string) => {
 const handleOrderRefund = (orderId: string) => {
   const order = getOrderById(orderId);
   if (!order) return;
+
+  if (hasRefund(orderId)) {
+    refundDetailOrder.value = order;
+    openRefundDetailFlow();
+    return;
+  }
+
   refundOrder.value = order;
   openRefundFlow();
 };
@@ -273,8 +393,22 @@ const resetRefundFlow = () => {
   refundStep.value = 'form';
 };
 
-const goRefundSuccessStep = () => {
+const handleRefundSubmit = (payload: {
+  orderId: string;
+  itemIds: string[];
+  reason: string;
+  remarks: string;
+}) => {
+  submitRefund(payload.orderId, {
+    reason: payload.reason,
+    remarks: payload.remarks,
+    itemIds: payload.itemIds,
+  });
   refundStep.value = 'success';
+};
+
+const resetRefundDetailFlow = () => {
+  refundDetailOrder.value = null;
 };
 </script>
 
