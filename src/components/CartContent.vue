@@ -115,6 +115,15 @@
       </view>
     </view>
 
+    <BottomSheetPanel :show="checkoutFlowVisible" :z-index="1300" @closed="resetCheckoutFlow">
+      <CheckoutContent
+        :items="checkoutItems"
+        :order-amount="checkoutOrderAmount"
+        @back="closeCheckoutFlow"
+        @submit="handleCheckoutSubmit"
+      />
+    </BottomSheetPanel>
+
     <BottomSheetPanel :show="consultFlowVisible" :z-index="1100" @closed="resetConsultFlow">
       <FadeTransition mode="out-in">
         <ConsultFormContent
@@ -141,6 +150,7 @@ import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FadeTransition from '@/components/FadeTransition.vue';
 import ConsultFormContent from '@/components/ConsultFormContent.vue';
 import ConsultSuccessContent from '@/components/ConsultSuccessContent.vue';
+import CheckoutContent from '@/components/CheckoutContent.vue';
 import FlipQty from '@/components/FlipQty.vue';
 import { FADE_DURATION_MS } from '@/utils/fadeTransition';
 
@@ -154,6 +164,7 @@ const isDeleting = ref(false);
 const activeProductType = ref<CartProductType>('ordinary');
 const { visible: consultFlowVisible, open: openConsultFlow, close: closeConsultFlow } = useSlideOver();
 const consultStep = ref<'form' | 'success'>('form');
+const { visible: checkoutFlowVisible, open: openCheckoutFlow, close: closeCheckoutFlow } = useSlideOver();
 
 const goConsultSuccessStep = () => {
   consultStep.value = 'success';
@@ -212,9 +223,24 @@ const handleConsult = () => {
 
 const handleCheckout = () => {
   if (!hasSelection.value) return;
+  openCheckoutFlow();
+};
+
+const checkoutItems = computed(() =>
+  visibleCartItems.value.filter((item) => item.selected),
+);
+
+const checkoutOrderAmount = computed(() => orderAmount.value);
+
+const resetCheckoutFlow = () => {
+  // no-op, panel will unmount after close
+};
+
+const handleCheckoutSubmit = () => {
+  closeCheckoutFlow();
   uni.showToast({
-    title: '结算功能开发中',
-    icon: 'none',
+    title: '订单已提交',
+    icon: 'success',
   });
 };
 </script>
