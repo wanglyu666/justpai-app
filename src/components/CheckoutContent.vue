@@ -28,7 +28,7 @@
         </view>
 
         <view class="product-list">
-          <view v-for="item in items" :key="item.cartKey" class="checkout-item-card">
+          <view v-for="item in primaryItems" :key="item.cartKey" class="checkout-item-card">
             <view class="item-image-wrap">
               <image :src="item.image" mode="aspectFill" class="item-image" />
             </view>
@@ -41,6 +41,36 @@
               </view>
             </view>
           </view>
+
+          <view
+            v-if="showProductToggle"
+            class="product-list-extra"
+            :class="{ expanded: productListExpanded }"
+            :style="extraListStyle"
+          >
+            <view v-for="item in extraItems" :key="item.cartKey" class="checkout-item-card">
+              <view class="item-image-wrap">
+                <image :src="item.image" mode="aspectFill" class="item-image" />
+              </view>
+              <view class="item-info">
+                <text class="item-name">{{ item.name }}</text>
+                <text class="item-spec">{{ item.spec }}</text>
+                <view class="item-price-row">
+                  <text class="item-price">¥{{ item.price }}</text>
+                  <text class="item-qty">×{{ item.quantity }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view v-if="showProductToggle" class="product-list-toggle" @click="toggleProductList">
+          <image
+            src="/static/icons/chevron-right.svg"
+            mode="aspectFit"
+            class="product-list-chevron"
+            :class="{ expanded: productListExpanded }"
+          />
         </view>
       </view>
 
@@ -120,7 +150,22 @@
     </scroll-view>
 
     <view class="submit-footer">
-      <view class="submit-btn" @click="handleSubmit">
+      <view class="terms-agreement" @click="toggleTermsAgreed">
+        <view class="terms-checkbox" :class="{ checked: termsAgreed }">
+          <image
+            v-if="termsAgreed"
+            src="/static/icons/check.svg"
+            mode="aspectFit"
+            class="terms-check-icon"
+          />
+        </view>
+        <view class="terms-text-wrap">
+          <text class="terms-text">我已阅读并同意产品与服务确认单的 </text>
+          <text class="terms-link" @click.stop="handleOpenTerms">通用条款</text>
+        </view>
+      </view>
+
+      <view class="submit-btn" :class="{ disabled: !termsAgreed }" @click="handleSubmit">
         <text class="submit-text">提交订单</text>
       </view>
     </view>
@@ -189,6 +234,20 @@
       @create="handleAddressCreate"
       @update="handleAddressUpdate"
     />
+
+    <CheckoutEditSheet
+      :show="contractConfirmVisible"
+      title="确认信息"
+      @close="closeContractConfirm"
+      @confirm="handleContractConfirm"
+    >
+      <view class="sheet-textarea-wrap contract-message-wrap">
+        <text class="contract-message-text">
+          您好，根据这么派平台规则中订单支付的规则，您的订单已优享先服务后支付的优惠政策，平台会在与您沟通后创建一份产品采购合同，请根据提示前往合同管理中「签约管理」进行签约，给您带来的不便敬请谅解，如有其它问题请您拨打客服热线
+          <text class="contract-hotline">400-688-1997</text>
+        </text>
+      </view>
+    </CheckoutEditSheet>
   </view>
 </template>
 
@@ -203,11 +262,18 @@ import CheckoutEditSheet from '@/components/CheckoutEditSheet.vue';
 import DateWheelPicker from '@/components/DateWheelPicker.vue';
 
 type EditField = 'serviceDate' | 'purchaser' | 'paymentTerm' | 'remarks';
+type CheckoutFlowMode = 'payment' | 'contract';
 
-const props = defineProps<{
-  items: CartItem[];
-  orderAmount: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    items: CartItem[];
+    orderAmount: string;
+    flowMode?: CheckoutFlowMode;
+  }>(),
+  {
+    flowMode: 'payment',
+  },
+);
 
 const emit = defineEmits<{
   back: [];
@@ -352,6 +418,48 @@ const totalQuantity = computed(() =>
   props.items.reduce((sum, item) => sum + item.quantity, 0),
 );
 
+const PRODUCT_COLLAPSE_LIMIT = 3;
+const EXTRA_ITEM_HEIGHT = 90;
+const productListExpanded = ref(false);
+
+const showProductToggle = computed(() => props.items.length > PRODUCT_COLLAPSE_LIMIT);
+
+const primaryItems = computed(() => {
+  if (!showProductToggle.value) {
+    return props.items;
+  }
+  return props.items.slice(0, PRODUCT_COLLAPSE_LIMIT);
+});
+
+const extraItems = computed(() => {
+  if (!showProductToggle.value) {
+    return [];
+  }
+  return props.items.slice(PRODUCT_COLLAPSE_LIMIT);
+});
+
+const extraListStyle = computed(() => ({
+  '--extra-max-height': `${extraItems.value.length * EXTRA_ITEM_HEIGHT}px`,
+}));
+
+const toggleProductList = () => {
+  productListExpanded.value = !productListExpanded.value;
+};
+
+const termsAgreed = ref(false);
+const contractConfirmVisible = ref(false);
+
+const toggleTermsAgreed = () => {
+  termsAgreed.value = !termsAgreed.value;
+};
+
+const handleOpenTerms = () => {
+  uni.showToast({
+    title: '通用条款',
+    icon: 'none',
+  });
+};
+
 const formatDateValue = (date: Date) => {
   const pad = (value: number) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -426,10 +534,28 @@ const handleAddressUpdate = (id: string, values: CheckoutAddressFormValues) => {
 };
 
 const handleSubmit = () => {
-  uni.showToast({
-    title: '提交订单成功',
-    icon: 'success',
-  });
+  if (!termsAgreed.value) {
+    uni.showToast({
+      title: '请先阅读并同意通用条款',
+      icon: 'none',
+    });
+    return;
+  }
+
+  if (props.flowMode === 'contract') {
+    contractConfirmVisible.value = true;
+    return;
+  }
+
+  emit('submit');
+};
+
+const closeContractConfirm = () => {
+  contractConfirmVisible.value = false;
+};
+
+const handleContractConfirm = () => {
+  contractConfirmVisible.value = false;
   emit('submit');
 };
 </script>
@@ -589,6 +715,46 @@ const handleSubmit = () => {
   gap: 10px;
 }
 
+.product-list-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: -10px;
+  transition:
+    max-height 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.24s ease,
+    margin-top 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.product-list-extra.expanded {
+  max-height: var(--extra-max-height, 400px);
+  opacity: 1;
+  margin-top: 0;
+}
+
+.product-list-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+  margin-top: 2px;
+}
+
+.product-list-chevron {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transform: rotate(90deg);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.product-list-chevron.expanded {
+  transform: rotate(-90deg);
+}
+
 .checkout-item-card {
   display: flex;
   align-items: center;
@@ -744,6 +910,53 @@ const handleSubmit = () => {
   box-sizing: border-box;
 }
 
+.terms-agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.terms-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid #d1d5db;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  box-sizing: border-box;
+}
+
+.terms-checkbox.checked {
+  border-color: #9fe870;
+  background-color: #9fe870;
+}
+
+.terms-check-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.terms-text-wrap {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.terms-text,
+.terms-link {
+  font-size: 13px;
+  color: #374151;
+}
+
+.terms-link {
+  text-decoration: underline;
+}
+
 .submit-btn {
   width: 100%;
   height: 52px;
@@ -752,6 +965,11 @@ const handleSubmit = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.submit-btn.disabled {
+  opacity: 0.45;
 }
 
 .submit-text {
@@ -846,5 +1064,21 @@ const handleSubmit = () => {
   font-size: 12px;
   color: #9ca3af;
   line-height: 1;
+}
+
+.contract-message-wrap {
+  padding-bottom: 14px;
+}
+
+.contract-message-text {
+  display: block;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.contract-hotline {
+  color: #163300;
+  font-weight: 700;
 }
 </style>

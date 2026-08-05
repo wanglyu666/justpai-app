@@ -4,8 +4,11 @@
     <view class="header">
       <text class="page-title">商店</text>
       <view class="header-actions">
-        <view class="action-item" @click="openCart">
+        <view class="action-item cart-action" @click="openCart">
           <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="action-icon" />
+          <view v-if="cartCount > 0" class="cart-badge">
+            <text class="cart-badge-text">{{ cartBadgeText }}</text>
+          </view>
         </view>
         <view class="action-divider"></view>
         <view class="action-item" @click="openOrders">
@@ -124,6 +127,7 @@ import OrderContent from '@/components/OrderContent.vue';
 import StoreFilterModal, { type StoreFilterResult } from '@/components/StoreFilterModal.vue';
 import FadeTransition from '@/components/FadeTransition.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { useCart } from '@/composables/useCart';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
 import {
   storeProducts,
@@ -142,7 +146,15 @@ const { visible: detailVisible, open: openDetail, close: closeDetail } = useSlid
 const { visible: cartVisible, open: openCart, close: closeCart } = useSlideOver();
 const { visible: ordersVisible, open: openOrders, close: closeOrders } = useSlideOver();
 const { visible: filterVisible, open: openFilterModal, close: closeFilterModal } = useSlideOver();
+const { totalQuantity } = useCart();
 const selectedProduct = ref<ProductDetail | null>(null);
+
+const cartCount = computed(() => totalQuantity.value);
+
+const cartBadgeText = computed(() => {
+  if (cartCount.value > 99) return '99+';
+  return String(cartCount.value);
+});
 
 const displayProductType = ref<'ordinary' | 'annual'>('ordinary');
 const displayAnnualRegion = ref<AnnualRegionId>('north');
@@ -222,6 +234,32 @@ const categories = ref([
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.cart-action {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background-color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.cart-badge-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
 }
 
 .action-divider {

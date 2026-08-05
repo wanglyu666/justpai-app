@@ -6,12 +6,21 @@
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
         <text class="header-title">购物车</text>
-        <view class="icon-btn icon-btn--delete" :class="{ active: hasSelection }" @click="handleDeleteSelected">
-          <image
-            :src="hasSelection ? '/static/icons/trash-red.svg' : '/static/icons/trash.svg'"
-            mode="aspectFit"
-            class="header-icon"
-          />
+        <view class="header-actions">
+          <view
+            class="icon-btn icon-btn--consult"
+            :class="{ active: hasSelection }"
+            @click="handleConsult"
+          >
+            <image src="/static/icons/message-circle.svg" mode="aspectFit" class="header-icon" />
+          </view>
+          <view class="icon-btn icon-btn--delete" :class="{ active: hasSelection }" @click="handleDeleteSelected">
+            <image
+              :src="hasSelection ? '/static/icons/trash-red.svg' : '/static/icons/trash.svg'"
+              mode="aspectFit"
+              class="header-icon"
+            />
+          </view>
         </view>
       </view>
       <view class="product-toggle">
@@ -99,15 +108,21 @@
         <view class="list-mask list-mask-bottom" />
       </view>
 
+      <view class="cart-test-actions">
+        <view class="test-btn" @click="handleTestPurchasePay">
+          <text class="test-btn-text">产品采购单支付</text>
+        </view>
+        <view class="test-btn" @click="handleTestSignContract">
+          <text class="test-btn-text">签署产品采购合同</text>
+        </view>
+      </view>
+
       <view class="checkout-bar" :class="{ 'actions-disabled': !hasSelection }">
         <view class="total-block">
           <text class="total-label">总计 (TOTAL)</text>
           <text class="total-value">¥ {{ orderAmount }}</text>
         </view>
         <view class="footer-actions">
-          <view class="footer-btn" @click="handleConsult">
-            <text class="footer-btn-text">咨询</text>
-          </view>
           <view class="footer-btn" @click="handleCheckout">
             <text class="footer-btn-text">去结算 →</text>
           </view>
@@ -119,9 +134,14 @@
       <CheckoutContent
         :items="checkoutItems"
         :order-amount="checkoutOrderAmount"
+        :flow-mode="checkoutMode"
         @back="closeCheckoutFlow"
         @submit="handleCheckoutSubmit"
       />
+    </BottomSheetPanel>
+
+    <BottomSheetPanel :show="paymentFlowVisible" :z-index="1400" @closed="resetPaymentFlow">
+      <PaymentSelectContent @confirm="handlePaymentConfirm" />
     </BottomSheetPanel>
 
     <BottomSheetPanel :show="consultFlowVisible" :z-index="1100" @closed="resetConsultFlow">
@@ -151,6 +171,7 @@ import FadeTransition from '@/components/FadeTransition.vue';
 import ConsultFormContent from '@/components/ConsultFormContent.vue';
 import ConsultSuccessContent from '@/components/ConsultSuccessContent.vue';
 import CheckoutContent from '@/components/CheckoutContent.vue';
+import PaymentSelectContent from '@/components/PaymentSelectContent.vue';
 import FlipQty from '@/components/FlipQty.vue';
 import { FADE_DURATION_MS } from '@/utils/fadeTransition';
 
@@ -162,9 +183,11 @@ const { cartItems, increaseQty, decreaseQty, removeByKeys, toggleSelect } = useC
 const removingKeys = ref<string[]>([]);
 const isDeleting = ref(false);
 const activeProductType = ref<CartProductType>('ordinary');
+const checkoutMode = ref<'payment' | 'contract'>('payment');
 const { visible: consultFlowVisible, open: openConsultFlow, close: closeConsultFlow } = useSlideOver();
 const consultStep = ref<'form' | 'success'>('form');
 const { visible: checkoutFlowVisible, open: openCheckoutFlow, close: closeCheckoutFlow } = useSlideOver();
+const { visible: paymentFlowVisible, open: openPaymentFlow, close: closePaymentFlow } = useSlideOver();
 
 const goConsultSuccessStep = () => {
   consultStep.value = 'success';
@@ -223,6 +246,20 @@ const handleConsult = () => {
 
 const handleCheckout = () => {
   if (!hasSelection.value) return;
+  checkoutMode.value = 'payment';
+  openCheckoutFlow();
+};
+
+const handleTestPurchasePay = () => {
+  uni.showToast({
+    title: '产品采购单支付',
+    icon: 'none',
+  });
+};
+
+const handleTestSignContract = () => {
+  if (!hasSelection.value) return;
+  checkoutMode.value = 'contract';
   openCheckoutFlow();
 };
 
@@ -233,10 +270,28 @@ const checkoutItems = computed(() =>
 const checkoutOrderAmount = computed(() => orderAmount.value);
 
 const resetCheckoutFlow = () => {
+  checkoutMode.value = 'payment';
+};
+
+const resetPaymentFlow = () => {
   // no-op, panel will unmount after close
 };
 
 const handleCheckoutSubmit = () => {
+  if (checkoutMode.value === 'contract') {
+    closeCheckoutFlow();
+    uni.showToast({
+      title: '提交成功',
+      icon: 'success',
+    });
+    return;
+  }
+
+  openPaymentFlow();
+};
+
+const handlePaymentConfirm = () => {
+  closePaymentFlow();
   closeCheckoutFlow();
   uni.showToast({
     title: '订单已提交',
@@ -338,6 +393,13 @@ const handleCheckoutSubmit = () => {
   min-height: 1px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .icon-btn {
   width: 44px;
   height: 44px;
@@ -354,10 +416,12 @@ const handleCheckoutSubmit = () => {
   opacity: 0.4;
 }
 
+.icon-btn--consult:not(.active),
 .icon-btn--delete:not(.active) {
   opacity: 0.4;
 }
 
+.icon-btn--consult.active,
 .icon-btn--delete.active {
   opacity: 1;
 }
@@ -422,6 +486,36 @@ const handleCheckoutSubmit = () => {
     rgba(244, 245, 247, 0.35) 70%,
     rgba(244, 245, 247, 0) 100%
   );
+}
+
+.cart-test-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 8px 0 14px;
+  flex-shrink: 0;
+}
+
+.test-btn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  box-sizing: border-box;
+}
+
+.test-btn-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .cart-item-shell {

@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import type { ProductDetail } from '@/components/ProductDetailContent.vue';
 
 export type CartProductType = 'ordinary' | 'annual';
@@ -23,6 +23,10 @@ type CartParams = {
 };
 
 const cartItems = ref<CartItem[]>([]);
+
+const totalQuantity = computed(() =>
+  cartItems.value.reduce((sum, item) => sum + item.quantity, 0),
+);
 
 const buildCartKey = (productId: number, params: CartParams) =>
   `${productId}-${params.model}-${params.spec}-${params.color}`;
@@ -94,6 +98,7 @@ export function useCart() {
 
   return {
     cartItems,
+    totalQuantity,
     addToCart,
     increaseQty,
     decreaseQty,
