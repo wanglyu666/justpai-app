@@ -183,7 +183,7 @@ const { cartItems, increaseQty, decreaseQty, removeByKeys, toggleSelect } = useC
 const removingKeys = ref<string[]>([]);
 const isDeleting = ref(false);
 const activeProductType = ref<CartProductType>('ordinary');
-const checkoutMode = ref<'payment' | 'contract'>('payment');
+const checkoutMode = ref<'payment' | 'contract' | 'purchase-pay'>('payment');
 const { visible: consultFlowVisible, open: openConsultFlow, close: closeConsultFlow } = useSlideOver();
 const consultStep = ref<'form' | 'success'>('form');
 const { visible: checkoutFlowVisible, open: openCheckoutFlow, close: closeCheckoutFlow } = useSlideOver();
@@ -251,10 +251,9 @@ const handleCheckout = () => {
 };
 
 const handleTestPurchasePay = () => {
-  uni.showToast({
-    title: '产品采购单支付',
-    icon: 'none',
-  });
+  if (!hasSelection.value) return;
+  checkoutMode.value = 'purchase-pay';
+  openCheckoutFlow();
 };
 
 const handleTestSignContract = () => {
@@ -278,7 +277,7 @@ const resetPaymentFlow = () => {
 };
 
 const handleCheckoutSubmit = () => {
-  if (checkoutMode.value === 'contract') {
+  if (checkoutMode.value === 'contract' || checkoutMode.value === 'purchase-pay') {
     closeCheckoutFlow();
     uni.showToast({
       title: '提交成功',

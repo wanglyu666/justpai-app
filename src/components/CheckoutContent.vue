@@ -74,8 +74,26 @@
         </view>
       </view>
 
-      <view class="section-card">
+      <view class="section-card" :class="{ 'section-card--purchase-growing': showPurchaseOrderDetails }">
         <view class="meta-list">
+          <view
+            v-if="showPurchaseOrderDetails"
+            class="purchase-expand-slot purchase-expand-slot--top"
+            :class="{ expanded: purchaseExpandActive }"
+          >
+            <view class="purchase-expand-inner purchase-expand-inner--top">
+              <view class="purchase-content" :class="{ visible: purchaseContentVisible }">
+                <view class="meta-row">
+                  <text class="meta-label">确认单编号</text>
+                  <view class="meta-value-group">
+                    <text class="meta-value">{{ confirmationOrderNo }}</text>
+                    <view class="meta-chevron-slot" />
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+
           <view class="meta-row">
             <text class="meta-label">确认编号</text>
             <view class="meta-value-group">
@@ -123,6 +141,104 @@
             <view class="meta-value-group">
               <text class="meta-value">{{ workDuration }} 天</text>
               <view class="meta-chevron-slot" />
+            </view>
+          </view>
+
+          <view
+            v-if="showPurchaseOrderDetails"
+            class="purchase-expand-slot purchase-expand-slot--bottom"
+            :class="{ expanded: purchaseExpandActive }"
+          >
+            <view class="purchase-expand-inner purchase-expand-inner--bottom">
+              <view class="purchase-content" :class="{ visible: purchaseContentVisible }">
+                <text class="meta-section-title">采购方信息</text>
+
+                <view class="meta-row meta-row--clickable" @click="openEditSheet('buyerCompanyName')">
+              <text class="meta-label">公司名称</text>
+              <view class="meta-value-group">
+                <text
+                  class="meta-value"
+                  :class="{ 'meta-value--placeholder': !buyerInfo.companyName.trim() }"
+                >
+                  {{ buyerCompanyDisplay }}
+                </text>
+                <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
+              </view>
+            </view>
+
+            <view class="meta-row meta-row--wrap meta-row--clickable" @click="openEditSheet('buyerRegisteredAddress')">
+              <text class="meta-label">注册地址</text>
+              <view class="meta-value-group">
+                <text
+                  class="meta-value meta-value--wrap"
+                  :class="{ 'meta-value--placeholder': !buyerInfo.registeredAddress.trim() }"
+                >
+                  {{ buyerAddressDisplay }}
+                </text>
+                <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
+              </view>
+            </view>
+
+            <view class="meta-row meta-row--clickable" @click="openEditSheet('buyerContact')">
+              <text class="meta-label">联系人</text>
+              <view class="meta-value-group">
+                <text
+                  class="meta-value"
+                  :class="{ 'meta-value--placeholder': !buyerInfo.contact.trim() }"
+                >
+                  {{ buyerContactDisplay }}
+                </text>
+                <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
+              </view>
+            </view>
+
+            <view class="meta-row meta-row--clickable" @click="openEditSheet('buyerContactPhone')">
+              <text class="meta-label">联系电话</text>
+              <view class="meta-value-group">
+                <text
+                  class="meta-value"
+                  :class="{ 'meta-value--placeholder': !buyerInfo.phone.trim() }"
+                >
+                  {{ buyerPhoneDisplay }}
+                </text>
+                <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
+              </view>
+            </view>
+
+            <text class="meta-section-title meta-section-title--supplier">供应商信息</text>
+
+            <view class="meta-row">
+              <text class="meta-label">公司名称</text>
+              <view class="meta-value-group">
+                <text class="meta-value">{{ supplierInfo.companyName }}</text>
+                <view class="meta-chevron-slot" />
+              </view>
+            </view>
+
+            <view class="meta-row meta-row--wrap">
+              <text class="meta-label">注册地址</text>
+              <view class="meta-value-group">
+                <text class="meta-value meta-value--wrap">{{ supplierInfo.registeredAddress }}</text>
+                <view class="meta-chevron-slot" />
+              </view>
+            </view>
+
+            <view class="meta-row">
+              <text class="meta-label">联系人</text>
+              <view class="meta-value-group">
+                <text class="meta-value">{{ supplierInfo.contact }}</text>
+                <view class="meta-chevron-slot" />
+              </view>
+            </view>
+
+            <view class="meta-row">
+              <text class="meta-label">联系电话</text>
+              <view class="meta-value-group">
+                <text class="meta-value">{{ supplierInfo.phone }}</text>
+                <view class="meta-chevron-slot" />
+              </view>
+            </view>
+              </view>
             </view>
           </view>
 
@@ -223,6 +339,17 @@
           <text class="sheet-textarea-count">{{ draftRemarks.length }}/200</text>
         </view>
       </template>
+
+      <template v-else-if="isBuyerEditSheet">
+        <input
+          v-model="draftBuyerField"
+          class="sheet-input"
+          type="text"
+          :placeholder="buyerFieldPlaceholder"
+          placeholder-class="sheet-input-placeholder"
+          :maxlength="buyerFieldMaxLength"
+        />
+      </template>
     </CheckoutEditSheet>
 
     <CheckoutAddressSheet
@@ -248,11 +375,17 @@
         </text>
       </view>
     </CheckoutEditSheet>
+
+    <PurchasePayConfirmSheet
+      :show="purchasePayConfirmVisible"
+      @close="closePurchasePayConfirm"
+      @confirm="handlePurchasePayConfirm"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
 import type { CartItem } from '@/composables/useCart';
 import CheckoutAddressSheet, {
   type CheckoutAddressFormValues,
@@ -260,9 +393,32 @@ import CheckoutAddressSheet, {
 } from '@/components/CheckoutAddressSheet.vue';
 import CheckoutEditSheet from '@/components/CheckoutEditSheet.vue';
 import DateWheelPicker from '@/components/DateWheelPicker.vue';
+import PurchasePayConfirmSheet, {
+  type PurchasePayConfirmAction,
+} from '@/components/PurchasePayConfirmSheet.vue';
 
-type EditField = 'serviceDate' | 'purchaser' | 'paymentTerm' | 'remarks';
-type CheckoutFlowMode = 'payment' | 'contract';
+type EditField =
+  | 'serviceDate'
+  | 'purchaser'
+  | 'paymentTerm'
+  | 'remarks'
+  | 'buyerCompanyName'
+  | 'buyerRegisteredAddress'
+  | 'buyerContact'
+  | 'buyerContactPhone';
+
+type BuyerEditField = Extract<
+  EditField,
+  'buyerCompanyName' | 'buyerRegisteredAddress' | 'buyerContact' | 'buyerContactPhone'
+>;
+
+type BuyerInfo = {
+  companyName: string;
+  registeredAddress: string;
+  contact: string;
+  phone: string;
+};
+type CheckoutFlowMode = 'payment' | 'contract' | 'purchase-pay';
 
 const props = withDefaults(
   defineProps<{
@@ -288,6 +444,7 @@ const buildConfirmNo = () => {
 };
 
 const confirmNo = ref(buildConfirmNo());
+const confirmationOrderNo = 'QRD-20260806-001';
 const serviceDate = ref('');
 const remarks = ref('');
 const purchaser = ref('管理员');
@@ -303,7 +460,53 @@ const draftPurchaser = ref('管理员');
 const draftPaymentTerm = ref(7);
 const draftRemarks = ref('');
 
-const sheetTitles: Record<EditField, string> = {
+const buyerInfo = reactive<BuyerInfo>({
+  companyName: '',
+  registeredAddress: '',
+  contact: '',
+  phone: '',
+});
+
+const draftBuyerField = ref('');
+
+const supplierInfo = {
+  companyName: '北京这么派科技有限公司',
+  registeredAddress: '北京市海淀区中关村大街1号海龙大厦3层',
+  contact: '王工程师',
+  phone: '400-688-1997',
+};
+
+const buyerFieldConfig: Record<
+  BuyerEditField,
+  { title: string; placeholder: string; key: keyof BuyerInfo; maxLength: number }
+> = {
+  buyerCompanyName: {
+    title: '公司名称',
+    placeholder: '请输入公司名称',
+    key: 'companyName',
+    maxLength: 50,
+  },
+  buyerRegisteredAddress: {
+    title: '注册地址',
+    placeholder: '请输入注册地址',
+    key: 'registeredAddress',
+    maxLength: 100,
+  },
+  buyerContact: {
+    title: '联系人',
+    placeholder: '请输入联系人',
+    key: 'contact',
+    maxLength: 20,
+  },
+  buyerContactPhone: {
+    title: '联系电话',
+    placeholder: '请输入联系电话',
+    key: 'phone',
+    maxLength: 11,
+  },
+};
+
+const sheetTitles: Record<Exclude<EditField, BuyerEditField>, string> = {
   serviceDate: '选择服务时间',
   purchaser: '采购方',
   paymentTerm: '支付期限',
@@ -403,8 +606,34 @@ watch(
   { deep: true },
 );
 
-const sheetTitle = computed(() =>
-  activeSheet.value ? sheetTitles[activeSheet.value] : '',
+const sheetTitle = computed(() => {
+  if (!activeSheet.value) return '';
+  if (activeSheet.value in sheetTitles) {
+    return sheetTitles[activeSheet.value as Exclude<EditField, BuyerEditField>];
+  }
+  if (activeSheet.value in buyerFieldConfig) {
+    return buyerFieldConfig[activeSheet.value as BuyerEditField].title;
+  }
+  return '';
+});
+
+const buyerFieldPlaceholder = computed(() => {
+  if (!activeSheet.value || !(activeSheet.value in buyerFieldConfig)) return '';
+  return buyerFieldConfig[activeSheet.value as BuyerEditField].placeholder;
+});
+
+const buyerFieldMaxLength = computed(() => {
+  if (!activeSheet.value || !(activeSheet.value in buyerFieldConfig)) return 50;
+  return buyerFieldConfig[activeSheet.value as BuyerEditField].maxLength;
+});
+
+const buyerCompanyDisplay = computed(() => buyerInfo.companyName.trim() || '请填写');
+const buyerAddressDisplay = computed(() => buyerInfo.registeredAddress.trim() || '请填写');
+const buyerContactDisplay = computed(() => buyerInfo.contact.trim() || '请填写');
+const buyerPhoneDisplay = computed(() => buyerInfo.phone.trim() || '请填写');
+
+const isBuyerEditSheet = computed(
+  () => activeSheet.value !== null && activeSheet.value in buyerFieldConfig,
 );
 
 const serviceDateDisplay = computed(() => {
@@ -448,6 +677,15 @@ const toggleProductList = () => {
 
 const termsAgreed = ref(false);
 const contractConfirmVisible = ref(false);
+const purchasePayConfirmVisible = ref(false);
+const showPurchaseOrderDetails = ref(false);
+const purchaseExpandActive = ref(false);
+const purchaseContentVisible = ref(false);
+
+const PURCHASE_EXPAND_MS = 360;
+const PURCHASE_CONTENT_FADE_MS = 280;
+
+let purchaseRevealTimer: ReturnType<typeof setTimeout> | null = null;
 
 const toggleTermsAgreed = () => {
   termsAgreed.value = !termsAgreed.value;
@@ -471,6 +709,11 @@ const openEditSheet = (field: EditField) => {
   draftPurchaser.value = purchaser.value;
   draftPaymentTerm.value = paymentTerm.value;
   draftRemarks.value = remarks.value;
+
+  if (field in buyerFieldConfig) {
+    const config = buyerFieldConfig[field as BuyerEditField];
+    draftBuyerField.value = buyerInfo[config.key];
+  }
 };
 
 const closeEditSheet = () => {
@@ -486,6 +729,9 @@ const confirmEditSheet = () => {
     paymentTerm.value = draftPaymentTerm.value;
   } else if (activeSheet.value === 'remarks') {
     remarks.value = draftRemarks.value.trim();
+  } else if (activeSheet.value && activeSheet.value in buyerFieldConfig) {
+    const config = buyerFieldConfig[activeSheet.value as BuyerEditField];
+    buyerInfo[config.key] = draftBuyerField.value.trim();
   }
   activeSheet.value = null;
 };
@@ -547,15 +793,61 @@ const handleSubmit = () => {
     return;
   }
 
+  if (props.flowMode === 'purchase-pay') {
+    if (!showPurchaseOrderDetails.value) {
+      purchasePayConfirmVisible.value = true;
+      return;
+    }
+    emit('submit');
+    return;
+  }
+
   emit('submit');
+};
+
+const clearPurchaseRevealTimer = () => {
+  if (purchaseRevealTimer) {
+    clearTimeout(purchaseRevealTimer);
+    purchaseRevealTimer = null;
+  }
+};
+
+const revealPurchaseOrderDetails = async () => {
+  clearPurchaseRevealTimer();
+  showPurchaseOrderDetails.value = true;
+  purchaseExpandActive.value = false;
+  purchaseContentVisible.value = false;
+
+  await nextTick();
+  requestAnimationFrame(() => {
+    purchaseExpandActive.value = true;
+  });
+
+  purchaseRevealTimer = setTimeout(() => {
+    purchaseContentVisible.value = true;
+    purchaseRevealTimer = null;
+  }, PURCHASE_EXPAND_MS);
 };
 
 const closeContractConfirm = () => {
   contractConfirmVisible.value = false;
 };
 
+const closePurchasePayConfirm = () => {
+  purchasePayConfirmVisible.value = false;
+};
+
 const handleContractConfirm = () => {
   contractConfirmVisible.value = false;
+  emit('submit');
+};
+
+const handlePurchasePayConfirm = (action: PurchasePayConfirmAction) => {
+  purchasePayConfirmVisible.value = false;
+  if (action === 'self') {
+    revealPurchaseOrderDetails();
+    return;
+  }
   emit('submit');
 };
 </script>
@@ -689,6 +981,11 @@ const handleContractConfirm = () => {
   padding: 18px;
   box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
   margin-bottom: 16px;
+  transition: box-shadow 360ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.section-card--purchase-growing {
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 }
 
 .section-head {
@@ -830,11 +1127,59 @@ const handleContractConfirm = () => {
   gap: 18px;
 }
 
+.purchase-expand-slot {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 360ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.purchase-expand-slot.expanded.purchase-expand-slot--top {
+  max-height: 44px;
+}
+
+.purchase-expand-slot.expanded.purchase-expand-slot--bottom {
+  max-height: 560px;
+}
+
+.purchase-expand-inner--bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.purchase-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.purchase-content.visible {
+  opacity: 1;
+}
+
+.meta-section-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.4;
+}
+
 .meta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.meta-row--wrap {
+  align-items: flex-start;
+}
+
+.meta-row--wrap .meta-value-group {
+  align-items: flex-start;
 }
 
 .meta-row--clickable:active {
@@ -875,6 +1220,13 @@ const handleContractConfirm = () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.meta-value--wrap {
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+  word-break: break-all;
 }
 
 .meta-value--placeholder {
