@@ -46,7 +46,9 @@
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "JustPai",
     "navigationBarBackgroundColor": "#F4F5F7",
-    "backgroundColor": "#F4F5F7"
+    "backgroundColor": "#F4F5F7",
+    "animationType": "fade",
+    "animationDuration": 160
   },
   "tabBar": {
     "color": "#9CA3AF",

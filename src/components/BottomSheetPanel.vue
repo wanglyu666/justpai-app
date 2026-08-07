@@ -29,7 +29,7 @@ const props = withDefaults(
     contentSafeTop?: boolean;
   }>(),
   {
-    zIndex: 1000,
+    zIndex: 1200,
     contentSafeTop: false,
   },
 );

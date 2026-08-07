@@ -29,7 +29,7 @@ const props = withDefaults(
     edgeToEdge?: boolean;
   }>(),
   {
-    zIndex: 1000,
+    zIndex: 1100,
     edgeToEdge: false,
   },
 );
