@@ -5,8 +5,8 @@
         <view class="icon-btn frosted-glass" :style="headerGlassStyle" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <view class="icon-btn frosted-glass" :style="headerGlassStyle">
-          <image src="/static/icons/heart-outline.svg" mode="aspectFit" class="header-icon" />
+        <view class="icon-btn frosted-glass" :style="headerGlassStyle" @click="openConsultFlow">
+          <image src="/static/icons/message-circle.svg" mode="aspectFit" class="header-icon" />
         </view>
       </view>
 
@@ -111,9 +111,6 @@
           </view>
         </view>
         <view class="action-buttons">
-          <view class="consult-btn" @click="openConsultFlow">
-            <text class="consult-btn-text">咨询</text>
-          </view>
           <view class="cart-btn" @click="openCartSuccessModal">
             <text class="cart-btn-text">加入购物车</text>
           </view>
@@ -693,8 +690,8 @@ const handleBack = () => {
 }
 
 .param-chip.active {
-  border-color: #9fe870;
-  background-color: #9fe870;
+  border-color: #B0D4C5;
+  background-color: #B0D4C5;
 }
 
 .param-chip-text {
@@ -706,7 +703,7 @@ const handleBack = () => {
 }
 
 .param-chip.active .param-chip-text {
-  color: #163300;
+  color: #ffffff;
   font-weight: 700;
 }
 
@@ -787,29 +784,11 @@ const handleBack = () => {
   min-width: 0;
 }
 
-.consult-btn {
-  height: 44px;
-  padding: 0 14px;
-  border-radius: 22px;
-  background-color: rgba(159, 232, 112, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.consult-btn-text {
-  font-size: 14px;
-  font-weight: 700;
-  color: #163300;
-  white-space: nowrap;
-}
-
 .cart-btn {
   height: 44px;
   padding: 0 16px;
   border-radius: 22px;
-  background-color: #9fe870;
+  background-color: #111827;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -819,7 +798,7 @@ const handleBack = () => {
 .cart-btn-text {
   font-size: 14px;
   font-weight: 700;
-  color: #163300;
+  color: #ffffff;
   white-space: nowrap;
 }
 </style>

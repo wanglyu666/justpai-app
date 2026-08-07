@@ -46,24 +46,44 @@
     </view>
 
     <!-- Categories -->
-    <scroll-view scroll-x class="category-scroll" :show-scrollbar="false">
-      <view class="category-list">
-        <view
-          v-for="cat in categories"
-          :key="cat.id"
-          class="category-chip"
-          :class="{ active: activeCategory === cat.id }"
-          @click="activeCategory = cat.id"
-        >
-          <text class="category-text">{{ cat.name }}</text>
+    <view class="category-section">
+      <scroll-view scroll-x class="category-scroll" :show-scrollbar="false">
+        <view class="category-list">
+          <view
+            v-for="cat in categories"
+            :key="cat.id"
+            class="category-chip"
+            :class="{ active: activeCategory === cat.id }"
+            @click="selectCategory(cat.id)"
+          >
+            <text class="category-text">{{ cat.name }}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="subcategory-collapse" :class="{ 'is-expanded': showSubcategories }">
+        <view class="subcategory-collapse-inner">
+          <scroll-view scroll-x class="subcategory-scroll" :show-scrollbar="false">
+            <view :key="activeCategory" class="subcategory-list">
+              <view
+                v-for="sub in activeSubcategories"
+                :key="sub.id"
+                class="subcategory-chip"
+                :class="{ active: activeSubCategory === sub.id }"
+                @click="selectSubCategory(sub.id)"
+              >
+                <text class="subcategory-text">{{ sub.name }}</text>
+              </view>
+            </view>
+          </scroll-view>
         </view>
       </view>
-    </scroll-view>
+    </view>
 
     <!-- Products -->
     <FadeTransition mode="out-in">
       <view :key="productListKey" class="product-section">
-        <view class="section-header">
+        <view id="store-section-header" class="section-header">
           <text class="section-title">{{ sectionTitle }}</text>
         </view>
 
@@ -91,6 +111,23 @@
 
     <CustomTabBar currentPath="pages/store/index" />
 
+    <view
+      class="sticky-header-actions frosted-glass frosted-glass--tabbar"
+      :class="{ visible: stickyActionsVisible }"
+      :style="stickyActionsGlassStyle"
+    >
+      <view class="sticky-action-item cart-action" @click="openCart">
+        <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="action-icon" />
+        <view v-if="cartCount > 0" class="cart-badge">
+          <text class="cart-badge-text">{{ cartBadgeText }}</text>
+        </view>
+      </view>
+      <view class="sticky-action-divider" />
+      <view class="sticky-action-item" @click="openOrders">
+        <image src="/static/icons/order.svg" mode="aspectFit" class="action-icon" />
+      </view>
+    </view>
+
     <SlideOverPanel :show="detailVisible" edge-to-edge>
       <ProductDetailContent
         v-if="selectedProduct"
@@ -117,8 +154,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { onShow } from '@dcloudio/uni-app';
+import { ref, computed, watch, nextTick, getCurrentInstance, onUnmounted } from 'vue';
+import { onShow, onReady, onPageScroll } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import ProductDetailContent, { type ProductDetail } from '@/components/ProductDetailContent.vue';
@@ -137,9 +174,57 @@ import {
 } from '@/data/storeProducts';
 
 const bannerGlassStyle = getFrostedGlassStyle('default');
+const stickyActionsGlassStyle = getFrostedGlassStyle('tabbar');
+
+const instance = getCurrentInstance();
+const stickyActionsVisible = ref(false);
+const STICKY_TRIGGER_TOP = 56;
+let stickyScrollFrame = 0;
+
+const updateStickyActionsVisibility = () => {
+  if (!instance) return;
+
+  uni.createSelectorQuery()
+    .in(instance)
+    .select('#store-section-header')
+    .boundingClientRect((rect) => {
+      if (!rect || typeof rect.top !== 'number') return;
+      stickyActionsVisible.value = rect.top <= STICKY_TRIGGER_TOP;
+    })
+    .exec();
+};
+
+const scheduleStickyActionsUpdate = () => {
+  if (stickyScrollFrame) return;
+
+  stickyScrollFrame = requestAnimationFrame(() => {
+    stickyScrollFrame = 0;
+    updateStickyActionsVisibility();
+  });
+};
+
+onPageScroll(() => {
+  scheduleStickyActionsUpdate();
+});
+
+onReady(() => {
+  nextTick(() => {
+    updateStickyActionsVisibility();
+  });
+});
+
+onUnmounted(() => {
+  if (stickyScrollFrame) {
+    cancelAnimationFrame(stickyScrollFrame);
+    stickyScrollFrame = 0;
+  }
+});
 
 onShow(() => {
   uni.hideTabBar({ animation: false });
+  nextTick(() => {
+    updateStickyActionsVisibility();
+  });
 });
 
 const { visible: detailVisible, open: openDetail, close: closeDetail } = useSlideOver();
@@ -193,15 +278,95 @@ const closeProductDetail = () => {
   closeDetail();
 };
 
-const activeCategory = ref('jacket');
+const activeCategory = ref('all');
+const activeSubCategory = ref<string | null>(null);
 
-const categories = ref([
-  { id: 'jacket', name: '夹克' },
-  { id: 'jumpers', name: '卫衣' },
-  { id: 'shoes', name: '鞋靴' },
-  { id: 'jeans', name: '牛仔裤' },
-  { id: 'accessories', name: '配饰' },
-]);
+type StoreSubCategory = {
+  id: string;
+  name: string;
+};
+
+type StoreCategory = {
+  id: string;
+  name: string;
+  subcategories: StoreSubCategory[];
+};
+
+const categories: StoreCategory[] = [
+  { id: 'all', name: '全部商品', subcategories: [] },
+  {
+    id: 'jacket',
+    name: '夹克',
+    subcategories: [
+      { id: 'jacket-casual', name: '休闲夹克' },
+      { id: 'jacket-denim', name: '牛仔夹克' },
+      { id: 'jacket-leather', name: '皮夹克' },
+      { id: 'jacket-wind', name: '防风夹克' },
+    ],
+  },
+  {
+    id: 'jumpers',
+    name: '卫衣',
+    subcategories: [
+      { id: 'jumpers-hoodie', name: '连帽卫衣' },
+      { id: 'jumpers-crew', name: '圆领卫衣' },
+      { id: 'jumpers-zip', name: '拉链卫衣' },
+      { id: 'jumpers-fleece', name: '抓绒卫衣' },
+    ],
+  },
+  {
+    id: 'shoes',
+    name: '鞋靴',
+    subcategories: [
+      { id: 'shoes-sneaker', name: '运动鞋' },
+      { id: 'shoes-boots', name: '靴子' },
+      { id: 'shoes-loafers', name: '乐福鞋' },
+      { id: 'shoes-sandals', name: '凉鞋' },
+    ],
+  },
+  {
+    id: 'jeans',
+    name: '牛仔裤',
+    subcategories: [
+      { id: 'jeans-straight', name: '直筒' },
+      { id: 'jeans-slim', name: '修身' },
+      { id: 'jeans-wide', name: '阔腿' },
+      { id: 'jeans-cropped', name: '九分' },
+    ],
+  },
+  {
+    id: 'accessories',
+    name: '配饰',
+    subcategories: [
+      { id: 'accessories-bag', name: '包袋' },
+      { id: 'accessories-belt', name: '腰带' },
+      { id: 'accessories-hat', name: '帽子' },
+      { id: 'accessories-scarf', name: '围巾' },
+    ],
+  },
+];
+
+const showSubcategories = computed(() => activeCategory.value !== 'all');
+
+const activeSubcategories = computed(() => {
+  const category = categories.find((item) => item.id === activeCategory.value);
+  return category?.subcategories ?? [];
+});
+
+const selectCategory = (categoryId: string) => {
+  activeCategory.value = categoryId;
+  activeSubCategory.value = null;
+};
+
+const selectSubCategory = (subCategoryId: string) => {
+  activeSubCategory.value = subCategoryId;
+};
+
+watch([showSubcategories, productListKey], () => {
+  nextTick(() => {
+    window.setTimeout(updateStickyActionsVisibility, 320);
+  });
+});
 </script>
 
 <style scoped>
@@ -271,6 +436,45 @@ const categories = ref([
 .action-icon {
   width: 22px;
   height: 22px;
+}
+
+.sticky-header-actions {
+  position: fixed;
+  top: calc(max(env(safe-area-inset-top, 0px), 44px) + 12px);
+  right: 24px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  border-radius: 22px;
+  box-sizing: border-box;
+  transform: translate3d(calc(100% + 28px), 0, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 380ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 280ms ease;
+  will-change: transform, opacity;
+}
+
+.sticky-header-actions.visible {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sticky-action-item {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sticky-action-divider {
+  width: 1px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.55);
 }
 
 .search-row {
@@ -356,10 +560,13 @@ const categories = ref([
   display: block;
 }
 
+.category-section {
+  margin-bottom: 28px;
+}
+
 .category-scroll {
   width: 100%;
   white-space: nowrap;
-  margin-bottom: 28px;
 }
 
 .category-list {
@@ -377,10 +584,11 @@ const categories = ref([
   border-radius: 999px;
   background-color: #ffffff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: background-color 180ms ease;
 }
 
 .category-chip.active {
-  background-color: #9fe870;
+  background-color: #b0d4c5;
 }
 
 .category-text {
@@ -391,7 +599,89 @@ const categories = ref([
 }
 
 .category-chip.active .category-text {
-  color: #163300;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.subcategory-collapse {
+  height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition:
+    height 280ms cubic-bezier(0.32, 0.72, 0, 1),
+    margin-top 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.subcategory-collapse.is-expanded {
+  height: 32px;
+  margin-top: 12px;
+}
+
+.subcategory-collapse-inner {
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+  transition:
+    opacity 220ms ease,
+    transform 280ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform, opacity;
+}
+
+.subcategory-collapse.is-expanded .subcategory-collapse-inner {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.subcategory-scroll {
+  height: 32px;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.subcategory-list {
+  display: inline-flex;
+  gap: 8px;
+  padding: 0 24px;
+  animation: subcategory-swap 220ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes subcategory-swap {
+  from {
+    opacity: 0.72;
+    transform: translate3d(0, 6px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.subcategory-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.subcategory-chip.active {
+  background-color: #b0d4c5;
+  box-shadow: inset 0 0 0 1px rgba(176, 212, 197, 0.85);
+}
+
+.subcategory-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.subcategory-chip.active .subcategory-text {
+  color: #ffffff;
   font-weight: 700;
 }
 

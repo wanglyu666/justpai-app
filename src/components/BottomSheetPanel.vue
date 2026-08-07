@@ -3,7 +3,12 @@
     :name="BOTTOM_SHEET_TRANSITION_NAME"
     @after-leave="handleAfterLeave"
   >
-    <view v-if="show" class="bottom-sheet-panel page-safe-top" :style="panelStyle">
+    <view
+      v-if="show"
+      class="bottom-sheet-panel"
+      :class="{ 'page-safe-top': !contentSafeTop }"
+      :style="panelStyle"
+    >
       <slot />
     </view>
   </Transition>
@@ -21,9 +26,11 @@ const props = withDefaults(
   defineProps<{
     show: boolean;
     zIndex?: number;
+    contentSafeTop?: boolean;
   }>(),
   {
     zIndex: 1000,
+    contentSafeTop: false,
   },
 );
 

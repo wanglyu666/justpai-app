@@ -130,7 +130,12 @@
       </view>
     </view>
 
-    <BottomSheetPanel :show="checkoutFlowVisible" :z-index="1300" @closed="resetCheckoutFlow">
+    <BottomSheetPanel
+      :show="checkoutFlowVisible"
+      :z-index="1300"
+      content-safe-top
+      @closed="resetCheckoutFlow"
+    >
       <CheckoutContent
         :items="checkoutItems"
         :order-amount="checkoutOrderAmount"

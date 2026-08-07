@@ -1,16 +1,18 @@
 <template>
   <view class="checkout-page">
-    <view class="page-header">
-      <view class="header-top-row">
-        <view class="icon-btn" @click="handleBack">
-          <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
-        </view>
-        <text class="header-title">确认订单</text>
-        <view class="header-placeholder" />
-      </view>
-    </view>
-
     <scroll-view scroll-y class="detail-scroll" :show-scrollbar="false">
+      <view class="page-top-spacer" />
+
+      <view class="page-header">
+        <view class="header-top-row">
+          <view class="icon-btn" @click="handleBack">
+            <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+          </view>
+          <text class="header-title">确认订单</text>
+          <view class="header-placeholder" />
+        </view>
+      </view>
+
       <view class="address-card address-card--clickable" @click="openAddressSheet">
         <view class="address-icon-wrap">
           <image src="/static/icons/map-pin.svg" mode="aspectFit" class="address-icon" />
@@ -262,29 +264,27 @@
         </view>
       </view>
 
-      <view class="bottom-spacer" />
+      <view class="submit-footer">
+        <view class="terms-agreement" @click="toggleTermsAgreed">
+          <view class="terms-checkbox" :class="{ checked: termsAgreed }">
+            <image
+              v-if="termsAgreed"
+              src="/static/icons/check.svg"
+              mode="aspectFit"
+              class="terms-check-icon"
+            />
+          </view>
+          <view class="terms-text-wrap">
+            <text class="terms-text">我已阅读并同意产品与服务确认单的 </text>
+            <text class="terms-link" @click.stop="handleOpenTerms">通用条款</text>
+          </view>
+        </view>
+
+        <view class="submit-btn" :class="{ disabled: !termsAgreed }" @click="handleSubmit">
+          <text class="submit-text">提交订单</text>
+        </view>
+      </view>
     </scroll-view>
-
-    <view class="submit-footer">
-      <view class="terms-agreement" @click="toggleTermsAgreed">
-        <view class="terms-checkbox" :class="{ checked: termsAgreed }">
-          <image
-            v-if="termsAgreed"
-            src="/static/icons/check.svg"
-            mode="aspectFit"
-            class="terms-check-icon"
-          />
-        </view>
-        <view class="terms-text-wrap">
-          <text class="terms-text">我已阅读并同意产品与服务确认单的 </text>
-          <text class="terms-link" @click.stop="handleOpenTerms">通用条款</text>
-        </view>
-      </view>
-
-      <view class="submit-btn" :class="{ disabled: !termsAgreed }" @click="handleSubmit">
-        <text class="submit-text">提交订单</text>
-      </view>
-    </view>
 
     <CheckoutEditSheet
       :show="activeSheet !== null"
@@ -856,15 +856,23 @@ const handlePurchasePayConfirm = (action: PurchasePayConfirmAction) => {
 .checkout-page {
   min-height: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
   box-sizing: border-box;
   position: relative;
 }
 
-.page-header {
-  padding: 0 24px 16px;
+.page-top-spacer {
+  height: var(--page-safe-top);
   flex-shrink: 0;
+}
+
+.page-header {
+  padding-bottom: 16px;
+}
+
+.detail-scroll {
+  height: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
 }
 
 .header-top-row {
@@ -907,13 +915,6 @@ const handlePurchasePayConfirm = (action: PurchasePayConfirmAction) => {
   width: 44px;
   height: 44px;
   flex-shrink: 0;
-}
-
-.detail-scroll {
-  flex: 1;
-  min-height: 0;
-  padding: 0 24px;
-  box-sizing: border-box;
 }
 
 .address-card {
@@ -1252,13 +1253,8 @@ const handlePurchasePayConfirm = (action: PurchasePayConfirmAction) => {
   line-height: 1.1;
 }
 
-.bottom-spacer {
-  height: calc(24px + env(safe-area-inset-bottom, 0px));
-}
-
 .submit-footer {
-  flex-shrink: 0;
-  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 16px 0 calc(16px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
