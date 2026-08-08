@@ -5,7 +5,7 @@
     </view>
 
     <view class="card-layout">
-      <view class="card card-banner">
+      <view class="card card-banner" @click="openContractArchive">
         <svg
           class="card-banner-shape"
           viewBox="0 0 360 260"
@@ -29,7 +29,7 @@
                Z"
           />
         </svg>
-        <text class="card-banner-title">合同管理</text>
+        <text class="card-banner-title">合同档案</text>
         <view class="card-banner-stat">
           <text class="card-banner-stat-label">合同数量</text>
           <text class="card-banner-stat-value">36</text>
@@ -101,16 +101,29 @@
     </view>
 
     <CustomTabBar currentPath="pages/work/index" />
+
+    <SlideOverPanel :show="contractArchiveVisible" :z-index="1100">
+      <ContractArchiveContent @back="closeContractArchive" />
+    </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
+import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import ContractArchiveContent from '@/components/ContractArchiveContent.vue';
+import { useSlideOver } from '@/composables/useSlideOver';
 
 onShow(() => {
   uni.hideTabBar({ animation: false });
 });
+
+const {
+  visible: contractArchiveVisible,
+  open: openContractArchive,
+  close: closeContractArchive,
+} = useSlideOver();
 
 const onFeedbackAdd = () => {
   // TODO: open feedback form
