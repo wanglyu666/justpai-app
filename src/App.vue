@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
+import { onLaunch } from '@dcloudio/uni-app';
 import { injectFrostedGlassCssVars } from '@/utils/frostedGlass';
 import { preloadTabPages } from '@/utils/pageFadeTransition';
 
 onLaunch(() => {
   injectFrostedGlassCssVars();
-  uni.hideTabBar({ animation: false });
-  // 首屏渲染后再预加载其余 Tab，减少切换时的加载白屏
+  // 初始化 H5 切换遮罩（单页壳下不再依赖 preloadPage / 系统 tabBar）
   setTimeout(() => {
     preloadTabPages();
   }, 0);
 });
-
-onShow(() => {
-  uni.hideTabBar({ animation: false });
-});
-
-onHide(() => {});
 </script>
 <style>
 @import '@/styles/frostedGlass.css';

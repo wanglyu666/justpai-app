@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { FADE_EASING } from '@/utils/fadeTransition';
+import { setActiveTabPath } from '@/composables/useMainTab';
 
 /** Tab 页切换渐隐遮罩透明度（模块级单例，跨页面共享；非 H5 用） */
 export const pageFadeOpacity = ref(0);
@@ -15,13 +16,6 @@ export const PAGE_FADE_EASING = FADE_EASING;
 export const PAGE_FADE_COVER_Z_INDEX = 998;
 /** 一级页 TabBar；需低于 SlideOver / BottomSheet，才能被二级页盖住 */
 export const TAB_BAR_Z_INDEX = 999;
-
-const TAB_PAGE_URLS = [
-  '/pages/index/index',
-  '/pages/store/index',
-  '/pages/work/index',
-  '/pages/manage/index',
-];
 
 const COVER_ID = 'justpai-page-fade-cover';
 
@@ -41,7 +35,7 @@ const waitFrames = (count = 2) =>
     requestAnimationFrame(tick);
   });
 
-/** H5：挂到 body 上的持久遮罩，避免 switchTab 销毁页面组件时闪白 */
+/** H5：挂到 body 上的持久遮罩，避免切换瞬间闪白 */
 const ensureH5Cover = (): HTMLElement | null => {
   // #ifdef H5
   if (typeof document === 'undefined') return null;
@@ -89,16 +83,8 @@ const setCoverOpacity = (opacity: number) => {
   // #endif
 };
 
-/** 启动后预加载其余 Tab 页，减少首次切换白屏/加载感 */
+/** 初始化切换遮罩（单页壳下无需 preloadPage） */
 export const preloadTabPages = () => {
-  TAB_PAGE_URLS.forEach((url) => {
-    try {
-      uni.preloadPage({ url });
-    } catch {
-      // 部分端已存在或不支持时忽略
-    }
-  });
-
   // #ifdef H5
   ensureH5Cover();
   // #endif
@@ -106,13 +92,26 @@ export const preloadTabPages = () => {
 
 /**
  * 带渐隐的 Tab 切换：旧页淡出与新页淡入交叉叠化（同时进行）。
- * 遮罩不必等完全盖住再揭开——半途切页并立刻反向淡出，形成并行过渡。
+ * 单页壳内只切换当前面板，不再 uni.switchTab。
  * 采用串行队列，快速连点时按顺序依次执行，避免并发动画互相覆盖。
  */
 let switchChain: Promise<void> = Promise.resolve();
 
 /** 交叉点：遮罩淡入进行到该比例时切页并开始淡出 */
 const CROSSFADE_SWITCH_RATIO = 0.4;
+
+/** 切 Tab 前由壳页注册：保存/恢复滚动位置等 */
+type TabSwitchHook = (path: string) => void | Promise<void>;
+let beforeTabSwitch: TabSwitchHook | null = null;
+let afterTabSwitch: TabSwitchHook | null = null;
+
+export const registerTabSwitchHooks = (hooks: {
+  before?: TabSwitchHook | null;
+  after?: TabSwitchHook | null;
+}) => {
+  beforeTabSwitch = hooks.before ?? null;
+  afterTabSwitch = hooks.after ?? null;
+};
 
 export const switchTabWithFade = (url: string): Promise<void> => {
   const run = switchChain.then(async () => {
@@ -121,17 +120,22 @@ export const switchTabWithFade = (url: string): Promise<void> => {
     pageFadeBusy.value = true;
 
     try {
+      const path = url.replace(/^\//, '');
+
       // 开始盖住旧页（淡出感）
       setCoverOpacity(1);
       await wait(Math.round(PAGE_FADE_DURATION_MS * CROSSFADE_SWITCH_RATIO));
 
-      // 半途切换，不等待遮罩完全不透明
-      await new Promise<void>((resolve) => {
-        uni.switchTab({
-          url,
-          complete: () => resolve(),
-        });
-      });
+      if (beforeTabSwitch) {
+        await beforeTabSwitch(path);
+      }
+
+      // 半途切换面板，不等待遮罩完全不透明
+      setActiveTabPath(path);
+
+      if (afterTabSwitch) {
+        await afterTabSwitch(path);
+      }
 
       await waitFrames(1);
       // 立刻揭开新页（淡入感），与上一阶段在时间上重叠

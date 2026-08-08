@@ -3,7 +3,15 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "首页",
+        "navigationBarTitleText": "JustPai",
+        "navigationBarBackgroundColor": "#F4F5F7",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationBarTitleText": "个人中心",
         "navigationBarBackgroundColor": "#F4F5F7",
         "navigationBarTextStyle": "black"
       }
@@ -31,14 +39,6 @@
         "navigationBarBackgroundColor": "#F4F5F7",
         "navigationBarTextStyle": "black"
       }
-    },
-    {
-      "path": "pages/profile/index",
-      "style": {
-        "navigationBarTitleText": "个人中心",
-        "navigationBarBackgroundColor": "#F4F5F7",
-        "navigationBarTextStyle": "black"
-      }
     }
   ],
   "globalStyle": {
@@ -49,37 +49,5 @@
     "backgroundColor": "#F4F5F7",
     "animationType": "fade",
     "animationDuration": 160
-  },
-  "tabBar": {
-    "color": "#9CA3AF",
-    "selectedColor": "#163300",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "static/tabbar/home.svg",
-        "selectedIconPath": "static/tabbar/home-active.svg"
-      },
-      {
-        "pagePath": "pages/store/index",
-        "text": "商店",
-        "iconPath": "static/tabbar/store.svg",
-        "selectedIconPath": "static/tabbar/store-active.svg"
-      },
-      {
-        "pagePath": "pages/work/index",
-        "text": "工作",
-        "iconPath": "static/tabbar/work.svg",
-        "selectedIconPath": "static/tabbar/work-active.svg"
-      },
-      {
-        "pagePath": "pages/manage/index",
-        "text": "管理",
-        "iconPath": "static/tabbar/manage.svg",
-        "selectedIconPath": "static/tabbar/manage-active.svg"
-      }
-    ]
   }
 }
