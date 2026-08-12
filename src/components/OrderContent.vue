@@ -9,29 +9,11 @@
         <view class="header-placeholder" />
       </view>
 
-      <view class="status-capsule">
-        <scroll-view
-          scroll-x
-          class="status-scroll"
-          :show-scrollbar="false"
-          :scroll-left="scrollLeft"
-          scroll-with-animation
-        >
-          <view class="status-scroll-inner">
-            <view class="status-thumb" :style="thumbStyle" />
-            <view
-              v-for="tab in statusTabs"
-              :key="tab.id"
-              :id="`status-tab-${tab.id}`"
-              class="status-item"
-              :class="{ active: activeStatus === tab.id }"
-              @click="selectStatus(tab.id)"
-            >
-              <text class="status-text">{{ tab.label }}</text>
-            </view>
-          </view>
-        </scroll-view>
-      </view>
+      <StatusCapsuleSwitch
+        class="status-capsule-wrap"
+        v-model="activeStatus"
+        :tabs="statusTabs"
+      />
     </view>
 
     <view class="order-body">
@@ -142,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, getCurrentInstance, nextTick } from 'vue';
+import { ref, computed } from 'vue';
 import OrderPendingCard from '@/components/OrderPendingCard.vue';
 import OrderSignedCard from '@/components/OrderSignedCard.vue';
 import OrderServiceCard from '@/components/OrderServiceCard.vue';
@@ -156,6 +138,7 @@ import RefundDetailContent from '@/components/RefundDetailContent.vue';
 import OrderDetailContent from '@/components/OrderDetailContent.vue';
 import OrderReviewContent from '@/components/OrderReviewContent.vue';
 import OrderReviewSuccessContent from '@/components/OrderReviewSuccessContent.vue';
+import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { useOrderRefunds } from '@/composables/useOrderRefunds';
 import { useOrderReviews } from '@/composables/useOrderReviews';
@@ -173,14 +156,10 @@ const statusTabs: { id: OrderStatusTabId; label: string }[] = [
   { id: 'reviewed', label: '已评价' },
 ];
 
-const INNER_PADDING = 4;
-const ITEM_GAP = 4;
-
 const emit = defineEmits<{
   back: [];
 }>();
 
-const instance = getCurrentInstance();
 const activeStatus = ref<OrderStatusTabId>('all');
 const { hasRefund, getRefund, submitRefund } = useOrderRefunds();
 const { hasReview, getReview, submitReview } = useOrderReviews();
@@ -208,109 +187,6 @@ const reviewStep = ref<'form' | 'view' | 'success'>('form');
 const reviewRecord = computed(() =>
   reviewOrder.value ? getReview(reviewOrder.value.id) : null,
 );
-const scrollLeft = ref(0);
-const thumbStyle = ref({
-  transform: 'translateX(0px)',
-  width: '0px',
-});
-
-type ItemRect = { width: number };
-
-const measureScrollLayout = () =>
-  new Promise<{
-    viewportWidth: number;
-    innerWidth: number;
-    items: ItemRect[];
-  } | null>((resolve) => {
-    if (!instance) {
-      resolve(null);
-      return;
-    }
-
-    uni.createSelectorQuery()
-      .in(instance)
-      .select('.status-scroll')
-      .boundingClientRect()
-      .select('.status-scroll-inner')
-      .boundingClientRect()
-      .selectAll('.status-item')
-      .boundingClientRect()
-      .exec((res) => {
-        const viewport = res?.[0] as { width?: number } | null;
-        const inner = res?.[1] as { width?: number } | null;
-        const items = res?.[2] as ItemRect[] | null;
-
-        if (!viewport?.width || !inner?.width || !items?.length) {
-          resolve(null);
-          return;
-        }
-
-        resolve({
-          viewportWidth: viewport.width,
-          innerWidth: inner.width,
-          items,
-        });
-      });
-  });
-
-const getTabContentLeft = (items: ItemRect[], index: number) => {
-  let left = INNER_PADDING;
-  for (let i = 0; i < index; i += 1) {
-    left += items[i].width + ITEM_GAP;
-  }
-  return left;
-};
-
-const updateThumb = async () => {
-  const layout = await measureScrollLayout();
-  if (!layout) return;
-
-  const index = statusTabs.findIndex((tab) => tab.id === activeStatus.value);
-  if (index < 0 || !layout.items[index]) return;
-
-  const left = getTabContentLeft(layout.items, index);
-
-  thumbStyle.value = {
-    transform: `translateX(${left}px)`,
-    width: `${layout.items[index].width}px`,
-  };
-};
-
-const scrollToTab = async (index: number) => {
-  const layout = await measureScrollLayout();
-  if (!layout) return;
-
-  const maxScroll = Math.max(0, layout.innerWidth - layout.viewportWidth);
-
-  if (index <= 0) {
-    scrollLeft.value = 0;
-    return;
-  }
-
-  if (index >= statusTabs.length - 1) {
-    scrollLeft.value = maxScroll;
-    return;
-  }
-
-  const tabLeft = getTabContentLeft(layout.items, index);
-  const tabWidth = layout.items[index].width;
-  const target = tabLeft + tabWidth / 2 - layout.viewportWidth / 2;
-
-  scrollLeft.value = Math.max(0, Math.min(target, maxScroll));
-};
-
-const selectStatus = async (id: OrderStatusTabId) => {
-  activeStatus.value = id;
-  const index = statusTabs.findIndex((tab) => tab.id === id);
-  await scrollToTab(index);
-  await nextTick();
-  await updateThumb();
-};
-
-onMounted(async () => {
-  await nextTick();
-  await updateThumb();
-});
 
 const handleBack = () => {
   emit('back');
@@ -468,69 +344,8 @@ const resetRefundDetailFlow = () => {
   flex-shrink: 0;
 }
 
-.status-capsule {
-  width: 100%;
+.status-capsule-wrap {
   margin-top: 16px;
-  height: 40px;
-  border-radius: 999px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.status-scroll {
-  width: 100%;
-  height: 100%;
-  white-space: nowrap;
-}
-
-.status-scroll-inner {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 40px;
-  padding: 4px;
-  box-sizing: border-box;
-}
-
-.status-thumb {
-  position: absolute;
-  top: 4px;
-  left: 0;
-  height: calc(100% - 8px);
-  border-radius: 999px;
-  background-color: #9fe870;
-  transition:
-    transform 280ms cubic-bezier(0.32, 0.72, 0, 1),
-    width 280ms cubic-bezier(0.32, 0.72, 0, 1);
-  z-index: 0;
-}
-
-.status-item {
-  position: relative;
-  z-index: 1;
-  height: 32px;
-  padding: 0 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.status-text {
-  font-size: 12px;
-  font-weight: 600;
-  color: #9ca3af;
-  line-height: 1;
-  white-space: nowrap;
-  transition: color 280ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.status-item.active .status-text {
-  color: #163300;
-  font-weight: 700;
 }
 
 .order-body {

@@ -37,13 +37,13 @@
       </view>
 
       <view class="card-grid">
-        <view class="card card-left">
+        <view class="card card-left" @click="openConsultTicket">
           <view class="card-left-top">
             <view class="card-left-title">
               <text class="card-left-title-line">咨询</text>
               <text class="card-left-title-line">单</text>
             </view>
-            <view class="card-left-add-btn">
+            <view class="card-left-add-btn" @click.stop="onConsultAdd">
               <image
                 src="/static/icons/plus.svg"
                 mode="aspectFit"
@@ -59,7 +59,7 @@
         </view>
 
         <view class="card-right-col">
-          <view class="card card-right-item card-approval">
+          <view class="card card-right-item card-approval" @click="openApprovalConfig">
             <view class="card-action-content">
               <image
                 src="/static/icons/settings.svg"
@@ -69,7 +69,7 @@
               <text class="card-action-text card-action-text-black">审批配置</text>
             </view>
           </view>
-          <view class="card card-right-item card-bill">
+          <view class="card card-right-item card-bill" @click="openBillManagement">
             <view class="card-action-content">
               <image
                 src="/static/icons/receipt.svg"
@@ -79,7 +79,7 @@
               <text class="card-action-text card-action-text-green">账单管理</text>
             </view>
           </view>
-          <view class="card card-right-item card-feedback">
+          <view class="card card-right-item card-feedback" @click="openFeedbackList">
             <view class="card-action-content">
               <image
                 src="/static/icons/message-circle.svg"
@@ -88,7 +88,7 @@
               />
               <text class="card-action-text card-action-text-black">意见反馈</text>
             </view>
-            <view class="card-feedback-add-btn" @click="onFeedbackAdd">
+            <view class="card-feedback-add-btn" @click.stop="onFeedbackAdd">
               <image
                 src="/static/icons/plus.svg"
                 mode="aspectFit"
@@ -103,12 +103,32 @@
     <SlideOverPanel :show="contractArchiveVisible" :z-index="1100">
       <ContractArchiveContent @back="closeContractArchive" />
     </SlideOverPanel>
+
+    <SlideOverPanel :show="billManagementVisible" :z-index="1100">
+      <BillManagementContent @back="closeBillManagement" />
+    </SlideOverPanel>
+
+    <SlideOverPanel :show="consultTicketVisible" :z-index="1100">
+      <ConsultTicketContent @back="closeConsultTicket" />
+    </SlideOverPanel>
+
+    <SlideOverPanel :show="feedbackListVisible" :z-index="1100">
+      <FeedbackListContent @back="closeFeedbackList" />
+    </SlideOverPanel>
+
+    <SlideOverPanel :show="approvalConfigVisible" :z-index="1100">
+      <ApprovalConfigContent @back="closeApprovalConfig" />
+    </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import ContractArchiveContent from '@/components/ContractArchiveContent.vue';
+import BillManagementContent from '@/components/BillManagementContent.vue';
+import ConsultTicketContent from '@/components/ConsultTicketContent.vue';
+import FeedbackListContent from '@/components/FeedbackListContent.vue';
+import ApprovalConfigContent from '@/components/ApprovalConfigContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const {
@@ -116,6 +136,34 @@ const {
   open: openContractArchive,
   close: closeContractArchive,
 } = useSlideOver();
+
+const {
+  visible: billManagementVisible,
+  open: openBillManagement,
+  close: closeBillManagement,
+} = useSlideOver();
+
+const {
+  visible: consultTicketVisible,
+  open: openConsultTicket,
+  close: closeConsultTicket,
+} = useSlideOver();
+
+const {
+  visible: feedbackListVisible,
+  open: openFeedbackList,
+  close: closeFeedbackList,
+} = useSlideOver();
+
+const {
+  visible: approvalConfigVisible,
+  open: openApprovalConfig,
+  close: closeApprovalConfig,
+} = useSlideOver();
+
+const onConsultAdd = () => {
+  // TODO: open create consult form
+};
 
 const onFeedbackAdd = () => {
   // TODO: open feedback form
