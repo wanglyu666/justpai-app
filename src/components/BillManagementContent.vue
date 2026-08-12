@@ -62,19 +62,19 @@
       :z-index="1200"
       @closed="resetDetail"
     >
-      <view class="detail-page">
-        <view class="detail-header">
-          <view class="icon-btn" @click="closeDetail">
+      <view class="detail-page sheet-page sheet-page--with-footer">
+        <view class="detail-header sheet-page__header">
+          <view class="icon-btn sheet-page__back-btn" @click="closeDetail">
             <image
               src="/static/icons/chevron-left.svg"
               mode="aspectFit"
-              class="header-icon-img"
+              class="header-icon-img sheet-page__back-icon"
             />
           </view>
         </view>
 
-        <view class="detail-content" v-if="selectedBill">
-          <text class="detail-title">账单详情</text>
+        <view class="detail-content sheet-page__body" v-if="selectedBill">
+          <text class="detail-title sheet-page__title">账单详情</text>
 
           <view class="detail-card">
             <view class="detail-row">
@@ -191,7 +191,7 @@
           </view>
         </view>
 
-        <view class="detail-footer">
+        <view class="detail-footer sheet-page__footer">
           <view class="footer-btn footer-btn-secondary" @click="onViewRequestFile">
             <text class="footer-btn-text footer-btn-text-secondary">查看请款文件</text>
           </view>
@@ -592,19 +592,11 @@ const onConfirm = () => {
 }
 
 .detail-page {
-  min-height: 100%;
-  padding-bottom: 120px;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
-.detail-header {
-  padding: 0 24px;
-}
-
 .detail-content {
-  padding: 24px 24px 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -612,10 +604,6 @@ const onConfirm = () => {
 }
 
 .detail-title {
-  display: block;
-  font-size: 28px;
-  font-weight: 800;
-  color: #0f172a;
   margin-bottom: 4px;
 }
 
@@ -691,13 +679,6 @@ const onConfirm = () => {
 }
 
 .detail-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(180deg, rgba(244, 245, 247, 0) 0%, #f4f5f7 28%);
-  z-index: 2;
   display: flex;
   align-items: center;
   gap: 12px;

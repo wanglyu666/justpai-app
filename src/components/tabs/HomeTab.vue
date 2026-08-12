@@ -43,7 +43,7 @@
     <!-- To-Do List -->
     <view class="section">
       <view class="todo-panel">
-        <view class="todo-panel-header" @click="toggleTodoPanel">
+        <view class="todo-panel-header">
           <view class="progress-ring">
             <svg class="progress-svg" viewBox="0 0 52 52">
               <circle class="progress-track" cx="26" cy="26" r="22" />
@@ -63,10 +63,16 @@
             <text class="todo-panel-title">今日待办</text>
             <text class="todo-panel-desc">完成以下任务，提升工作效率</text>
           </view>
-          <text class="todo-panel-chevron" :class="{ collapsed: todoCollapsed }">⌃</text>
+          <view class="todo-panel-action-btn" @click.stop="onTodoAction">
+            <image
+              src="/static/icons/arrow-up-right.svg"
+              mode="aspectFit"
+              class="todo-panel-action-icon"
+            />
+          </view>
         </view>
 
-        <view class="todo-task-list" v-show="!todoCollapsed">
+        <view class="todo-task-list">
           <view class="todo-task-card" v-for="todo in todos" :key="todo.id">
             <view class="todo-icon-circle">
               <image :src="todo.icon" mode="aspectFit" class="todo-icon-img"></image>
@@ -115,8 +121,6 @@ import { useSlideOver } from '@/composables/useSlideOver';
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
 const { visible: messagesVisible, open: openMessages, close: closeMessages } = useSlideOver();
 
-const todoCollapsed = ref(false);
-
 const todos = ref([
   {
     id: 1,
@@ -130,13 +134,6 @@ const todos = ref([
     title: '完成项目报告',
     desc: '整理第二阶段数据与分析结论，提交项目组审阅。',
     icon: '/static/icons/file-text.svg',
-    completed: false,
-  },
-  {
-    id: 3,
-    title: '致电客户获取反馈',
-    desc: '跟进重点客户使用情况，记录问题并安排后续支持。',
-    icon: '/static/icons/help-circle.svg',
     completed: false,
   },
 ]);
@@ -160,8 +157,8 @@ const progressDasharray = computed(() => {
   return `${filled} ${PROGRESS_CIRCUMFERENCE - filled}`;
 });
 
-const toggleTodoPanel = () => {
-  todoCollapsed.value = !todoCollapsed.value;
+const onTodoAction = () => {
+  // 预留：进入待办详情/完整列表
 };
 
 const banners = ref([
@@ -363,15 +360,20 @@ const goToMessages = () => {
   color: #6b7280;
   line-height: 1.4;
 }
-.todo-panel-chevron {
-  font-size: 18px;
-  color: #111827;
-  line-height: 1;
+.todo-panel-action-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
 }
-.todo-panel-chevron.collapsed {
-  transform: rotate(180deg);
+.todo-panel-action-icon {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
 }
 .todo-task-list {
   display: flex;

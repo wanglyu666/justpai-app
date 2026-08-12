@@ -116,6 +116,26 @@
       <FeedbackListContent @back="closeFeedbackList" />
     </SlideOverPanel>
 
+    <SlideOverPanel
+      :show="feedbackCreateVisible"
+      :z-index="1100"
+      @closed="resetFeedbackCreate"
+    >
+      <FadeTransition mode="out-in">
+        <FeedbackFormContent
+          v-if="feedbackCreateStep === 'form'"
+          key="work-feedback-form"
+          @back="closeFeedbackCreate"
+          @submit="handleFeedbackCreateSubmit"
+        />
+        <FeedbackSuccessContent
+          v-else
+          key="work-feedback-success"
+          @back="closeFeedbackCreate"
+        />
+      </FadeTransition>
+    </SlideOverPanel>
+
     <SlideOverPanel :show="approvalConfigVisible" :z-index="1100">
       <ApprovalConfigContent @back="closeApprovalConfig" />
     </SlideOverPanel>
@@ -124,12 +144,20 @@
 
 <script setup lang="ts">
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import FadeTransition from '@/components/FadeTransition.vue';
 import ContractArchiveContent from '@/components/ContractArchiveContent.vue';
 import BillManagementContent from '@/components/BillManagementContent.vue';
 import ConsultTicketContent from '@/components/ConsultTicketContent.vue';
 import FeedbackListContent from '@/components/FeedbackListContent.vue';
+import FeedbackFormContent from '@/components/FeedbackFormContent.vue';
+import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import ApprovalConfigContent from '@/components/ApprovalConfigContent.vue';
+import { useFeedbackItems } from '@/composables/useFeedbackItems';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { ref } from 'vue';
+
+const { addFeedback } = useFeedbackItems();
+const feedbackCreateStep = ref<'form' | 'success'>('form');
 
 const {
   visible: contractArchiveVisible,
@@ -156,6 +184,12 @@ const {
 } = useSlideOver();
 
 const {
+  visible: feedbackCreateVisible,
+  open: openFeedbackCreate,
+  close: closeFeedbackCreate,
+} = useSlideOver();
+
+const {
   visible: approvalConfigVisible,
   open: openApprovalConfig,
   close: closeApprovalConfig,
@@ -166,7 +200,26 @@ const onConsultAdd = () => {
 };
 
 const onFeedbackAdd = () => {
-  // TODO: open feedback form
+  feedbackCreateStep.value = 'form';
+  openFeedbackCreate();
+};
+
+const resetFeedbackCreate = () => {
+  feedbackCreateStep.value = 'form';
+};
+
+const handleFeedbackCreateSubmit = (payload: {
+  projectId: string;
+  projectName: string;
+  content: string;
+  attachments: string[];
+}) => {
+  addFeedback({
+    projectName: payload.projectName,
+    content: payload.content,
+    attachments: payload.attachments,
+  });
+  feedbackCreateStep.value = 'success';
 };
 </script>
 
