@@ -105,9 +105,9 @@ export function getFrostedGlassCssVars(): Record<string, string> {
   return vars;
 }
 
-/** H5 环境下将 CSS 变量注入到 documentElement */
+/** H5 / App WebView 将 CSS 变量注入到 documentElement */
 export function injectFrostedGlassCssVars() {
-  // #ifdef H5
+  // #ifdef H5 || APP-PLUS
   if (typeof document === 'undefined') return;
 
   const root = document.documentElement;

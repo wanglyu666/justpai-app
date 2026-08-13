@@ -1,13 +1,23 @@
 <template>
   <view class="product-detail">
     <view class="hero-section">
-      <view class="detail-header">
-        <view class="icon-btn frosted-glass" :style="headerGlassStyle" @click="handleBack">
-          <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
-        </view>
-        <view class="icon-btn frosted-glass" :style="headerGlassStyle" @click="openConsultFlow">
-          <image src="/static/icons/message-circle.svg" mode="aspectFit" class="header-icon" />
-        </view>
+      <view
+        class="icon-btn detail-header-btn detail-header-btn-left frosted-glass"
+        :style="headerGlassStyle"
+        hover-class="icon-btn-hover"
+        :hover-stay-time="80"
+        @click.stop="handleBack"
+      >
+        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+      </view>
+      <view
+        class="icon-btn detail-header-btn detail-header-btn-right frosted-glass"
+        :style="headerGlassStyle"
+        hover-class="icon-btn-hover"
+        :hover-stay-time="80"
+        @click.stop="openConsultFlow"
+      >
+        <image src="/static/icons/message-circle.svg" mode="aspectFit" class="header-icon" />
       </view>
 
       <swiper
@@ -403,16 +413,18 @@ const handleBack = () => {
   box-sizing: border-box;
 }
 
-.detail-header {
+.detail-header-btn {
   position: absolute;
   top: 36px;
-  left: 20px;
-  right: 20px;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  pointer-events: none;
+}
+
+.detail-header-btn-left {
+  left: 20px;
+}
+
+.detail-header-btn-right {
+  right: 20px;
 }
 
 .icon-btn {
@@ -422,8 +434,11 @@ const handleBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
   box-sizing: border-box;
+}
+
+.icon-btn-hover {
+  opacity: 0.85;
 }
 
 .header-icon {

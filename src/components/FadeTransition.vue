@@ -1,9 +1,11 @@
 <template>
+  <!-- duration 强制结束：App 端 CSS transitionend 常丢失，避免 leave 卡死 -->
   <Transition
     :name="FADE_TRANSITION_NAME"
     :mode="mode"
-    @after-enter="(el) => emit('afterEnter', el)"
-    @after-leave="(el) => emit('afterLeave', el)"
+    :duration="FADE_DURATION_MS"
+    @after-enter="onAfterEnter"
+    @after-leave="onAfterLeave"
   >
     <slot />
   </Transition>
@@ -29,6 +31,14 @@ const emit = defineEmits<{
   afterEnter: [el: Element];
   afterLeave: [el: Element];
 }>();
+
+const onAfterEnter = (el: Element) => {
+  emit('afterEnter', el);
+};
+
+const onAfterLeave = (el: Element) => {
+  emit('afterLeave', el);
+};
 
 defineExpose({
   duration: FADE_DURATION_MS,

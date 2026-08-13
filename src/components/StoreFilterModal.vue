@@ -1,69 +1,74 @@
 <template>
-  <Teleport to="body">
-    <Transition :name="MODAL_TRANSITION_NAME" @after-leave="handleAfterLeave">
-      <view v-if="show" class="filter-modal-root" @click="handleApply">
-        <view class="filter-modal-dim frosted-overlay" :style="overlayStyle" />
-        <view class="filter-modal-panel" @click.stop>
-          <view class="filter-modal-glass frosted-glass frosted-glass--modal-panel" :style="glassStyle" />
-          <view class="filter-modal-content">
-            <text class="filter-modal-title">商品筛选</text>
+  <!-- App 端 Teleport to body 不可靠；fixed 根节点即可覆盖全屏 -->
+  <Transition
+    :name="MODAL_TRANSITION_NAME"
+    :duration="MODAL_DURATION_MS"
+    @after-leave="handleAfterLeave"
+  >
+    <view v-if="show" class="filter-modal-root" @click="handleApply">
+      <view class="filter-modal-dim frosted-overlay" :style="overlayStyle" />
+      <view class="filter-modal-panel" @click.stop>
+        <view class="filter-modal-glass frosted-glass frosted-glass--modal-panel" :style="glassStyle" />
+        <view class="filter-modal-content">
+          <text class="filter-modal-title">商品筛选</text>
 
-            <view class="product-toggle">
-              <view class="toggle-track">
-                <view class="toggle-thumb" :class="{ right: draftProductType === 'annual' }" />
-                <view
-                  class="toggle-item"
-                  :class="{ active: draftProductType === 'ordinary' }"
-                  @click="draftProductType = 'ordinary'"
-                >
-                  <text class="toggle-text">普通产品</text>
-                </view>
-                <view
-                  class="toggle-item"
-                  :class="{ active: draftProductType === 'annual' }"
-                  @click="draftProductType = 'annual'"
-                >
-                  <text class="toggle-text">年框产品</text>
-                </view>
+          <view class="product-toggle">
+            <view class="toggle-track">
+              <view class="toggle-thumb" :class="{ right: draftProductType === 'annual' }" />
+              <view
+                class="toggle-item"
+                :class="{ active: draftProductType === 'ordinary' }"
+                hover-class="none"
+                @click="draftProductType = 'ordinary'"
+              >
+                <text class="toggle-text">普通产品</text>
+              </view>
+              <view
+                class="toggle-item"
+                :class="{ active: draftProductType === 'annual' }"
+                hover-class="none"
+                @click="draftProductType = 'annual'"
+              >
+                <text class="toggle-text">年框产品</text>
               </view>
             </view>
+          </view>
 
-            <view class="region-section" :class="{ visible: draftProductType === 'annual' }">
-              <text class="region-label">年框区域</text>
-              <view class="region-scroll-wrap">
-                <scroll-view
-                  scroll-x
-                  class="region-scroll"
-                  :show-scrollbar="false"
-                  scroll-with-animation
-                  :scroll-left="regionScrollLeft"
-                  @scroll="handleRegionScroll"
-                >
-                  <view class="region-scroll-inner">
-                    <view class="region-edge-spacer" />
-                    <view
-                      v-for="(region, index) in annualRegions"
-                      :key="region.id"
-                      class="region-item"
-                      :class="{ centered: focusedRegionIndex === index }"
-                      @click="focusRegion(index)"
-                    >
-                      <text class="region-item-text">{{ region.name }}</text>
-                    </view>
-                    <view class="region-edge-spacer" />
+          <view class="region-section" :class="{ visible: draftProductType === 'annual' }">
+            <text class="region-label">年框区域</text>
+            <view class="region-scroll-wrap">
+              <scroll-view
+                scroll-x
+                class="region-scroll"
+                :show-scrollbar="false"
+                scroll-with-animation
+                :scroll-left="regionScrollLeft"
+                @scroll="handleRegionScroll"
+              >
+                <view class="region-scroll-inner">
+                  <view class="region-edge-spacer" />
+                  <view
+                    v-for="(region, index) in annualRegions"
+                    :key="region.id"
+                    class="region-item"
+                    :class="{ centered: focusedRegionIndex === index }"
+                    @click="focusRegion(index)"
+                  >
+                    <text class="region-item-text">{{ region.name }}</text>
                   </view>
-                </scroll-view>
-              </view>
+                  <view class="region-edge-spacer" />
+                </view>
+              </scroll-view>
             </view>
+          </view>
 
-            <view class="filter-modal-action" @click="handleApply">
-              <text class="filter-modal-action-text">完成</text>
-            </view>
+          <view class="filter-modal-action" @click="handleApply">
+            <text class="filter-modal-action-text">完成</text>
           </view>
         </view>
       </view>
-    </Transition>
-  </Teleport>
+    </view>
+  </Transition>
 </template>
 
 <script setup lang="ts">

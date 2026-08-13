@@ -1,26 +1,26 @@
 <template>
-  <Transition
-    :name="SLIDE_OVER_TRANSITION_NAME"
-    @after-leave="handleAfterLeave"
+  <view
+    v-if="rendered"
+    class="slide-over-panel"
+    :class="{ 'is-entered': entered }"
+    :style="panelStyle"
   >
-    <view v-if="show" class="slide-over-panel" :style="panelStyle">
-      <view
-        class="slide-over-scroll"
-        :class="edgeToEdge ? 'slide-over-edge' : 'page-safe-top'"
-      >
-        <slot />
-      </view>
+    <view
+      class="slide-over-scroll"
+      :class="edgeToEdge ? 'slide-over-edge' : 'page-safe-top'"
+    >
+      <slot />
     </view>
-  </Transition>
+  </view>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 import {
   SLIDE_OVER_DURATION_MS,
   SLIDE_OVER_EASING,
-  SLIDE_OVER_TRANSITION_NAME,
 } from '@/utils/slideOverTransition';
+import { waitFrames } from '@/utils/nextFrame';
 
 const props = withDefaults(
   defineProps<{
@@ -42,9 +42,48 @@ const emit = defineEmits<{
   closed: [];
 }>();
 
-const handleAfterLeave = () => {
+/** 不用 Vue Transition：App 端 leave 常卡住导致关不掉；改用 class + 超时兜底 */
+const rendered = ref(props.show);
+const entered = ref(props.show);
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
+
+const clearCloseTimer = () => {
+  if (closeTimer) {
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  }
+};
+
+const finishClose = () => {
+  clearCloseTimer();
+  if (props.show) return;
+  rendered.value = false;
   emit('closed');
 };
+
+watch(
+  () => props.show,
+  async (show) => {
+    clearCloseTimer();
+
+    if (show) {
+      rendered.value = true;
+      entered.value = false;
+      await nextTick();
+      await waitFrames(1);
+      entered.value = true;
+      return;
+    }
+
+    entered.value = false;
+    // App 上 transitionend 不可靠，超时后强制卸载
+    closeTimer = setTimeout(finishClose, SLIDE_OVER_DURATION_MS + 80);
+  },
+);
+
+onUnmounted(() => {
+  clearCloseTimer();
+});
 
 defineExpose({
   duration: SLIDE_OVER_DURATION_MS,
@@ -53,41 +92,31 @@ defineExpose({
 </script>
 
 <style>
-/* 进入/退出：均从右侧滑入滑出，底层页面始终保留 */
-.slide-over-enter-active,
-.slide-over-leave-active {
-  transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
-  will-change: transform;
-}
-
-.slide-over-enter-from,
-.slide-over-leave-to {
-  transform: translateX(100%);
-}
-
-.slide-over-enter-to,
-.slide-over-leave-from {
-  transform: translateX(0);
-}
-
 .slide-over-panel {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #F4F5F7;
+  background-color: #f4f5f7;
   overflow: hidden;
   box-sizing: border-box;
+  transform: translateX(100%);
+  transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
 }
 
-/* 滚动放在内层，外层固定铺底色，弹性越界时仍显示个人中心背景而不露出首页 */
+.slide-over-panel.is-entered {
+  transform: translateX(0);
+}
+
+/* 滚动放在内层，外层固定铺底色，弹性越界时仍显示面板背景而不露出底层 */
 .slide-over-scroll {
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  background-color: #F4F5F7;
+  background-color: #f4f5f7;
   box-sizing: border-box;
 }
 

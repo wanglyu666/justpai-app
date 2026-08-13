@@ -1,7 +1,12 @@
 <template>
   <view class="contract-archive">
     <view class="page-header">
-      <view class="icon-btn" @click="handleBack">
+      <view
+        class="icon-btn"
+        hover-class="icon-btn-hover"
+        :hover-stay-time="80"
+        @click.stop="handleBack"
+      >
         <image
           src="/static/icons/chevron-left.svg"
           mode="aspectFit"
@@ -301,6 +306,10 @@ const onPreview = () => {
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
+}
+
+.icon-btn-hover {
+  opacity: 0.85;
 }
 
 .header-icon-img {

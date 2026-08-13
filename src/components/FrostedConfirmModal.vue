@@ -1,41 +1,43 @@
 <template>
-  <Teleport to="body">
-    <Transition :name="MODAL_TRANSITION_NAME" @after-leave="handleAfterLeave">
-      <view v-if="show" class="modal-root" @click="handleMaskClick">
-        <view class="modal-dim frosted-overlay" :style="overlayStyle"></view>
-        <view class="modal-panel" :class="{ 'modal-panel-compact': compact }" @click.stop>
-          <view class="modal-glass frosted-glass frosted-glass--modal-panel" :style="glassStyle"></view>
-          <view class="modal-content" :class="{ 'modal-content-compact': compact }">
-            <view class="modal-body" :class="{ 'modal-body-compact': compact }">
-              <image
-                v-if="icon"
-                :src="icon"
-                mode="aspectFit"
-                class="modal-icon"
-                :class="{ 'modal-icon-large': compact }"
-              />
-              <text class="modal-title">{{ title }}</text>
-              <text v-if="message" class="modal-message">{{ message }}</text>
-            </view>
+  <Transition
+    :name="MODAL_TRANSITION_NAME"
+    :duration="MODAL_DURATION_MS"
+    @after-leave="handleAfterLeave"
+  >
+    <view v-if="show" class="modal-root" @click="handleMaskClick">
+      <view class="modal-dim frosted-overlay" :style="overlayStyle"></view>
+      <view class="modal-panel" :class="{ 'modal-panel-compact': compact }" @click.stop>
+        <view class="modal-glass frosted-glass frosted-glass--modal-panel" :style="glassStyle"></view>
+        <view class="modal-content" :class="{ 'modal-content-compact': compact }">
+          <view class="modal-body" :class="{ 'modal-body-compact': compact }">
+            <image
+              v-if="icon"
+              :src="icon"
+              mode="aspectFit"
+              class="modal-icon"
+              :class="{ 'modal-icon-large': compact }"
+            />
+            <text class="modal-title">{{ title }}</text>
+            <text v-if="message" class="modal-message">{{ message }}</text>
+          </view>
 
-            <view v-if="showCancel || showConfirm" class="modal-actions">
-              <view v-if="showCancel" class="cancel-btn" @click="handleCancel">
-                <text class="cancel-btn-text">{{ cancelText }}</text>
-              </view>
-              <view
-                v-if="showConfirm"
-                class="confirm-btn"
-                :class="{ 'confirm-btn-success': tone === 'success' }"
-                @click="handleConfirm"
-              >
-                <text class="confirm-btn-text" :class="{ 'confirm-btn-text-success': tone === 'success' }">{{ confirmText }}</text>
-              </view>
+          <view v-if="showCancel || showConfirm" class="modal-actions">
+            <view v-if="showCancel" class="cancel-btn" @click="handleCancel">
+              <text class="cancel-btn-text">{{ cancelText }}</text>
+            </view>
+            <view
+              v-if="showConfirm"
+              class="confirm-btn"
+              :class="{ 'confirm-btn-success': tone === 'success' }"
+              @click="handleConfirm"
+            >
+              <text class="confirm-btn-text" :class="{ 'confirm-btn-text-success': tone === 'success' }">{{ confirmText }}</text>
             </view>
           </view>
         </view>
       </view>
-    </Transition>
-  </Teleport>
+    </view>
+  </Transition>
 </template>
 
 <script setup lang="ts">

@@ -450,17 +450,23 @@ watch([showSubcategories, productListKey], () => {
   box-sizing: border-box;
   transform: translate3d(calc(100% + 28px), 0, 0);
   opacity: 0;
-  pointer-events: none;
+  /* App 端 pointer-events 父子配合不可靠；藏到屏外即可 */
+  visibility: hidden;
   transition:
     transform 380ms cubic-bezier(0.32, 0.72, 0, 1),
-    opacity 280ms ease;
+    opacity 280ms ease,
+    visibility 0ms linear 380ms;
   will-change: transform, opacity;
 }
 
 .sticky-header-actions.visible {
   transform: translate3d(0, 0, 0);
   opacity: 1;
-  pointer-events: auto;
+  visibility: visible;
+  transition:
+    transform 380ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 280ms ease,
+    visibility 0ms;
 }
 
 .sticky-action-item {

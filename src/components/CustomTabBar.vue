@@ -1,31 +1,34 @@
 <template>
-  <view class="tabbar-wrapper" :style="{ zIndex: TAB_BAR_Z_INDEX }">
-    <!-- #ifndef H5 -->
+  <view class="tabbar-root">
+    <!-- 仅切换中挂载遮罩，空闲时不在 DOM，避免 App 透明层吞触摸 -->
     <view
+      v-if="coverVisible"
       class="page-fade-cover"
-      :class="{ active: pageFadeOpacity > 0 || pageFadeBusy }"
       :style="fadeCoverStyle"
     />
-    <!-- #endif -->
 
-    <view class="tabbar frosted-glass frosted-glass--tabbar" :style="tabbarGlassStyle">
-      <view
-        class="tab-indicator"
-        :class="{ ready: indicatorReady }"
-        :style="indicatorStyle"
-      />
+    <view class="tabbar-wrapper" :style="{ zIndex: TAB_BAR_Z_INDEX }">
+      <view class="tabbar frosted-glass frosted-glass--tabbar" :style="tabbarGlassStyle">
+        <view
+          class="tab-indicator"
+          :class="{ ready: indicatorReady }"
+          :style="indicatorStyle"
+        />
 
-      <view
-        v-for="(item, index) in list"
-        :key="item.pagePath"
-        class="tab-item"
-        @click="handleTabClick(item, index)"
-      >
-        <view class="icon-wrap">
-          <image
-            class="tab-icon"
-            :src="displayIndex === index ? item.selectedIconPath : item.iconPath"
-          />
+        <view
+          v-for="(item, index) in list"
+          :key="item.pagePath"
+          class="tab-item"
+          hover-class="tab-item-hover"
+          :hover-stay-time="80"
+          @click="handleTabClick(item, index)"
+        >
+          <view class="icon-wrap">
+            <image
+              class="tab-icon"
+              :src="displayIndex === index ? item.selectedIconPath : item.iconPath"
+            />
+          </view>
         </view>
       </view>
     </view>
@@ -35,11 +38,13 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
+import { waitFrames } from '@/utils/nextFrame';
 import {
   pageFadeBusy,
   pageFadeOpacity,
   PAGE_FADE_DURATION_MS,
   PAGE_FADE_EASING,
+  PAGE_FADE_COVER_Z_INDEX,
   TAB_BAR_Z_INDEX,
   switchTabWithFade,
 } from '@/utils/pageFadeTransition';
@@ -91,7 +96,12 @@ const displayIndex = ref(getTabIndexByPath(props.currentPath));
 const indicatorReady = ref(true);
 const indicatorAnimating = ref(false);
 
+const coverVisible = computed(
+  () => pageFadeBusy.value || pageFadeOpacity.value > 0.01,
+);
+
 const fadeCoverStyle = computed(() => ({
+  zIndex: PAGE_FADE_COVER_Z_INDEX,
   opacity: pageFadeOpacity.value,
   transition: `opacity ${PAGE_FADE_DURATION_MS}ms ${PAGE_FADE_EASING}`,
 }));
@@ -118,10 +128,9 @@ const animateTo = async (index: number) => {
     return;
   }
 
-  // 确保浏览器先画出旧位置，再开 transition
   indicatorAnimating.value = false;
   await nextTick();
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  await waitFrames(1);
 
   indicatorAnimating.value = true;
   displayIndex.value = index;
@@ -155,7 +164,6 @@ const flushPendingSwitch = async () => {
       pendingTargetPath = null;
       pendingTargetIndex = -1;
 
-      // 当前页本身就是目标，校准一下位置
       if (props.currentPath === targetPath) {
         snapTo(targetIndex);
         continue;
@@ -164,58 +172,52 @@ const flushPendingSwitch = async () => {
       await animateTo(targetIndex);
       await wait(TAB_INDICATOR_SWITCH_DELAY_MS);
 
-      // 动画期间又有新点击：以最新目标为准，不在这里切页
       if (pendingTargetPath) continue;
 
       await switchTabWithFade('/' + targetPath);
     }
   } finally {
     transitioning = false;
-    // 兜底校准，确保绿球最终停在当前页 icon 背面
     snapTo(activeIndex.value);
   }
 };
 
 onMounted(() => {
-  // 新页挂载时绿球对齐当前页；点击流程里已先移到位，这里无动画对齐即可
   snapTo(activeIndex.value);
 });
 </script>
 
 <style scoped>
+.tabbar-root {
+  position: relative;
+  z-index: 999;
+}
+
+/* 不盖住底部 Tab 区域，避免 App 端 z-index/pointer-events 异常时吞掉菜单触摸 */
+.page-fade-cover {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 120px;
+  background-color: #f4f5f7;
+}
+
 .tabbar-wrapper {
   position: fixed;
   bottom: 24px;
   left: 24px;
   right: 24px;
-  pointer-events: none;
-}
-
-.page-fade-cover {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 998;
-  background-color: #f4f5f7;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.page-fade-cover.active {
-  pointer-events: auto;
 }
 
 .tabbar {
   position: relative;
-  z-index: 1000;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-radius: 32px;
   padding: 8px 12px;
-  pointer-events: auto;
   box-sizing: border-box;
 }
 
@@ -228,7 +230,6 @@ onMounted(() => {
   border-radius: 24px;
   background-color: #9fe870;
   opacity: 0;
-  pointer-events: none;
   will-change: transform;
   z-index: 0;
 }
@@ -244,6 +245,12 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* 扩大可点区域，App 端更稳 */
+  min-height: 48px;
+}
+
+.tab-item-hover {
+  opacity: 0.85;
 }
 
 .icon-wrap {

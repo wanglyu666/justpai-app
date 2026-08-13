@@ -248,8 +248,8 @@ const removeMedia = (index: number) => {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 62vh;
-  max-height: 680px;
+  height: 78vh;
+  max-height: 820px;
   background-color: #f4f5f7;
   border-radius: 24px 24px 0 0;
   display: flex;

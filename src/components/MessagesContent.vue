@@ -1,8 +1,17 @@
 <template>
   <view class="messages-content">
     <view class="page-header">
-      <view class="icon-btn" @click="handleBack">
-        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon-img"></image>
+      <view
+        class="icon-btn"
+        hover-class="icon-btn-hover"
+        :hover-stay-time="80"
+        @click.stop="handleBack"
+      >
+        <image
+          src="/static/icons/chevron-left.svg"
+          mode="aspectFit"
+          class="header-icon-img"
+        />
       </view>
     </view>
 
@@ -84,6 +93,10 @@ const handleBack = () => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.icon-btn-hover {
+  opacity: 0.85;
 }
 
 .header-icon-img {
