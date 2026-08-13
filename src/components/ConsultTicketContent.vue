@@ -43,6 +43,7 @@
           v-for="item in filteredTickets"
           :key="item.id"
           class="ticket-card"
+          @click="openDetail(item)"
         >
           <text class="ticket-name">{{ item.name }}</text>
 
@@ -62,12 +63,140 @@
         </view>
       </view>
     </view>
+
+    <BottomSheetPanel
+      :show="detailVisible"
+      :z-index="1200"
+      @closed="resetDetail"
+    >
+      <view class="sheet-page sheet-page--with-footer" v-if="selectedTicket">
+        <view class="sheet-page__header">
+          <view class="sheet-page__back-btn" @click="closeDetail">
+            <image
+              src="/static/icons/chevron-left.svg"
+              mode="aspectFit"
+              class="sheet-page__back-icon"
+            />
+          </view>
+        </view>
+
+        <view class="sheet-page__body">
+          <text class="sheet-page__title">咨询详情</text>
+
+          <view class="info-card">
+            <view class="info-row">
+              <view class="info-field">
+                <text class="info-label">期望勘查时间</text>
+                <text class="info-value">{{ selectedTicket.surveyDate }}</text>
+              </view>
+              <view class="info-field">
+                <text class="info-label">期望服务开始时间</text>
+                <text class="info-value">{{ selectedTicket.serviceStartDate }}</text>
+              </view>
+            </view>
+
+            <view class="info-row">
+              <view class="info-field">
+                <text class="info-label">工期</text>
+                <text class="info-value">{{ selectedTicket.duration }}</text>
+              </view>
+              <view class="info-field">
+                <text class="info-label">报价</text>
+                <text class="info-value">{{ selectedTicket.quote }}</text>
+              </view>
+            </view>
+
+            <view class="info-row">
+              <view class="info-field info-field-full">
+                <text class="info-label">服务地址</text>
+                <text class="info-value">{{ selectedTicket.address }}</text>
+              </view>
+            </view>
+
+            <view class="info-row">
+              <view class="info-field info-field-full">
+                <text class="info-label">需求</text>
+                <text class="info-value info-value-body">{{ selectedTicket.demand }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="info-card">
+            <text class="card-heading">报价时间的确认</text>
+            <view class="info-row">
+              <view class="info-field">
+                <text class="info-label">是否需要报价</text>
+                <text class="info-value">{{ selectedTicket.needQuote }}</text>
+              </view>
+              <view class="info-field">
+                <text class="info-label">报价时间</text>
+                <text class="info-value">{{ selectedTicket.quoteTime }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="section-card">
+            <view class="section-head">
+              <view class="section-bar" />
+              <text class="section-title">附件</text>
+            </view>
+
+            <view v-if="selectedTicket.attachments.length" class="attachment-grid">
+              <view
+                v-for="(file, index) in selectedTicket.attachments"
+                :key="`${file}-${index}`"
+                class="attachment-item"
+              >
+                <view class="attachment-ext" :class="`ext-${fileKind(file)}`">
+                  <text class="attachment-ext-text">{{ fileExt(file) }}</text>
+                </view>
+                <text class="attachment-name">{{ file }}</text>
+              </view>
+            </view>
+            <text v-else class="section-empty">暂无附件</text>
+          </view>
+
+          <view class="action-card-row">
+            <view class="action-card" @click="onChecklist">
+              <text class="action-card-text">清单</text>
+            </view>
+            <view class="action-card" @click="onInquiry">
+              <text class="action-card-text">询价</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="sheet-page__footer">
+          <view class="end-btn" @click="onEndConsult">
+            <text class="end-btn-text">结束咨询</text>
+          </view>
+        </view>
+      </view>
+    </BottomSheetPanel>
+
+    <BottomSheetPanel
+      :show="inquiryVisible"
+      :z-index="1300"
+      @closed="resetInquiry"
+    >
+      <ConsultInquiryContent
+        v-if="selectedTicket"
+        :messages="inquiryMessages"
+        @back="closeInquiry"
+        @short-chat-submit="handleShortChatSubmit"
+      />
+    </BottomSheetPanel>
   </view>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
+import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
+import ConsultInquiryContent, {
+  type InquiryMessage,
+} from '@/components/ConsultInquiryContent.vue';
+import { useSlideOver } from '@/composables/useSlideOver';
 
 type ConsultStatus = 'pending_reply' | 'in_progress' | 'closed';
 
@@ -77,6 +206,15 @@ type ConsultTicket = {
   time: string;
   demand: string;
   status: ConsultStatus;
+  surveyDate: string;
+  serviceStartDate: string;
+  duration: string;
+  quote: string;
+  address: string;
+  needQuote: string;
+  quoteTime: string;
+  attachments: string[];
+  inquiryMessages: InquiryMessage[];
 };
 
 const emit = defineEmits<{
@@ -85,6 +223,21 @@ const emit = defineEmits<{
 
 const keyword = ref('');
 const activeStatus = ref<ConsultStatus>('pending_reply');
+const selectedTicket = ref<ConsultTicket | null>(null);
+const {
+  visible: detailVisible,
+  open: openDetailPanel,
+  close: closeDetail,
+} = useSlideOver();
+const {
+  visible: inquiryVisible,
+  open: openInquiryPanel,
+  close: closeInquiry,
+} = useSlideOver();
+
+const inquiryMessages = computed(
+  () => selectedTicket.value?.inquiryMessages ?? [],
+);
 
 const statusTabs: { id: ConsultStatus; label: string }[] = [
   { id: 'pending_reply', label: '待回复' },
@@ -99,6 +252,32 @@ const tickets = ref<ConsultTicket[]>([
     time: '2026-03-28 14:20',
     demand: '需要了解多联机与风冷模块机在本项目中的适用性，并给出大致造价区间供立项参考。',
     status: 'pending_reply',
+    surveyDate: '2026-03-22',
+    serviceStartDate: '2026-03-28',
+    duration: '18 天',
+    quote: '暂无报价',
+    address: '上海市静安区曹家渡街道智慧广场 (武宁南路)',
+    needQuote: '否',
+    quoteTime: '暂无',
+    attachments: ['门店平面图.pdf', '现场照片-机房.jpg', '选型需求说明.docx'],
+    inquiryMessages: [
+      {
+        id: 1,
+        sender: '王磊',
+        sendTime: '2026-03-28 15:30',
+        content:
+          '您好，关于多联机与风冷模块机在本项目中的适用性，我们已请技术同事做了初步评估，请查收附件中的方案摘要...',
+        attachmentName: '空调选型初稿.pdf',
+      },
+      {
+        id: 2,
+        sender: '李婷',
+        sendTime: '2026-03-28 16:10',
+        content:
+          '补充说明：若场地层高受限，建议优先评估风冷模块机方案，附件中含两种方案的造价对比。',
+        attachmentName: '造价对比表.xlsx',
+      },
+    ],
   },
   {
     id: 2,
@@ -106,6 +285,24 @@ const tickets = ref<ConsultTicket[]>([
     time: '2026-03-26 10:05',
     demand: '希望评估集中式与分体式方案的能耗差异，并提供设备选型清单与交付周期建议。',
     status: 'pending_reply',
+    surveyDate: '2026-03-20',
+    serviceStartDate: '2026-03-26',
+    duration: '12 天',
+    quote: '暂无报价',
+    address: '上海市徐汇区漕河泾开发区科技绿洲',
+    needQuote: '是',
+    quoteTime: '2026-03-30',
+    attachments: ['暖通方案初稿.pdf', '楼层平面图.jpg'],
+    inquiryMessages: [
+      {
+        id: 1,
+        sender: '陈凯',
+        sendTime: '2026-03-26 11:20',
+        content:
+          '您好，集中式与分体式方案的能耗测算已完成，请查收附件中的对比报告与选型建议。',
+        attachmentName: '能耗对比报告.pdf',
+      },
+    ],
   },
   {
     id: 3,
@@ -113,6 +310,24 @@ const tickets = ref<ConsultTicket[]>([
     time: '2026-03-20 16:40',
     demand: '现有机房制冷能力不足，需要改造方案，包含冗余设计、施工窗口与预算评估。',
     status: 'in_progress',
+    surveyDate: '2026-03-15',
+    serviceStartDate: '2026-03-25',
+    duration: '25 天',
+    quote: '¥86,000',
+    address: '上海市浦东新区张江高科技园区',
+    needQuote: '是',
+    quoteTime: '2026-03-18',
+    attachments: ['机房现场照片.jpg', '设备铭牌.jpg'],
+    inquiryMessages: [
+      {
+        id: 1,
+        sender: '赵强',
+        sendTime: '2026-03-20 18:05',
+        content:
+          '您好，机房改造方案初稿已整理完成，含冗余配置与施工窗口建议，请查收附件。',
+        attachmentName: '机房改造方案.pdf',
+      },
+    ],
   },
   {
     id: 4,
@@ -120,6 +335,24 @@ const tickets = ref<ConsultTicket[]>([
     time: '2026-03-15 09:18',
     demand: '了解续约后的服务范围、响应时效及驻场支持是否可按需增减。',
     status: 'in_progress',
+    surveyDate: '2026-03-10',
+    serviceStartDate: '2026-04-01',
+    duration: '30 天',
+    quote: '¥128,000',
+    address: '上海市黄浦区外滩中心',
+    needQuote: '是',
+    quoteTime: '2026-03-12',
+    attachments: ['上年合同扫描件.pdf'],
+    inquiryMessages: [
+      {
+        id: 1,
+        sender: '周敏',
+        sendTime: '2026-03-15 10:40',
+        content:
+          '您好，续约服务范围与报价明细已整理，驻场支持可按需增减，请查收附件。',
+        attachmentName: '续约报价明细.pdf',
+      },
+    ],
   },
   {
     id: 5,
@@ -127,6 +360,24 @@ const tickets = ref<ConsultTicket[]>([
     time: '2026-02-28 11:30',
     demand: '希望针对现有冷站进行能效诊断，并输出可落地的优化措施与预期节省测算。',
     status: 'closed',
+    surveyDate: '2026-02-20',
+    serviceStartDate: '2026-03-01',
+    duration: '20 天',
+    quote: '¥45,000',
+    address: '上海市闵行区虹桥商务区',
+    needQuote: '是',
+    quoteTime: '2026-02-25',
+    attachments: ['能耗月报.xlsx', '冷站运行日志.pdf'],
+    inquiryMessages: [
+      {
+        id: 1,
+        sender: '孙浩',
+        sendTime: '2026-02-28 14:15',
+        content:
+          '您好，冷站能效诊断报告已完成，优化措施与节省测算见附件，请查收。',
+        attachmentName: '能效诊断报告.pdf',
+      },
+    ],
   },
   {
     id: 6,
@@ -134,6 +385,24 @@ const tickets = ref<ConsultTicket[]>([
     time: '2026-02-12 15:55',
     demand: '项目处于立项阶段，需要设备配置建议、关键参数说明及大致投资区间。',
     status: 'closed',
+    surveyDate: '2026-02-08',
+    serviceStartDate: '2026-02-18',
+    duration: '10 天',
+    quote: '¥22,000',
+    address: '杭州市西湖区西溪湿地园区',
+    needQuote: '否',
+    quoteTime: '暂无',
+    attachments: [],
+    inquiryMessages: [
+      {
+        id: 1,
+        sender: '王磊',
+        sendTime: '2026-02-12 17:20',
+        content:
+          '您好，立项阶段设备配置建议与投资区间说明已整理完毕，请查收附件。',
+        attachmentName: '设备配置建议.pdf',
+      },
+    ],
   },
 ]);
 
@@ -150,12 +419,82 @@ const filteredTickets = computed(() => {
   });
 });
 
+const fileExt = (name: string) => {
+  const index = name.lastIndexOf('.');
+  if (index < 0) return 'FILE';
+  return name.slice(index + 1).toUpperCase();
+};
+
+const fileKind = (name: string) => {
+  const ext = fileExt(name).toLowerCase();
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
+  if (['mp4', 'mov', 'avi'].includes(ext)) return 'video';
+  if (['pdf'].includes(ext)) return 'pdf';
+  if (['xls', 'xlsx', 'csv'].includes(ext)) return 'sheet';
+  return 'file';
+};
+
+const openDetail = (item: ConsultTicket) => {
+  selectedTicket.value = item;
+  openDetailPanel();
+};
+
+const resetDetail = () => {
+  selectedTicket.value = null;
+};
+
 const handleBack = () => {
   emit('back');
 };
 
 const onAdd = () => {
   // TODO: open create consult form
+};
+
+const onChecklist = () => {
+  // TODO: open checklist
+};
+
+const onInquiry = () => {
+  openInquiryPanel();
+};
+
+const resetInquiry = () => {
+  // keep selectedTicket for detail page underneath
+};
+
+const handleShortChatSubmit = (payload: {
+  content: string;
+  attachments: string[];
+}) => {
+  if (!selectedTicket.value) return;
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const d = new Date();
+  const sendTime = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const nextId =
+    Math.max(0, ...selectedTicket.value.inquiryMessages.map((item) => item.id)) + 1;
+
+  const nextMessage: InquiryMessage = {
+    id: nextId,
+    sender: '我',
+    sendTime,
+    content: payload.content,
+    attachmentName: payload.attachments[0] || '',
+  };
+
+  selectedTicket.value = {
+    ...selectedTicket.value,
+    inquiryMessages: [nextMessage, ...selectedTicket.value.inquiryMessages],
+  };
+
+  tickets.value = tickets.value.map((item) =>
+    item.id === selectedTicket.value?.id ? selectedTicket.value! : item,
+  );
+};
+
+const onEndConsult = () => {
+  // TODO: end consultation
 };
 </script>
 
@@ -288,7 +627,6 @@ const onAdd = () => {
   box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 20px;
-  border: 1px solid #d8f0c8;
   padding: 20px 18px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
   display: flex;
@@ -338,5 +676,225 @@ const onAdd = () => {
 .empty-tip-text {
   font-size: 14px;
   color: #9ca3af;
+}
+
+.sheet-page__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.info-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.card-heading {
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.info-row {
+  display: flex;
+  gap: 16px;
+}
+
+.info-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-field-full {
+  flex: 1 1 100%;
+}
+
+.info-label {
+  font-size: 13px;
+  color: #9ca3af;
+  line-height: 1.2;
+}
+
+.info-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.info-value-body {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.section-card {
+  background-color: #ffffff;
+  border-radius: 22px;
+  padding: 18px;
+  box-sizing: border-box;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-bar {
+  width: 4px;
+  height: 14px;
+  border-radius: 2px;
+  background-color: #9fe870;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.section-empty {
+  font-size: 14px;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
+.attachment-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachment-item {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background-color: #f8fafc;
+  border: 1px solid #eef2f7;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.attachment-ext {
+  width: 40px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: #e5e7eb;
+}
+
+.attachment-ext-text {
+  font-size: 10px;
+  font-weight: 800;
+  color: #374151;
+  line-height: 1;
+}
+
+.ext-pdf {
+  background-color: #fee2e2;
+}
+
+.ext-pdf .attachment-ext-text {
+  color: #b91c1c;
+}
+
+.ext-image {
+  background-color: #dbeafe;
+}
+
+.ext-image .attachment-ext-text {
+  color: #1d4ed8;
+}
+
+.ext-video {
+  background-color: #ede9fe;
+}
+
+.ext-video .attachment-ext-text {
+  color: #6d28d9;
+}
+
+.ext-sheet {
+  background-color: #dcfce7;
+}
+
+.ext-sheet .attachment-ext-text {
+  color: #15803d;
+}
+
+.attachment-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-card-row {
+  display: flex;
+  gap: 12px;
+}
+
+.action-card {
+  flex: 1;
+  min-height: 72px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.action-card-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1;
+}
+
+.end-btn {
+  height: 52px;
+  border-radius: 999px;
+  background-color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.end-btn-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
 }
 </style>
