@@ -18,8 +18,8 @@ export type TabRoute = (typeof TAB_ROUTES)[number];
 export const TAB_INDICATOR_EASING = 'cubic-bezier(0.22, 1.45, 0.36, 1)';
 export const TAB_INDICATOR_DURATION_MS = 380;
 
-/** 等绿球移动大半后再切页，避免动画被页面销毁打断 */
-export const TAB_INDICATOR_SWITCH_DELAY_MS = 300;
+/** 绿球与页面淡入淡出同时开始，不再额外等待再切页 */
+export const TAB_INDICATOR_SWITCH_DELAY_MS = 0;
 
 /** 与 CustomTabBar 样式一致（设计稿 rpx） */
 export const TABBAR_SIDE_INSET_RPX = 48;

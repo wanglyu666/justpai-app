@@ -59,7 +59,7 @@
 
     <BottomSheetPanel
       :show="detailVisible"
-      :z-index="1200"
+      :z-index="2200"
       @closed="resetDetail"
     >
       <view class="detail-page">
@@ -139,7 +139,7 @@
     </BottomSheetPanel>
     <BottomSheetPanel
       :show="formVisible"
-      :z-index="1300"
+      :z-index="2300"
       @closed="resetFormFlow"
     >
       <SuccessPageTransition :show-success="formStep === 'success'">

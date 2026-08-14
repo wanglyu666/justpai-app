@@ -229,7 +229,7 @@ const removeMedia = (index: number) => {
 .short-chat-root {
   position: fixed;
   inset: 0;
-  z-index: 1600;
+  z-index: 2600;
 }
 
 .short-chat-mask {

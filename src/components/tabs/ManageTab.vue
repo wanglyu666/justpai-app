@@ -1,4 +1,5 @@
 <template>
+  <view class="tab-root">
   <view class="container page-safe-top">
     <view class="header">
       <text class="title">管理</text>
@@ -31,12 +32,25 @@
         </view>
       </view>
     </view>
+    </view>
   </view>
 </template>
 
 <script setup lang="ts"></script>
 
 <style scoped>
+.tab-root {
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
 .header {
   padding: 0 48rpx;
   margin-bottom: 56rpx;

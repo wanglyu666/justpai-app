@@ -368,7 +368,7 @@ const handleEdit = (id: string) => {
 .address-sheet-root {
   position: fixed;
   inset: 0;
-  z-index: 1400;
+  z-index: 2400;
 }
 
 .address-sheet-mask {

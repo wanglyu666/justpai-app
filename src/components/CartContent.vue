@@ -132,7 +132,7 @@
 
     <BottomSheetPanel
       :show="checkoutFlowVisible"
-      :z-index="1300"
+      :z-index="2300"
       content-safe-top
       @closed="resetCheckoutFlow"
     >
@@ -145,11 +145,11 @@
       />
     </BottomSheetPanel>
 
-    <BottomSheetPanel :show="paymentFlowVisible" :z-index="1400" @closed="resetPaymentFlow">
+    <BottomSheetPanel :show="paymentFlowVisible" :z-index="2400" @closed="resetPaymentFlow">
       <PaymentSelectContent @confirm="handlePaymentConfirm" />
     </BottomSheetPanel>
 
-    <BottomSheetPanel :show="consultFlowVisible" :z-index="1100" @closed="resetConsultFlow">
+    <BottomSheetPanel :show="consultFlowVisible" :z-index="2100" @closed="resetConsultFlow">
       <SuccessPageTransition :show-success="consultStep === 'success'">
         <ConsultFormContent
           @back="closeConsultFlow"

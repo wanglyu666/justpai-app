@@ -1,13 +1,10 @@
 <template>
   <view class="tabbar-root">
-    <!-- 仅切换中挂载遮罩，空闲时不在 DOM，避免 App 透明层吞触摸 -->
     <view
-      v-if="coverVisible"
-      class="page-fade-cover"
-      :style="fadeCoverStyle"
-    />
-
-    <view class="tabbar-wrapper" :style="{ zIndex: TAB_BAR_Z_INDEX }">
+      class="tabbar-wrapper"
+      :class="{ 'is-covered': hasSecondaryPage }"
+      :style="{ zIndex: TAB_BAR_Z_INDEX }"
+    >
       <view class="tabbar frosted-glass frosted-glass--tabbar" :style="tabbarGlassStyle">
         <view
           class="tab-indicator"
@@ -40,20 +37,15 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
 import { waitFrames } from '@/utils/nextFrame';
 import {
-  pageFadeBusy,
-  pageFadeOpacity,
-  PAGE_FADE_DURATION_MS,
-  PAGE_FADE_EASING,
-  PAGE_FADE_COVER_Z_INDEX,
   TAB_BAR_Z_INDEX,
   switchTabWithFade,
 } from '@/utils/pageFadeTransition';
+import { hasSecondaryPage } from '@/composables/useSecondaryPage';
 import {
   getIndicatorOffsetX,
   setSharedTabIndicatorIndex,
   TAB_INDICATOR_DURATION_MS,
   TAB_INDICATOR_EASING,
-  TAB_INDICATOR_SWITCH_DELAY_MS,
   getTabIndexByPath,
 } from '@/utils/tabBarIndicator';
 
@@ -96,24 +88,12 @@ const displayIndex = ref(getTabIndexByPath(props.currentPath));
 const indicatorReady = ref(true);
 const indicatorAnimating = ref(false);
 
-const coverVisible = computed(
-  () => pageFadeBusy.value || pageFadeOpacity.value > 0.01,
-);
-
-const fadeCoverStyle = computed(() => ({
-  zIndex: PAGE_FADE_COVER_Z_INDEX,
-  opacity: pageFadeOpacity.value,
-  transition: `opacity ${PAGE_FADE_DURATION_MS}ms ${PAGE_FADE_EASING}`,
-}));
-
 const indicatorStyle = computed(() => ({
   transform: `translate3d(${getIndicatorOffsetX(displayIndex.value, list.length)}px, 0, 0)`,
   transition: indicatorAnimating.value
     ? `transform ${TAB_INDICATOR_DURATION_MS}ms ${TAB_INDICATOR_EASING}`
     : 'none',
 }));
-
-const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const snapTo = (index: number) => {
   indicatorAnimating.value = false;
@@ -138,10 +118,7 @@ const animateTo = async (index: number) => {
 };
 
 /**
- * 快速连点时以“最终目标页”为准：
- * - 记录最近一次点击的目标
- * - 动画播放期间的新点击只更新目标，不立即打断
- * - 动画结束后统一切到最后点击的页面
+ * 绿球与页面交叉淡入淡出同时开始；连点只落到最后一次目标。
  */
 let pendingTargetPath: string | null = null;
 let pendingTargetIndex = -1;
@@ -169,11 +146,7 @@ const flushPendingSwitch = async () => {
         continue;
       }
 
-      await animateTo(targetIndex);
-      await wait(TAB_INDICATOR_SWITCH_DELAY_MS);
-
-      if (pendingTargetPath) continue;
-
+      void animateTo(targetIndex);
       await switchTabWithFade('/' + targetPath);
     }
   } finally {
@@ -190,17 +163,7 @@ onMounted(() => {
 <style scoped>
 .tabbar-root {
   position: relative;
-  z-index: 999;
-}
-
-/* 不盖住底部 Tab 区域，避免 App 端 z-index/pointer-events 异常时吞掉菜单触摸 */
-.page-fade-cover {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 240rpx;
-  background-color: #f4f5f7;
+  z-index: 100;
 }
 
 .tabbar-wrapper {
@@ -208,6 +171,15 @@ onMounted(() => {
   bottom: 48rpx;
   left: 48rpx;
   right: 48rpx;
+}
+
+.tabbar-wrapper.is-covered {
+  pointer-events: none;
+}
+
+.tabbar-wrapper.is-covered .tabbar {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .tabbar {

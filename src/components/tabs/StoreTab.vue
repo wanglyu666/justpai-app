@@ -1,4 +1,5 @@
 <template>
+  <view class="tab-root">
   <view class="container page-safe-top">
     <!-- Header -->
     <view class="header">
@@ -135,6 +136,7 @@
         <image src="/static/icons/order.svg" mode="aspectFit" class="action-icon" />
       </view>
     </view>
+    </view>
 
     <SlideOverPanel :show="detailVisible" edge-to-edge>
       <ProductDetailContent
@@ -144,11 +146,11 @@
       />
     </SlideOverPanel>
 
-    <SlideOverPanel :show="cartVisible" :z-index="1100">
+    <SlideOverPanel :show="cartVisible">
       <CartContent @back="closeCart" />
     </SlideOverPanel>
 
-    <SlideOverPanel :show="ordersVisible" :z-index="1100">
+    <SlideOverPanel :show="ordersVisible">
       <OrderContent @back="closeOrders" />
     </SlideOverPanel>
 
@@ -388,6 +390,18 @@ watch([showSubcategories, productListKey], () => {
 </script>
 
 <style scoped>
+.tab-root {
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
 .header {
   padding: 0 48rpx 40rpx;
   display: flex;

@@ -1,37 +1,46 @@
 <template>
   <view class="address-info">
-    <view v-if="step !== 'success'" class="page-header">
-      <view class="icon-btn" @click="handleBack">
-        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon-img"></image>
-      </view>
-    </view>
-
-    <view class="flow-body">
-      <AddressListContent
-        v-if="step === 'list'"
-        :addresses="addresses"
-        @add="goAddForm"
-        @edit="handleEdit"
-        @delete="handleDelete"
-      />
-      <SuccessPageTransition v-else :show-success="step === 'success'">
-        <AddressFormContent
-          :key="formKey"
-          :mode="editingId ? 'edit' : 'add'"
-          :initial-values="formInitialValues"
-          @confirm="handleFormConfirm"
-        />
-        <template #success>
-          <AddressSuccessContent @back="goList" />
-        </template>
-      </SuccessPageTransition>
-    </view>
+    <StepFadeTransition :step="step">
+      <template #list>
+        <view class="address-step">
+          <view class="page-header">
+            <view class="icon-btn" @click="handleBack">
+              <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon-img"></image>
+            </view>
+          </view>
+          <AddressListContent
+            :addresses="addresses"
+            @add="goAddForm"
+            @edit="handleEdit"
+            @delete="handleDelete"
+          />
+        </view>
+      </template>
+      <template #form>
+        <view class="address-step">
+          <view class="page-header">
+            <view class="icon-btn" @click="handleBack">
+              <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon-img"></image>
+            </view>
+          </view>
+          <AddressFormContent
+            :key="formKey"
+            :mode="editingId ? 'edit' : 'add'"
+            :initial-values="formInitialValues"
+            @confirm="handleFormConfirm"
+          />
+        </view>
+      </template>
+      <template #success>
+        <AddressSuccessContent @back="goList" />
+      </template>
+    </StepFadeTransition>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import StepFadeTransition from '@/components/StepFadeTransition.vue';
 import AddressListContent, { type AddressItem } from '@/components/AddressListContent.vue';
 import AddressFormContent, { type AddressFormValues } from '@/components/AddressFormContent.vue';
 import AddressSuccessContent from '@/components/AddressSuccessContent.vue';
@@ -182,14 +191,11 @@ defineExpose({
   min-height: 100%;
   height: 100%;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
 }
 
-.flow-body {
-  position: relative;
-  flex: 1;
-  min-height: 0;
+.address-step {
+  min-height: 100%;
+  box-sizing: border-box;
 }
 
 .page-header {

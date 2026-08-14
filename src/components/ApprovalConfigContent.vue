@@ -99,7 +99,7 @@
 
     <BottomSheetPanel
       :show="flowVisible"
-      :z-index="1300"
+      :z-index="2300"
       @closed="resetFlow"
     >
       <ApprovalFlowContent

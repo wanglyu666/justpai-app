@@ -1,4 +1,5 @@
 <template>
+  <view class="tab-root">
   <view class="container page-safe-top">
     <view class="header">
       <text class="title">工作台</text>
@@ -81,26 +82,26 @@
         </view>
       </view>
     </view>
+    </view>
 
-    <SlideOverPanel :show="contractArchiveVisible" :z-index="1100">
+    <SlideOverPanel :show="contractArchiveVisible">
       <ContractArchiveContent @back="closeContractArchive" />
     </SlideOverPanel>
 
-    <SlideOverPanel :show="billManagementVisible" :z-index="1100">
+    <SlideOverPanel :show="billManagementVisible">
       <BillManagementContent @back="closeBillManagement" />
     </SlideOverPanel>
 
-    <SlideOverPanel :show="consultTicketVisible" :z-index="1100">
+    <SlideOverPanel :show="consultTicketVisible">
       <ConsultTicketContent @back="closeConsultTicket" />
     </SlideOverPanel>
 
-    <SlideOverPanel :show="feedbackListVisible" :z-index="1100">
+    <SlideOverPanel :show="feedbackListVisible">
       <FeedbackListContent @back="closeFeedbackList" />
     </SlideOverPanel>
 
     <SlideOverPanel
       :show="feedbackCreateVisible"
-      :z-index="1100"
       @closed="resetFeedbackCreate"
     >
       <SuccessPageTransition :show-success="feedbackCreateStep === 'success'">
@@ -114,7 +115,7 @@
       </SuccessPageTransition>
     </SlideOverPanel>
 
-    <SlideOverPanel :show="approvalConfigVisible" :z-index="1100">
+    <SlideOverPanel :show="approvalConfigVisible">
       <ApprovalConfigContent @back="closeApprovalConfig" />
     </SlideOverPanel>
   </view>
@@ -202,6 +203,18 @@ const handleFeedbackCreateSubmit = (payload: {
 </script>
 
 <style scoped>
+.tab-root {
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
 .header {
   padding: 0 48rpx;
   margin-bottom: 56rpx;

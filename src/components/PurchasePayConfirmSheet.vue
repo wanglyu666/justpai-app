@@ -113,7 +113,7 @@ const handleSelfCreate = () => {
 .purchase-sheet-root {
   position: fixed;
   inset: 0;
-  z-index: 1500;
+  z-index: 2500;
 }
 
 .purchase-sheet-mask {

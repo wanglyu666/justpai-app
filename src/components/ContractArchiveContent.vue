@@ -53,7 +53,7 @@
 
     <BottomSheetPanel
       :show="detailVisible"
-      :z-index="1200"
+      :z-index="2200"
       @closed="resetDetail"
     >
       <view class="detail-page">

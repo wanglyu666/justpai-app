@@ -1,15 +1,33 @@
 <template>
   <view class="main-shell">
-    <view v-show="activeTabPath === 'pages/index/index'" class="tab-panel">
+    <view
+      class="tab-panel"
+      :class="{ 'is-visible': activeTabPath === 'pages/index/index' }"
+      :style="panelStyle(activeTabPath === 'pages/index/index')"
+    >
       <HomeTab />
     </view>
-    <view v-show="activeTabPath === 'pages/store/index'" class="tab-panel">
+    <view
+      class="tab-panel"
+      :class="{ 'is-visible': activeTabPath === 'pages/store/index' }"
+      :style="panelStyle(activeTabPath === 'pages/store/index')"
+      @touchmove="onStorePanelScroll"
+      @touchend="onStorePanelScroll"
+    >
       <StoreTab ref="storeTabRef" />
     </view>
-    <view v-show="activeTabPath === 'pages/work/index'" class="tab-panel">
+    <view
+      class="tab-panel"
+      :class="{ 'is-visible': activeTabPath === 'pages/work/index' }"
+      :style="panelStyle(activeTabPath === 'pages/work/index')"
+    >
       <WorkTab />
     </view>
-    <view v-show="activeTabPath === 'pages/manage/index'" class="tab-panel">
+    <view
+      class="tab-panel"
+      :class="{ 'is-visible': activeTabPath === 'pages/manage/index' }"
+      :style="panelStyle(activeTabPath === 'pages/manage/index')"
+    >
       <ManageTab />
     </view>
 
@@ -19,14 +37,18 @@
 
 <script setup lang="ts">
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { onLoad, onPageScroll } from '@dcloudio/uni-app';
+import { onLoad } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 import HomeTab from '@/components/tabs/HomeTab.vue';
 import StoreTab from '@/components/tabs/StoreTab.vue';
 import WorkTab from '@/components/tabs/WorkTab.vue';
 import ManageTab from '@/components/tabs/ManageTab.vue';
 import { useMainTab, type MainTabPath } from '@/composables/useMainTab';
-import { registerTabSwitchHooks } from '@/utils/pageFadeTransition';
+import {
+  PAGE_FADE_DURATION_MS,
+  PAGE_FADE_EASING,
+  registerTabSwitchHooks,
+} from '@/utils/pageFadeTransition';
 
 const { activeTabPath, setActiveTabPath, normalizeTabPath } = useMainTab();
 
@@ -36,31 +58,26 @@ type StoreTabExpose = {
 };
 
 const storeTabRef = ref<StoreTabExpose | null>(null);
+const fadeReady = ref(false);
 
-/** 各 Tab 独立滚动位置，切换时互不干扰 */
-const scrollTopByTab: Record<MainTabPath, number> = {
-  'pages/index/index': 0,
-  'pages/store/index': 0,
-  'pages/work/index': 0,
-  'pages/manage/index': 0,
+const panelStyle = (visible: boolean) => {
+  if (!fadeReady.value) {
+    return { transition: 'none' };
+  }
+  return {
+    transition: visible
+      ? `opacity ${PAGE_FADE_DURATION_MS}ms ${PAGE_FADE_EASING}, visibility 0ms linear 0ms`
+      : `opacity ${PAGE_FADE_DURATION_MS}ms ${PAGE_FADE_EASING}, visibility 0ms linear ${PAGE_FADE_DURATION_MS}ms`,
+  };
 };
 
-let currentScrollTop = 0;
-
-const restoreScrollTop = (path: MainTabPath) =>
-  new Promise<void>((resolve) => {
-    uni.pageScrollTo({
-      scrollTop: scrollTopByTab[path] || 0,
-      duration: 0,
-      complete: () => resolve(),
-      fail: () => resolve(),
-    });
-  });
+const onStorePanelScroll = () => {
+  storeTabRef.value?.scheduleStickyActionsUpdate();
+};
 
 onLoad((query) => {
   const tabQuery = typeof query?.tab === 'string' ? query.tab : '';
   if (tabQuery) {
-    // 兼容 ?tab=store / ?tab=pages/store/index
     const mapped =
       tabQuery.includes('/')
         ? tabQuery
@@ -69,33 +86,19 @@ onLoad((query) => {
   }
 });
 
-onPageScroll((e) => {
-  currentScrollTop = e.scrollTop;
-  scrollTopByTab[activeTabPath.value] = e.scrollTop;
-
-  if (activeTabPath.value === 'pages/store/index') {
-    storeTabRef.value?.scheduleStickyActionsUpdate();
-  }
-});
-
 onMounted(() => {
   registerTabSwitchHooks({
-    before: async () => {
-      scrollTopByTab[activeTabPath.value] = currentScrollTop;
-    },
     after: async (path) => {
       const next = normalizeTabPath(path);
       await nextTick();
-      await restoreScrollTop(next);
       if (next === 'pages/store/index') {
         storeTabRef.value?.updateStickyActionsVisibility();
       }
     },
   });
 
-  // 冷启动时校准一次当前 Tab 滚动
   nextTick(() => {
-    void restoreScrollTop(activeTabPath.value);
+    fadeReady.value = true;
   });
 });
 
@@ -112,13 +115,28 @@ onUnmounted(() => {
 
 <style scoped>
 .main-shell {
-  min-height: 100vh;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
   box-sizing: border-box;
   background-color: #f4f5f7;
 }
 
 .tab-panel {
-  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* 不在此层滚动：overflow 会把内部 position:fixed 二级页困在面板里，盖不住 TabBar */
+  overflow: visible;
   box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.tab-panel.is-visible {
+  opacity: 1;
+  visibility: visible;
 }
 </style>

@@ -79,6 +79,7 @@ import {
 import { getFrostedGlassStyle, getFrostedOverlayStyle } from '@/utils/frostedGlass';
 import { annualRegions, type AnnualRegionId } from '@/data/storeProducts';
 import { waitFrames } from '@/utils/nextFrame';
+import { registerSecondaryPage } from '@/composables/useSecondaryPage';
 
 export type StoreProductType = 'ordinary' | 'annual';
 
@@ -133,6 +134,7 @@ const regionItemStyle = (index: number) => {
 
 const rendered = ref(props.show);
 const entered = ref(props.show);
+registerSecondaryPage(rendered);
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
 let showSeq = 0;
 

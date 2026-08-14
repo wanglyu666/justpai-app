@@ -1,4 +1,5 @@
 <template>
+  <view class="tab-root">
   <view class="container page-safe-top">
     <!-- Header -->
     <view class="header">
@@ -99,11 +100,12 @@
         </view>
       </scroll-view>
     </view>
+    </view>
 
     <SlideOverPanel :show="profileVisible">
       <ProfileContent @back="closeProfile" />
     </SlideOverPanel>
-    <SlideOverPanel :show="messagesVisible" :z-index="1100">
+    <SlideOverPanel :show="messagesVisible">
       <MessagesContent @back="closeMessages" />
     </SlideOverPanel>
   </view>
@@ -206,7 +208,16 @@ const goToMessages = () => {
 </script>
 
 <style scoped>
+.tab-root {
+  height: 100%;
+}
+
 .container {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
   padding-bottom: 40rpx;
 }
 .header {

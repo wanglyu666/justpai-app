@@ -66,7 +66,7 @@
       </scroll-view>
     </view>
 
-    <BottomSheetPanel :show="refundFlowVisible" :z-index="1200" @closed="resetRefundFlow">
+    <BottomSheetPanel :show="refundFlowVisible" :z-index="2200" @closed="resetRefundFlow">
       <SuccessPageTransition :show-success="refundStep === 'success'">
         <RefundFormContent
           :order="refundOrder"
@@ -79,7 +79,7 @@
       </SuccessPageTransition>
     </BottomSheetPanel>
 
-    <BottomSheetPanel :show="refundDetailFlowVisible" :z-index="1200" @closed="resetRefundDetailFlow">
+    <BottomSheetPanel :show="refundDetailFlowVisible" :z-index="2200" @closed="resetRefundDetailFlow">
       <RefundDetailContent
         v-if="refundDetailOrder && refundDetailRecord"
         :order="refundDetailOrder"
@@ -88,7 +88,7 @@
       />
     </BottomSheetPanel>
 
-    <BottomSheetPanel :show="detailFlowVisible" :z-index="1200" @closed="resetDetailFlow">
+    <BottomSheetPanel :show="detailFlowVisible" :z-index="2200" @closed="resetDetailFlow">
       <OrderDetailContent
         v-if="detailOrder"
         :order="detailOrder"
@@ -96,7 +96,7 @@
       />
     </BottomSheetPanel>
 
-    <BottomSheetPanel :show="reviewFlowVisible" :z-index="1200" @closed="resetReviewFlow">
+    <BottomSheetPanel :show="reviewFlowVisible" :z-index="2200" @closed="resetReviewFlow">
       <SuccessPageTransition :show-success="reviewStep === 'success'">
         <OrderReviewContent
           v-if="reviewOrder"

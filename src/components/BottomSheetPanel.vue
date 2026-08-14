@@ -16,6 +16,8 @@ import {
   BOTTOM_SHEET_EASING,
 } from '@/utils/bottomSheetTransition';
 import { waitFrames } from '@/utils/nextFrame';
+import { NESTED_PAGE_Z_INDEX } from '@/utils/pageFadeTransition';
+import { registerSecondaryPage } from '@/composables/useSecondaryPage';
 
 const props = withDefaults(
   defineProps<{
@@ -24,7 +26,7 @@ const props = withDefaults(
     contentSafeTop?: boolean;
   }>(),
   {
-    zIndex: 1200,
+    zIndex: NESTED_PAGE_Z_INDEX,
     contentSafeTop: false,
   },
 );
@@ -39,6 +41,7 @@ const emit = defineEmits<{
 
 const rendered = ref(props.show);
 const entered = ref(props.show);
+registerSecondaryPage(rendered);
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
 let showSeq = 0;
 
@@ -95,6 +98,7 @@ defineExpose({
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 2100;
   background-color: #f4f5f7;
   overflow-y: auto;
   box-sizing: border-box;

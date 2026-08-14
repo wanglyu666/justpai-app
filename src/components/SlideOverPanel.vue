@@ -21,6 +21,8 @@ import {
   SLIDE_OVER_EASING,
 } from '@/utils/slideOverTransition';
 import { waitFrames } from '@/utils/nextFrame';
+import { SECONDARY_PAGE_Z_INDEX } from '@/utils/pageFadeTransition';
+import { registerSecondaryPage } from '@/composables/useSecondaryPage';
 
 const props = withDefaults(
   defineProps<{
@@ -29,7 +31,7 @@ const props = withDefaults(
     edgeToEdge?: boolean;
   }>(),
   {
-    zIndex: 1100,
+    zIndex: SECONDARY_PAGE_Z_INDEX,
     edgeToEdge: false,
   },
 );
@@ -45,6 +47,7 @@ const emit = defineEmits<{
 /** 不用 Vue Transition：App 端 leave 常卡住导致关不掉；改用 class + 超时兜底 */
 const rendered = ref(props.show);
 const entered = ref(props.show);
+registerSecondaryPage(rendered);
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
 let showSeq = 0;
 
@@ -102,6 +105,7 @@ defineExpose({
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 2000;
   background-color: #f4f5f7;
   overflow: hidden;
   box-sizing: border-box;

@@ -71,73 +71,84 @@
       </view>
     </view>
 
-    <BottomSheetPanel :show="passwordFlowVisible" :z-index="1100" @closed="resetPasswordFlow">
-      <PhoneVerifyContent
-        v-if="passwordStep === 'verify'"
-        @back="closePasswordFlow"
-        @next="goPasswordStep"
-      />
-      <SuccessPageTransition v-else :show-success="passwordStep === 'success'">
-        <PasswordChangeContent
-          @back="backToVerify"
-          @next="goSuccessStep"
-        />
+    <BottomSheetPanel :show="passwordFlowVisible" @closed="resetPasswordFlow">
+      <StepFadeTransition :step="passwordStep">
+        <template #verify>
+          <PhoneVerifyContent
+            @back="closePasswordFlow"
+            @next="goPasswordStep"
+          />
+        </template>
+        <template #password>
+          <PasswordChangeContent
+            @back="backToVerify"
+            @next="goSuccessStep"
+          />
+        </template>
         <template #success>
           <PasswordSuccessContent @back="closePasswordFlow" />
         </template>
-      </SuccessPageTransition>
+      </StepFadeTransition>
     </BottomSheetPanel>
-    <BottomSheetPanel :show="phoneFlowVisible" :z-index="1100" @closed="resetPhoneFlow">
-      <PhoneVerifyContent
-        v-if="phoneStep === 'verify'"
-        @back="closePhoneFlow"
-        @next="goPhoneChangeStep"
-      />
-      <SuccessPageTransition v-else :show-success="phoneStep === 'success'">
-        <PhoneNumberChangeContent
-          @back="backPhoneToVerify"
-          @next="goPhoneSuccessStep"
-        />
+    <BottomSheetPanel :show="phoneFlowVisible" @closed="resetPhoneFlow">
+      <StepFadeTransition :step="phoneStep">
+        <template #verify>
+          <PhoneVerifyContent
+            @back="closePhoneFlow"
+            @next="goPhoneChangeStep"
+          />
+        </template>
+        <template #change>
+          <PhoneNumberChangeContent
+            @back="backPhoneToVerify"
+            @next="goPhoneSuccessStep"
+          />
+        </template>
         <template #success>
           <PhoneChangeSuccessContent @back="closePhoneFlow" />
         </template>
-      </SuccessPageTransition>
+      </StepFadeTransition>
     </BottomSheetPanel>
-    <BottomSheetPanel :show="deleteFlowVisible" :z-index="1100" @closed="resetDeleteFlow">
-      <PhoneVerifyContent
-        v-if="deleteStep === 'verify'"
-        @back="closeDeleteFlow"
-        @next="goDeleteConfirmStep"
-      />
-      <SuccessPageTransition v-else :show-success="deleteStep === 'success'">
-        <AccountDeleteConfirmContent
-          @cancel="closeDeleteFlow"
-          @confirm="goDeleteSuccessStep"
-        />
+    <BottomSheetPanel :show="deleteFlowVisible" @closed="resetDeleteFlow">
+      <StepFadeTransition :step="deleteStep">
+        <template #verify>
+          <PhoneVerifyContent
+            @back="closeDeleteFlow"
+            @next="goDeleteConfirmStep"
+          />
+        </template>
+        <template #confirm>
+          <AccountDeleteConfirmContent
+            @cancel="closeDeleteFlow"
+            @confirm="goDeleteSuccessStep"
+          />
+        </template>
         <template #success>
           <AccountDeleteSuccessContent @back="closeDeleteFlow" />
         </template>
-      </SuccessPageTransition>
+      </StepFadeTransition>
     </BottomSheetPanel>
-    <BottomSheetPanel :show="registerFlowVisible" :z-index="1100">
+    <BottomSheetPanel :show="registerFlowVisible">
       <RegisterInfoContent @back="closeRegisterFlow" />
     </BottomSheetPanel>
-    <BottomSheetPanel :show="invoiceFlowVisible" :z-index="1100">
+    <BottomSheetPanel :show="invoiceFlowVisible">
       <InvoiceInfoContent @back="closeInvoiceFlow" />
     </BottomSheetPanel>
-    <BottomSheetPanel :show="addressFlowVisible" :z-index="1100" @closed="resetAddressFlow">
+    <BottomSheetPanel :show="addressFlowVisible" @closed="resetAddressFlow">
       <AddressInfoContent ref="addressInfoRef" @back="closeAddressFlow" />
     </BottomSheetPanel>
-    <BottomSheetPanel :show="uploadFlowVisible" :z-index="1100" @closed="resetUploadFlow">
-      <SuccessPageTransition :show-success="uploadStep === 'success'">
-        <UploadMaterialsContent
-          @back="closeUploadFlow"
-          @next="goUploadSuccessStep"
-        />
+    <BottomSheetPanel :show="uploadFlowVisible" @closed="resetUploadFlow">
+      <StepFadeTransition :step="uploadStep">
+        <template #form>
+          <UploadMaterialsContent
+            @back="closeUploadFlow"
+            @next="goUploadSuccessStep"
+          />
+        </template>
         <template #success>
           <UploadSuccessContent @back="closeUploadFlow" />
         </template>
-      </SuccessPageTransition>
+      </StepFadeTransition>
     </BottomSheetPanel>
   </view>
 </template>
@@ -145,7 +156,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
-import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import StepFadeTransition from '@/components/StepFadeTransition.vue';
 import PhoneVerifyContent from '@/components/PhoneVerifyContent.vue';
 import PasswordChangeContent from '@/components/PasswordChangeContent.vue';
 import PasswordSuccessContent from '@/components/PasswordSuccessContent.vue';
