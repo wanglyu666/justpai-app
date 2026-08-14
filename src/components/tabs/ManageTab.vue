@@ -21,7 +21,7 @@
         <view class="wallet-front">
           <image
             class="wallet-front-shape"
-            src="/static/images/work-card/wallet-front.svg"
+            src="/static/images/work-card/wallet-front.png"
             mode="scaleToFill"
           />
           <view class="wallet-balance">

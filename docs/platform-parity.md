@@ -30,12 +30,12 @@ JustPai 是 **H5 / Android / iOS** 同一套代码的 App。验收标准不是�
 
 ## 异形卡片（如工作台「合同档案」）
 
-1. 形状用静态资源：`/static/images/work-card/*.svg`（安卓不认 svg 时改 png）
-2. 用 `<image mode="scaleToFill">` 铺满，不要内联 SVG
-3. 容器给白色/深色底 + `box-shadow`，图片失败时文字和底还在
-4. 改完必须 **安卓真机** 打开工作台，确认缺口形状、数字「36」、阴影都在
+1. 形状用静态 **PNG**：`/static/images/work-card/contract-banner.png`（安卓对 SVG 不稳定）
+2. 用 `<image mode="scaleToFill">` 铺满，不要内联 SVG，不要用两块矩形硬拼缺口
+3. 造型必须是左侧文件夹签 + 右侧平滑落肩（原设计路径），不能是直角台阶
+4. 改完必须在 **安卓真机** 打开工作台，确认文件夹轮廓、数字「36」都在
 
-管理页钱包顶边异形同样处理。
+管理页钱包顶边异形同样用 PNG：`wallet-front.png`。
 
 ## 开发自检
 

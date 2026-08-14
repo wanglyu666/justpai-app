@@ -6,13 +6,9 @@
 
     <view class="card-layout">
       <view class="card card-banner" @click="openContractArchive">
-        <view class="card-banner-fallback">
-          <view class="card-banner-fallback-lower" />
-          <view class="card-banner-fallback-upper" />
-        </view>
         <image
           class="card-banner-shape"
-          src="/static/images/work-card/contract-banner.svg"
+          src="/static/images/work-card/contract-banner.png"
           mode="scaleToFill"
         />
         <text class="card-banner-title">合同档案</text>
@@ -245,33 +241,6 @@ const handleFeedbackCreateSubmit = (payload: {
   flex-direction: column;
   box-sizing: border-box;
   padding: 32rpx 36rpx 36rpx;
-}
-
-.card-banner-fallback {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.card-banner-fallback-lower {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 112rpx;
-  bottom: 0;
-  background-color: #ffffff;
-  border-radius: 0 48rpx 48rpx 48rpx;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.05);
-}
-
-.card-banner-fallback-upper {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 71%;
-  height: 140rpx;
-  background-color: #ffffff;
-  border-radius: 48rpx 40rpx 0 0;
 }
 
 .card-banner-shape {
