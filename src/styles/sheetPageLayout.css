@@ -6,43 +6,43 @@
 
 .sheet-page {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .sheet-page--with-footer {
-  padding-bottom: 120px;
+  padding-bottom: 240rpx;
 }
 
 .sheet-page__header {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 
 .sheet-page__back-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .sheet-page__back-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .sheet-page__body {
-  padding: 24px 24px 0;
+  padding: 48rpx 48rpx 0;
   box-sizing: border-box;
 }
 
 .sheet-page__title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -50,9 +50,9 @@
 
 .sheet-page__desc {
   display: block;
-  margin-top: 8px;
-  margin-bottom: 20px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  margin-bottom: 40rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -62,7 +62,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 28px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 56rpx 48rpx calc(32rpx + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(
     180deg,
     rgba(244, 245, 247, 0) 0%,

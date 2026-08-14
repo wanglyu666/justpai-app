@@ -149,7 +149,7 @@ const handleSubmit = () => {
 }
 
 .page-header {
-  padding: 0 24px 16px;
+  padding: 0 48rpx 32rpx;
   flex-shrink: 0;
 }
 
@@ -158,65 +158,65 @@ const handleSubmit = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 44px;
+  height: 88rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .header-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .header-title {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #111827;
-  line-height: 44px;
+  line-height: 88rpx;
   pointer-events: none;
 }
 
 .header-placeholder {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   flex-shrink: 0;
 }
 
 .form-scroll {
   flex: 1;
   min-height: 0;
-  padding: 0 24px;
+  padding: 0 48rpx;
   box-sizing: border-box;
 }
 
 .product-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px;
+  gap: 24rpx;
+  padding: 28rpx;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  border-radius: 40rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
   box-sizing: border-box;
 }
 
 .product-thumb {
-  width: 64px;
-  height: 64px;
-  border-radius: 14px;
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 28rpx;
   overflow: hidden;
   background-color: #f3f4f6;
   flex-shrink: 0;
@@ -233,11 +233,11 @@ const handleSubmit = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .product-name {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.35;
@@ -249,17 +249,17 @@ const handleSubmit = () => {
 }
 
 .product-order-no {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.3;
 }
 
 .review-card {
-  margin-top: 16px;
-  padding: 28px 18px 18px;
+  margin-top: 32rpx;
+  padding: 56rpx 36rpx 36rpx;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  border-radius: 40rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
   box-sizing: border-box;
 }
 
@@ -270,7 +270,7 @@ const handleSubmit = () => {
 }
 
 .rating-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 600;
   color: #6b7280;
   line-height: 1.4;
@@ -278,16 +278,16 @@ const handleSubmit = () => {
 }
 
 .star-row {
-  margin-top: 24px;
+  margin-top: 48rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .star-btn {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -303,86 +303,86 @@ const handleSubmit = () => {
 }
 
 .star-icon {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   display: block;
   transition: filter 0.2s ease;
 }
 
 .star-icon.active {
-  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.45));
+  filter: drop-shadow(0 0 16rpx rgba(251, 191, 36, 0.45));
 }
 
 .rating-label {
-  margin-top: 16px;
-  min-height: 18px;
-  font-size: 15px;
+  margin-top: 32rpx;
+  min-height: 36rpx;
+  font-size: 30rpx;
   font-weight: 700;
   color: #f59e0b;
-  line-height: 18px;
+  line-height: 36rpx;
   text-align: center;
 }
 
 .content-section {
-  margin-top: 24px;
+  margin-top: 48rpx;
 }
 
 .content-title {
   display: block;
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.3;
-  margin-bottom: 12px;
+  margin-bottom: 24rpx;
 }
 
 .content-textarea {
   width: 100%;
-  min-height: 140px;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #f3f4f6;
+  min-height: 280rpx;
+  padding: 28rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid #f3f4f6;
   background-color: #f9fafb;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   line-height: 1.5;
   box-sizing: border-box;
 }
 
 .content-readonly {
-  min-height: 140px;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #f3f4f6;
+  min-height: 280rpx;
+  padding: 28rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid #f3f4f6;
   background-color: #f9fafb;
   box-sizing: border-box;
 }
 
 .content-readonly-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #374151;
   line-height: 1.5;
   word-break: break-all;
 }
 
 .submitted-at-row {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid #f3f4f6;
+  margin-top: 40rpx;
+  padding-top: 32rpx;
+  border-top: 2rpx solid #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .submitted-at-label {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
   flex-shrink: 0;
 }
 
 .submitted-at-value {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #374151;
   text-align: right;
@@ -393,19 +393,19 @@ const handleSubmit = () => {
 }
 
 .scroll-bottom-spacer {
-  height: 24px;
+  height: 48rpx;
 }
 
 .submit-footer {
   flex-shrink: 0;
-  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 32rpx 48rpx calc(32rpx + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
 .submit-btn {
   width: 100%;
-  height: 52px;
-  border-radius: 999px;
+  height: 104rpx;
+  border-radius: 1998rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -418,7 +418,7 @@ const handleSubmit = () => {
 }
 
 .submit-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   transition: color 0.2s ease;

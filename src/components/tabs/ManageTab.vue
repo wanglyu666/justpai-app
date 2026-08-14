@@ -19,29 +19,11 @@
           <text class="wallet-brand wallet-brand-paypal">PayPal</text>
         </view>
         <view class="wallet-front">
-          <svg
+          <image
             class="wallet-front-shape"
-            viewBox="0 0 360 220"
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill="#111111"
-              d="M0 52
-                 H48
-                 L92 14
-                 Q96 10 102 10
-                 H258
-                 Q264 10 268 14
-                 L312 52
-                 H360
-                 V196
-                 Q360 220 336 220
-                 H24
-                 Q0 220 0 196
-                 Z"
-            />
-          </svg>
+            src="/static/images/work-card/wallet-front.svg"
+            mode="scaleToFill"
+          />
           <view class="wallet-balance">
             <text class="wallet-amount">$120,000</text>
             <text class="wallet-label">Total Balance</text>
@@ -56,100 +38,100 @@
 
 <style scoped>
 .header {
-  padding: 0 24px;
-  margin-bottom: 28px;
+  padding: 0 48rpx;
+  margin-bottom: 56rpx;
 }
 
 .title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 900;
   color: #111827;
 }
 
 .card-layout {
-  padding: 0 24px;
+  padding: 0 48rpx;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-height: calc(100vh - var(--page-safe-top) - 180px);
+  gap: 24rpx;
+  min-height: calc(100vh - var(--page-safe-top) - 360rpx);
 }
 
 .card {
   background-color: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border-radius: 48rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
 }
 
 .card-top {
-  height: 140px;
+  height: 280rpx;
   flex-shrink: 0;
 }
 
 .card-middle {
-  height: 120px;
+  height: 240rpx;
   flex-shrink: 0;
 }
 
 .card-bottom {
   flex: 1;
-  min-height: 300px;
+  min-height: 600rpx;
 }
 
 .wallet-stack {
   position: relative;
   overflow: hidden;
   background-color: #1a1a1a;
-  border: 3px solid #2a2a2a;
+  border: 6rpx solid #2a2a2a;
   padding: 0;
   box-sizing: border-box;
 }
 
 .wallet-layer {
   position: absolute;
-  left: 12px;
-  right: 12px;
-  height: 88px;
-  border-radius: 18px;
+  left: 24rpx;
+  right: 24rpx;
+  height: 176rpx;
+  border-radius: 36rpx;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
-  padding: 16px 18px 0;
+  padding: 32rpx 36rpx 0;
   box-sizing: border-box;
 }
 
 .wallet-visa {
-  top: 12px;
+  top: 24rpx;
   background-color: #1a1f71;
   z-index: 1;
 }
 
 .wallet-stripe {
-  top: 60px;
+  top: 120rpx;
   background-color: #635bff;
   z-index: 2;
 }
 
 .wallet-paypal {
-  top: 108px;
+  top: 216rpx;
   background-color: #ffffff;
   z-index: 3;
 }
 
 .wallet-brand {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 700;
   line-height: 1;
 }
 
 .wallet-brand-visa {
   color: #ffffff;
-  letter-spacing: 1px;
+  letter-spacing: 2rpx;
 }
 
 .wallet-brand-stripe {
   color: #ffffff;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.4rpx;
 }
 
 .wallet-brand-paypal {
@@ -161,7 +143,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  top: 156px;
+  top: 312rpx;
   z-index: 4;
 }
 
@@ -176,24 +158,24 @@
 
 .wallet-balance {
   position: absolute;
-  left: 22px;
-  bottom: 22px;
+  left: 44rpx;
+  bottom: 44rpx;
   z-index: 1;
   display: flex;
   flex-direction: column;
 }
 
 .wallet-amount {
-  font-size: 36px;
+  font-size: 72rpx;
   font-weight: 800;
   color: #ffffff;
   line-height: 1.1;
-  letter-spacing: -0.5px;
+  letter-spacing: -1rpx;
 }
 
 .wallet-label {
-  margin-top: 6px;
-  font-size: 13px;
+  margin-top: 12rpx;
+  font-size: 26rpx;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.55);
   line-height: 1.2;

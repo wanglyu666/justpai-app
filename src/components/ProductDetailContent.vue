@@ -409,28 +409,28 @@ const handleBack = () => {
 <style scoped>
 .product-detail {
   min-height: 100%;
-  padding-bottom: 120px;
+  padding-bottom: 240rpx;
   box-sizing: border-box;
 }
 
 .detail-header-btn {
   position: absolute;
-  top: 36px;
+  top: 72rpx;
   z-index: 2;
 }
 
 .detail-header-btn-left {
-  left: 20px;
+  left: 40rpx;
 }
 
 .detail-header-btn-right {
-  right: 20px;
+  right: 40rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -442,19 +442,19 @@ const handleBack = () => {
 }
 
 .header-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .hero-section {
   position: relative;
-  padding: 0 12px;
-  margin-bottom: 8px;
+  padding: 0 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .hero-swiper {
-  height: 440px;
-  border-radius: 28px;
+  height: 880rpx;
+  border-radius: 56rpx;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -463,7 +463,7 @@ const handleBack = () => {
 .hero-image-wrap {
   width: 100%;
   height: 100%;
-  border-radius: 28px;
+  border-radius: 56rpx;
   overflow: hidden;
   background-color: #e5e7eb;
 }
@@ -476,27 +476,27 @@ const handleBack = () => {
 
 .hero-dots {
   position: absolute;
-  bottom: 40px;
+  bottom: 80rpx;
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 6px;
+  gap: 12rpx;
   z-index: 2;
 }
 
 .hero-dot {
-  width: 6px;
-  height: 6px;
+  width: 12rpx;
+  height: 12rpx;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.45);
   transition: all 0.2s ease;
 }
 
 .hero-dot.active {
-  width: 8px;
-  height: 8px;
+  width: 16rpx;
+  height: 16rpx;
   background-color: #ffffff;
 }
 
@@ -507,14 +507,14 @@ const handleBack = () => {
   transform: translate(-50%, 50%);
   width: 72%;
   z-index: 4;
-  min-height: 66px;
-  border-radius: 999px;
+  min-height: 132rpx;
+  border-radius: 1998rpx;
   background-color: #9fe870;
   display: flex;
   align-items: center;
-  padding: 10px 14px;
+  padding: 20rpx 28rpx;
   box-sizing: border-box;
-  box-shadow: 0 4px 16px rgba(22, 51, 0, 0.12);
+  box-shadow: 0 8rpx 32rpx rgba(22, 51, 0, 0.12);
 }
 
 .hero-meta-side-left {
@@ -530,35 +530,35 @@ const handleBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 132px;
-  padding: 0 6px;
+  min-width: 264rpx;
+  padding: 0 12rpx;
   box-sizing: border-box;
 }
 
 .hero-meta-divider {
-  width: 1px;
-  height: 32px;
+  width: 2rpx;
+  height: 64rpx;
   background-color: rgba(22, 51, 0, 0.18);
   flex-shrink: 0;
-  margin-left: -6px;
-  margin-right: 4px;
+  margin-left: -12rpx;
+  margin-right: 8rpx;
 }
 
 .hero-rating-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .hero-rating-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .hero-rating-label {
-  font-size: 11px;
+  font-size: 22rpx;
   font-weight: 600;
   color: rgba(22, 51, 0, 0.55);
   line-height: 1;
@@ -566,20 +566,20 @@ const handleBack = () => {
 }
 
 .hero-star {
-  font-size: 18px;
+  font-size: 36rpx;
   color: #fbbf24;
   line-height: 1;
 }
 
 .hero-rating-value {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1;
 }
 
 .hero-meta-price {
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.15;
@@ -591,38 +591,38 @@ const handleBack = () => {
 .info-section {
   position: relative;
   z-index: 2;
-  padding: 42px 24px 0;
+  padding: 84rpx 48rpx 0;
 }
 
 .product-title {
   display: block;
-  font-size: 22px;
+  font-size: 44rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.3;
-  margin-bottom: 4px;
+  margin-bottom: 8rpx;
 }
 
 .detail-tabs {
-  margin-top: 16px;
+  margin-top: 32rpx;
 }
 
 .tab-bar {
   position: relative;
   display: flex;
   align-items: flex-end;
-  gap: 28px;
-  border-bottom: 1px solid #e5e7eb;
+  gap: 56rpx;
+  border-bottom: 2rpx solid #e5e7eb;
 }
 
 .tab-item {
   position: relative;
-  padding-bottom: 12px;
+  padding-bottom: 24rpx;
   flex-shrink: 0;
 }
 
 .tab-label {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 500;
   color: #9ca3af;
   line-height: 1.3;
@@ -638,15 +638,15 @@ const handleBack = () => {
   position: absolute;
   left: 0;
   bottom: 0;
-  height: 3px;
-  border-radius: 2px;
+  height: 6rpx;
+  border-radius: 4rpx;
   background-color: #9fe870;
   transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1), width 320ms cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform, width;
 }
 
 .tab-panel {
-  padding-top: 16px;
+  padding-top: 32rpx;
 }
 
 .tab-panel-body-wrap {
@@ -662,9 +662,9 @@ const handleBack = () => {
 .param-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 8px 0;
-  border-bottom: 1px solid #f3f4f6;
+  gap: 32rpx;
+  padding: 16rpx 0;
+  border-bottom: 2rpx solid #f3f4f6;
 }
 
 .param-row:last-child {
@@ -672,9 +672,9 @@ const handleBack = () => {
 }
 
 .param-label {
-  width: 40px;
+  width: 80rpx;
   flex-shrink: 0;
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.3;
@@ -689,17 +689,17 @@ const handleBack = () => {
 .param-options {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .param-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
-  padding: 0 18px;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
+  height: 72rpx;
+  padding: 0 36rpx;
+  border-radius: 1998rpx;
+  border: 2rpx solid #e5e7eb;
   background-color: #f9fafb;
   box-sizing: border-box;
 }
@@ -710,7 +710,7 @@ const handleBack = () => {
 }
 
 .param-chip-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #374151;
   white-space: nowrap;
@@ -725,24 +725,24 @@ const handleBack = () => {
 .detail-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .detail-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .detail-label {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
   flex-shrink: 0;
 }
 
 .detail-value {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   font-weight: 600;
   text-align: right;
@@ -750,9 +750,9 @@ const handleBack = () => {
 
 .detail-footer {
   position: fixed;
-  left: 24px;
-  right: 24px;
-  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  left: 48rpx;
+  right: 48rpx;
+  bottom: calc(48rpx + env(safe-area-inset-bottom, 0px));
   z-index: 10;
   box-sizing: border-box;
 }
@@ -761,30 +761,30 @@ const handleBack = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  border-radius: 32px;
-  padding: 8px 10px 8px 14px;
-  min-height: 60px;
+  gap: 24rpx;
+  border-radius: 64rpx;
+  padding: 16rpx 20rpx 16rpx 28rpx;
+  min-height: 120rpx;
   box-sizing: border-box;
 }
 
 .qty-counter {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20rpx;
   flex-shrink: 0;
 }
 
 .qty-btn {
-  width: 32px;
-  height: 32px;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .qty-btn-text {
-  font-size: 22px;
+  font-size: 44rpx;
   line-height: 1;
   color: #9ca3af;
   font-weight: 400;
@@ -793,16 +793,16 @@ const handleBack = () => {
 .action-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
   flex: 1;
   justify-content: flex-end;
   min-width: 0;
 }
 
 .cart-btn {
-  height: 44px;
-  padding: 0 16px;
-  border-radius: 22px;
+  height: 88rpx;
+  padding: 0 32rpx;
+  border-radius: 44rpx;
   background-color: #111827;
   display: flex;
   align-items: center;
@@ -811,7 +811,7 @@ const handleBack = () => {
 }
 
 .cart-btn-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #ffffff;
   white-space: nowrap;

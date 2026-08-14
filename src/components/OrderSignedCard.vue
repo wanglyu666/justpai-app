@@ -54,10 +54,10 @@ const emit = defineEmits<{
 
 <style scoped>
 .order-card {
-  padding: 12px 14px;
-  border-radius: 20px;
+  padding: 24rpx 28rpx;
+  border-radius: 40rpx;
   background-color: #ffffff;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
   box-sizing: border-box;
 }
 
@@ -65,19 +65,19 @@ const emit = defineEmits<{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .deadline-text {
-  font-size: 11px;
+  font-size: 22rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .status-badge {
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 999px;
+  height: 44rpx;
+  padding: 0 20rpx;
+  border-radius: 1998rpx;
   background-color: #dcfce7;
   display: flex;
   align-items: center;
@@ -86,29 +86,29 @@ const emit = defineEmits<{
 }
 
 .status-badge-text {
-  font-size: 11px;
+  font-size: 22rpx;
   font-weight: 700;
   color: #166534;
   line-height: 1;
 }
 
 .card-body {
-  margin-top: 10px;
+  margin-top: 20rpx;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .product-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .product-thumb {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 24rpx;
   overflow: hidden;
   background-color: #f3f4f6;
   flex-shrink: 0;
@@ -125,11 +125,11 @@ const emit = defineEmits<{
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .product-name {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.35;
@@ -141,7 +141,7 @@ const emit = defineEmits<{
 }
 
 .product-sub {
-  font-size: 11px;
+  font-size: 22rpx;
   color: #9ca3af;
   line-height: 1.45;
 }
@@ -150,20 +150,20 @@ const emit = defineEmits<{
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  gap: 4rpx;
   align-self: flex-end;
-  margin-top: -2px;
+  margin-top: -4rpx;
 }
 
 .price-label {
-  font-size: 11px;
+  font-size: 22rpx;
   color: #9ca3af;
   line-height: 1.2;
   white-space: nowrap;
 }
 
 .price-value {
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.1;
@@ -171,23 +171,23 @@ const emit = defineEmits<{
 }
 
 .card-divider {
-  margin-top: 10px;
-  height: 1px;
+  margin-top: 20rpx;
+  height: 2rpx;
   background-color: #f3f4f6;
 }
 
 .card-actions {
-  margin-top: 10px;
+  margin-top: 20rpx;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .action-btn {
-  height: 32px;
-  padding: 0 16px;
-  border-radius: 999px;
+  height: 64rpx;
+  padding: 0 32rpx;
+  border-radius: 1998rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -200,11 +200,11 @@ const emit = defineEmits<{
 
 .action-btn--secondary {
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
 }
 
 .action-btn-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 700;
   color: #163300;
   line-height: 1;

@@ -314,7 +314,7 @@ const handlePaymentConfirm = () => {
 }
 
 .page-header {
-  padding: 0 24px 16px;
+  padding: 0 48rpx 32rpx;
   flex-shrink: 0;
 }
 
@@ -323,44 +323,44 @@ const handlePaymentConfirm = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 44px;
+  height: 88rpx;
 }
 
 .header-title {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #111827;
-  line-height: 44px;
+  line-height: 88rpx;
   pointer-events: none;
 }
 
 .product-toggle {
-  width: 156px;
-  margin-top: 16px;
+  width: 312rpx;
+  margin-top: 32rpx;
 }
 
 .toggle-track {
   position: relative;
   display: flex;
   align-items: center;
-  height: 40px;
-  padding: 4px;
-  border-radius: 999px;
+  height: 80rpx;
+  padding: 8rpx;
+  border-radius: 1998rpx;
   background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.06);
   box-sizing: border-box;
 }
 
 .toggle-thumb {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  height: calc(100% - 8px);
-  border-radius: 999px;
+  top: 8rpx;
+  left: 8rpx;
+  width: calc(50% - 8rpx);
+  height: calc(100% - 16rpx);
+  border-radius: 1998rpx;
   background-color: #9fe870;
   transition: left 280ms cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -380,7 +380,7 @@ const handlePaymentConfirm = () => {
 }
 
 .toggle-text {
-  font-size: 12px;
+  font-size: 24rpx;
   font-weight: 600;
   color: #9ca3af;
   line-height: 1;
@@ -394,25 +394,25 @@ const handlePaymentConfirm = () => {
 }
 
 .cart-list-group {
-  min-height: 1px;
+  min-height: 2rpx;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
   flex-shrink: 0;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
@@ -431,8 +431,8 @@ const handlePaymentConfirm = () => {
 }
 
 .header-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .cart-body {
@@ -440,7 +440,7 @@ const handlePaymentConfirm = () => {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 24px calc(20px + env(safe-area-inset-bottom, 0px));
+  padding: 0 48rpx calc(40rpx + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -457,7 +457,7 @@ const handlePaymentConfirm = () => {
 }
 
 .list-top-spacer {
-  height: 20px;
+  height: 40rpx;
   flex-shrink: 0;
 }
 
@@ -466,7 +466,7 @@ const handlePaymentConfirm = () => {
   left: 0;
   right: 0;
   z-index: 2;
-  height: 36px;
+  height: 72rpx;
   pointer-events: none;
 }
 
@@ -496,26 +496,26 @@ const handlePaymentConfirm = () => {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 10px;
-  padding: 8px 0 14px;
+  gap: 20rpx;
+  padding: 16rpx 0 28rpx;
   flex-shrink: 0;
 }
 
 .test-btn {
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 20px;
+  height: 80rpx;
+  padding: 0 32rpx;
+  border-radius: 40rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.04);
   box-sizing: border-box;
 }
 
 .test-btn-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 600;
   color: #374151;
   line-height: 1;
@@ -523,45 +523,45 @@ const handlePaymentConfirm = () => {
 }
 
 .cart-item-shell {
-  margin-bottom: 14px;
-  border-radius: 22px;
+  margin-bottom: 28rpx;
+  border-radius: 44rpx;
   transition:
     opacity 300ms ease,
     transform 300ms ease,
     max-height 300ms ease,
     margin-bottom 300ms ease;
-  max-height: 140px;
+  max-height: 280rpx;
   overflow: hidden;
 }
 
 .cart-item-shell--removing {
   opacity: 0;
-  transform: translateY(-6px) scale(0.98);
+  transform: translateY(-12rpx) scale(0.98);
   max-height: 0;
   margin-bottom: 0;
   pointer-events: none;
 }
 
 .cart-item-shell:last-child {
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
 }
 
 .cart-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
+  gap: 20rpx;
+  padding: 24rpx;
   background-color: #ffffff;
-  border-radius: 22px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  border-radius: 44rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
   box-sizing: border-box;
 }
 
 .card-image-wrap {
   position: relative;
-  width: 88px;
-  height: 88px;
-  border-radius: 18px;
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 36rpx;
   overflow: hidden;
   background-color: #f3f4f6;
   flex-shrink: 0;
@@ -574,10 +574,10 @@ const handlePaymentConfirm = () => {
 }
 
 .select-circle {
-  width: 22px;
-  height: 22px;
-  border-radius: 11px;
-  border: 2px solid #d1d5db;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  border: 4rpx solid #d1d5db;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -592,8 +592,8 @@ const handlePaymentConfirm = () => {
 }
 
 .select-check-icon {
-  width: 12px;
-  height: 12px;
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .card-info {
@@ -602,11 +602,11 @@ const handlePaymentConfirm = () => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .card-name {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.3;
@@ -618,27 +618,27 @@ const handlePaymentConfirm = () => {
 .card-meta {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .meta-star {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #fbbf24;
   line-height: 1;
 }
 
 .meta-text {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
 .meta-dot {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #d1d5db;
 }
 
 .card-price {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #111827;
 }
@@ -647,15 +647,15 @@ const handlePaymentConfirm = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
   flex-shrink: 0;
-  padding-right: 2px;
+  padding-right: 4rpx;
 }
 
 .qty-circle {
-  width: 28px;
-  height: 28px;
-  border-radius: 14px;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -670,7 +670,7 @@ const handlePaymentConfirm = () => {
 }
 
 .qty-symbol {
-  font-size: 16px;
+  font-size: 32rpx;
   line-height: 1;
   font-weight: 500;
 }
@@ -684,35 +684,35 @@ const handlePaymentConfirm = () => {
 }
 
 .empty-state {
-  padding: 64px 0;
+  padding: 128rpx 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .empty-icon {
-  width: 40px;
-  height: 40px;
+  width: 80rpx;
+  height: 80rpx;
   opacity: 0.35;
 }
 
 .empty-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
 }
 
 .checkout-bar {
-  margin-top: 12px;
-  min-height: 64px;
-  border-radius: 999px;
+  margin-top: 24rpx;
+  min-height: 128rpx;
+  border-radius: 1998rpx;
   background-color: #9fe870;
-  padding: 10px 10px 10px 20px;
+  padding: 20rpx 20rpx 20rpx 40rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  box-shadow: 0 8px 24px rgba(22, 51, 0, 0.12);
+  gap: 24rpx;
+  box-shadow: 0 16rpx 48rpx rgba(22, 51, 0, 0.12);
   flex-shrink: 0;
   box-sizing: border-box;
 }
@@ -724,19 +724,19 @@ const handlePaymentConfirm = () => {
 .total-block {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4rpx;
   min-width: 0;
 }
 
 .total-label {
-  font-size: 11px;
+  font-size: 22rpx;
   font-weight: 600;
   color: rgba(22, 51, 0, 0.55);
   line-height: 1.2;
 }
 
 .total-value {
-  font-size: 22px;
+  font-size: 44rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.1;
@@ -745,14 +745,14 @@ const handlePaymentConfirm = () => {
 .footer-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
   flex-shrink: 0;
 }
 
 .footer-btn {
-  height: 44px;
-  padding: 0 16px;
-  border-radius: 999px;
+  height: 88rpx;
+  padding: 0 32rpx;
+  border-radius: 1998rpx;
   background-color: #163300;
   display: flex;
   align-items: center;
@@ -760,7 +760,7 @@ const handlePaymentConfirm = () => {
 }
 
 .footer-btn-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #ffffff;
   white-space: nowrap;

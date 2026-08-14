@@ -429,73 +429,73 @@ const onConfirm = () => {
 <style scoped>
 .bill-management {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .page-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .search-bar {
-  width: 168px;
+  width: 336rpx;
   flex-shrink: 0;
   margin-left: auto;
-  height: 44px;
+  height: 88rpx;
   background-color: #ffffff;
-  border-radius: 999px;
+  border-radius: 1998rpx;
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0 28rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .search-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 16rpx;
   flex-shrink: 0;
 }
 
 .search-input {
   flex: 1;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   height: 100%;
 }
 
 .search-placeholder {
   color: #9ca3af;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .content {
-  padding: 32px 24px 0;
+  padding: 64rpx 48rpx 0;
 }
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -503,37 +503,37 @@ const onConfirm = () => {
 
 .page-desc {
   display: block;
-  margin-top: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  margin-bottom: 32rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
 
 .status-capsule-wrap {
-  margin-bottom: 24px;
+  margin-bottom: 48rpx;
 }
 
 .bill-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .bill-card {
   width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 18px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 40rpx;
+  padding: 36rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .bill-name {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.3;
@@ -542,7 +542,7 @@ const onConfirm = () => {
 .bill-meta-row {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .bill-meta {
@@ -550,7 +550,7 @@ const onConfirm = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .bill-meta-amount {
@@ -560,34 +560,34 @@ const onConfirm = () => {
 }
 
 .meta-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .meta-value {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.3;
   word-break: break-all;
 }
 
 .meta-amount {
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.3;
 }
 
 .empty-tip {
-  padding: 48px 0;
+  padding: 96rpx 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .empty-tip-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
 }
 
@@ -600,24 +600,24 @@ const onConfirm = () => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .detail-title {
-  margin-bottom: 4px;
+  margin-bottom: 8rpx;
 }
 
 .detail-card {
   background-color: #ffffff;
-  border-radius: 24px;
-  padding: 28px 22px;
-  min-height: 420px;
+  border-radius: 48rpx;
+  padding: 56rpx 44rpx;
+  min-height: 840rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 22px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  gap: 44rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
 }
 
 .invoice-card {
@@ -628,20 +628,20 @@ const onConfirm = () => {
 .card-section-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 2px;
+  gap: 16rpx;
+  margin-bottom: 4rpx;
 }
 
 .card-section-bar {
-  width: 4px;
-  height: 16px;
-  border-radius: 2px;
+  width: 8rpx;
+  height: 32rpx;
+  border-radius: 4rpx;
   background-color: #9fe870;
   flex-shrink: 0;
 }
 
 .card-section-title-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.2;
@@ -649,7 +649,7 @@ const onConfirm = () => {
 
 .detail-row {
   display: flex;
-  gap: 18px;
+  gap: 36rpx;
 }
 
 .detail-field {
@@ -657,7 +657,7 @@ const onConfirm = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .detail-field-full {
@@ -665,13 +665,13 @@ const onConfirm = () => {
 }
 
 .detail-label {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .detail-value {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.35;
@@ -681,13 +681,13 @@ const onConfirm = () => {
 .detail-footer {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .footer-btn {
   flex: 1;
-  height: 52px;
-  border-radius: 16px;
+  height: 104rpx;
+  border-radius: 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -695,7 +695,7 @@ const onConfirm = () => {
 
 .footer-btn-secondary {
   background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .footer-btn-primary {
@@ -703,7 +703,7 @@ const onConfirm = () => {
 }
 
 .footer-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   line-height: 1;
 }

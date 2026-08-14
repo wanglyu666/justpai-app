@@ -94,24 +94,24 @@ const handleConfirm = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 48rpx;
   box-sizing: border-box;
 }
 
 .payment-center {
   width: 100%;
-  max-width: 320px;
+  max-width: 640rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .payment-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.4;
-  margin-bottom: 28px;
+  margin-bottom: 56rpx;
   text-align: center;
 }
 
@@ -120,12 +120,12 @@ const handleConfirm = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .payment-row-top {
   display: flex;
-  gap: 16px;
+  gap: 32rpx;
   width: 100%;
   justify-content: center;
 }
@@ -137,15 +137,15 @@ const handleConfirm = () => {
 }
 
 .payment-block {
-  width: 132px;
-  height: 96px;
-  border-radius: 18px;
+  width: 264rpx;
+  height: 192rpx;
+  border-radius: 36rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px;
+  padding: 28rpx;
   box-sizing: border-box;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
@@ -162,13 +162,13 @@ const handleConfirm = () => {
 
 .payment-footer {
   flex-shrink: 0;
-  padding: 12px 24px calc(12px + env(safe-area-inset-bottom, 0px));
+  padding: 24rpx 48rpx calc(24rpx + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
 .payment-confirm {
-  height: 48px;
-  border-radius: 24px;
+  height: 96rpx;
+  border-radius: 48rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -181,7 +181,7 @@ const handleConfirm = () => {
 }
 
 .payment-confirm-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   line-height: 1;

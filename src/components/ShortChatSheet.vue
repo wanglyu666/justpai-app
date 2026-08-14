@@ -249,9 +249,9 @@ const removeMedia = (index: number) => {
   right: 0;
   bottom: 0;
   height: 78vh;
-  max-height: 820px;
+  max-height: 1640rpx;
   background-color: #f4f5f7;
-  border-radius: 24px 24px 0 0;
+  border-radius: 48rpx 48rpx 0 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -267,12 +267,12 @@ const removeMedia = (index: number) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 56px;
+  height: 112rpx;
   flex-shrink: 0;
 }
 
 .short-chat-title {
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1;
@@ -280,18 +280,18 @@ const removeMedia = (index: number) => {
 
 .short-chat-close {
   position: absolute;
-  right: 16px;
+  right: 32rpx;
   top: 50%;
   transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .short-chat-close-text {
-  font-size: 24px;
+  font-size: 48rpx;
   line-height: 1;
   color: #9ca3af;
 }
@@ -300,31 +300,31 @@ const removeMedia = (index: number) => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 4px 20px 12px;
+  padding: 8rpx 40rpx 24rpx;
   box-sizing: border-box;
 }
 
 .section-card {
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 18px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  border-radius: 40rpx;
+  padding: 36rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.04);
   box-sizing: border-box;
 }
 
 .section-title {
   display: block;
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
-  margin-bottom: 6px;
+  margin-bottom: 12rpx;
 }
 
 .section-hint {
   display: block;
-  margin-bottom: 14px;
-  font-size: 12px;
+  margin-bottom: 28rpx;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.4;
 }
@@ -333,33 +333,33 @@ const removeMedia = (index: number) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20rpx;
 }
 
 .field-label {
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .field-count {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
 .required {
   color: #ef4444;
-  margin-right: 2px;
+  margin-right: 4rpx;
 }
 
 .field-textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 12px 14px;
+  min-height: 240rpx;
+  padding: 24rpx 28rpx;
   background-color: #f8fafc;
-  border: 1px solid #eef2f7;
-  border-radius: 14px;
-  font-size: 14px;
+  border: 2rpx solid #eef2f7;
+  border-radius: 28rpx;
+  font-size: 28rpx;
   font-weight: 500;
   color: #111827;
   line-height: 1.55;
@@ -368,23 +368,23 @@ const removeMedia = (index: number) => {
 
 .input-placeholder {
   color: #d1d5db;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .media-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .media-grid:not(:empty) {
-  margin-bottom: 10px;
+  margin-bottom: 20rpx;
 }
 
 .media-item {
-  width: calc((100% - 20px) / 3);
+  width: calc((100% - 40rpx) / 3);
   aspect-ratio: 1;
-  border-radius: 14px;
+  border-radius: 28rpx;
   overflow: hidden;
   box-sizing: border-box;
   position: relative;
@@ -407,18 +407,18 @@ const removeMedia = (index: number) => {
 }
 
 .media-video-badge {
-  font-size: 11px;
+  font-size: 22rpx;
   font-weight: 800;
   color: #6d28d9;
 }
 
 .media-remove {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
-  border-radius: 11px;
+  top: 12rpx;
+  right: 12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
   background-color: rgba(17, 24, 39, 0.72);
   display: flex;
   align-items: center;
@@ -426,39 +426,39 @@ const removeMedia = (index: number) => {
 }
 
 .media-remove-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #ffffff;
   line-height: 1;
 }
 
 .media-add {
   width: 100%;
-  height: 72px;
-  border-radius: 14px;
-  border: 1.5px dashed #d1d5db;
+  height: 144rpx;
+  border-radius: 28rpx;
+  border: 3rpx dashed #d1d5db;
   background-color: #f8fafc;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 16rpx;
   box-sizing: border-box;
 }
 
 .media-add-icon {
-  width: 22px;
-  height: 22px;
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .media-add-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #6b7280;
 }
 
 .short-chat-footer {
   flex-shrink: 0;
-  padding: 12px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 24rpx 40rpx calc(32rpx + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(
     180deg,
     rgba(244, 245, 247, 0) 0%,
@@ -469,8 +469,8 @@ const removeMedia = (index: number) => {
 }
 
 .confirm-btn {
-  height: 52px;
-  border-radius: 999px;
+  height: 104rpx;
+  border-radius: 1998rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -482,7 +482,7 @@ const removeMedia = (index: number) => {
 }
 
 .confirm-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   line-height: 1;

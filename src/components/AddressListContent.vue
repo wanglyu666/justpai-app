@@ -133,7 +133,7 @@ const confirmDelete = () => {
 
 <style scoped>
 .address-list {
-  padding: 32px 24px 40px;
+  padding: 64rpx 48rpx 80rpx;
   box-sizing: border-box;
 }
 
@@ -141,11 +141,11 @@ const confirmDelete = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 48rpx;
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -154,20 +154,20 @@ const confirmDelete = () => {
 .add-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 18px;
+  gap: 8rpx;
+  height: 72rpx;
+  padding: 0 28rpx;
+  border-radius: 36rpx;
   background-color: #9fe870;
 }
 
 .add-icon {
-  width: 16px;
-  height: 16px;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .add-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #163300;
 }
@@ -175,23 +175,23 @@ const confirmDelete = () => {
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32rpx;
   position: relative;
 }
 
 .address-card {
-  padding: 20px;
-  border-radius: 16px;
+  padding: 40rpx;
+  border-radius: 32rpx;
   background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.06);
 }
 
 .card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 24rpx;
+  margin-bottom: 36rpx;
 }
 
 .card-title-row {
@@ -199,22 +199,22 @@ const confirmDelete = () => {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
   min-width: 0;
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.4;
 }
 
 .default-tag {
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 4rpx 16rpx;
+  border-radius: 12rpx;
   background-color: rgba(159, 232, 112, 0.35);
-  font-size: 12px;
+  font-size: 24rpx;
   font-weight: 700;
   color: #163300;
   line-height: 1.4;
@@ -224,27 +224,27 @@ const confirmDelete = () => {
 .card-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
   flex-shrink: 0;
 }
 
 .action-btn {
-  width: 32px;
-  height: 32px;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .action-icon {
-  width: 18px;
-  height: 18px;
+  width: 36rpx;
+  height: 36rpx;
 }
 
 .card-body {
   display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 32rpx;
+  margin-bottom: 32rpx;
 }
 
 .info-col {
@@ -258,15 +258,15 @@ const confirmDelete = () => {
 
 .info-label {
   display: block;
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
-  margin-bottom: 6px;
+  margin-bottom: 12rpx;
 }
 
 .info-value {
   display: block;
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.45;

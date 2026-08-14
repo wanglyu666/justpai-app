@@ -45,16 +45,10 @@
       <view class="todo-panel">
         <view class="todo-panel-header">
           <view class="progress-ring">
-            <svg class="progress-svg" viewBox="0 0 52 52">
-              <circle class="progress-track" cx="26" cy="26" r="22" />
-              <circle
-                class="progress-bar"
-                cx="26"
-                cy="26"
-                r="22"
-                :stroke-dasharray="progressDasharray"
-              />
-            </svg>
+            <view
+              class="progress-ring-dial"
+              :style="{ backgroundImage: progressRingBackground }"
+            />
             <view class="progress-ring-inner">
               <text class="progress-text">{{ completedCount }}/{{ todos.length }}</text>
             </view>
@@ -143,18 +137,19 @@ const PROGRESS_CIRCUMFERENCE = 2 * Math.PI * PROGRESS_RADIUS;
 
 const completedCount = computed(() => todos.value.filter((todo) => todo.completed).length);
 
-const progressDasharray = computed(() => {
+const progressRingBackground = computed(() => {
   const total = todos.value.length || 1;
   const done = completedCount.value;
-  let filled = (done / total) * PROGRESS_CIRCUMFERENCE;
+  let ratio = done / total;
 
   if (done === 0) {
-    filled = 12;
+    ratio = 12 / PROGRESS_CIRCUMFERENCE;
   } else if (done === total) {
-    filled = PROGRESS_CIRCUMFERENCE;
+    ratio = 1;
   }
 
-  return `${filled} ${PROGRESS_CIRCUMFERENCE - filled}`;
+  const deg = `${(ratio * 360).toFixed(2)}deg`;
+  return `conic-gradient(from -90deg, #163300 0deg, #163300 ${deg}, #9fe870 ${deg} 360deg)`;
 });
 
 const onTodoAction = () => {
@@ -208,22 +203,22 @@ const goToMessages = () => {
 
 <style scoped>
 .container {
-  padding-bottom: 20px;
+  padding-bottom: 40rpx;
 }
 .header {
-  padding: 0 24px 20px;
+  padding: 0 48rpx 40rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .avatar-btn {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background-color: #ffffff;
-  padding: 2px;
+  padding: 4rpx;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
 }
 .avatar-img {
@@ -233,56 +228,56 @@ const goToMessages = () => {
   display: block;
 }
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
 }
 .header-actions {
   display: flex;
   align-items: center;
-  height: 44px;
-  border-radius: 22px;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.05);
 }
 .action-item {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .action-divider {
-  width: 1px;
-  height: 20px;
+  width: 2rpx;
+  height: 40rpx;
   background-color: #e5e7eb;
 }
 .icon {
-  width: 22px;
-  height: 22px;
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .section {
-  padding: 0 24px;
-  margin-bottom: 30px;
+  padding: 0 48rpx;
+  margin-bottom: 60rpx;
 }
 .banner-section {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 .banner-swiper {
-  height: 160px;
-  border-radius: 24px;
+  height: 320rpx;
+  border-radius: 48rpx;
   overflow: hidden;
 }
 .banner-item {
   width: 100%;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 48rpx;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -294,43 +289,32 @@ const goToMessages = () => {
 
 .todo-panel {
   background-color: #eef0ea;
-  border-radius: 24px;
-  padding: 18px 16px;
+  border-radius: 48rpx;
+  padding: 36rpx 32rpx;
 }
 .todo-panel-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 .progress-ring {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 104rpx;
+  height: 104rpx;
   flex-shrink: 0;
 }
-.progress-svg {
-  width: 52px;
-  height: 52px;
-  transform: rotate(-90deg);
-}
-.progress-track {
-  fill: none;
-  stroke: #9fe870;
-  stroke-width: 6;
-}
-.progress-bar {
-  fill: none;
-  stroke: #163300;
-  stroke-width: 6;
-  stroke-linecap: round;
+.progress-ring-dial {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
 }
 .progress-ring-inner {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 36px;
-  height: 36px;
+  width: 72rpx;
+  height: 72rpx;
   border-radius: 50%;
   background-color: #ffffff;
   display: flex;
@@ -338,7 +322,7 @@ const goToMessages = () => {
   justify-content: center;
 }
 .progress-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 900;
   color: #163300;
 }
@@ -348,21 +332,21 @@ const goToMessages = () => {
 }
 .todo-panel-title {
   display: block;
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.3;
 }
 .todo-panel-desc {
   display: block;
-  margin-top: 4px;
-  font-size: 13px;
+  margin-top: 8rpx;
+  font-size: 26rpx;
   color: #6b7280;
   line-height: 1.4;
 }
 .todo-panel-action-btn {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background-color: #111827;
   display: flex;
@@ -371,74 +355,74 @@ const goToMessages = () => {
   flex-shrink: 0;
 }
 .todo-panel-action-icon {
-  width: 22px;
-  height: 22px;
+  width: 44rpx;
+  height: 44rpx;
   filter: brightness(0) invert(1);
 }
 .todo-task-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 16px;
+  gap: 20rpx;
+  margin-top: 32rpx;
 }
 .todo-task-card {
   display: flex;
   align-items: flex-start;
   background-color: #ffffff;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 32rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
 }
 .todo-icon-circle {
-  width: 56px;
-  height: 56px;
-  margin-right: 14px;
+  width: 112rpx;
+  height: 112rpx;
+  margin-right: 28rpx;
   flex-shrink: 0;
   border-radius: 50%;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .todo-icon-img {
-  width: 24px;
-  height: 24px;
+  width: 48rpx;
+  height: 48rpx;
   filter: brightness(0);
 }
 .todo-task-content {
   flex: 1;
   min-width: 0;
-  padding-top: 2px;
+  padding-top: 4rpx;
 }
 .todo-task-title {
   display: block;
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.35;
-  margin-bottom: 6px;
+  margin-bottom: 12rpx;
 }
 .todo-task-desc {
   display: block;
-  font-size: 13px;
+  font-size: 26rpx;
   color: #6b7280;
   line-height: 1.5;
 }
 
 .section-title {
   display: block;
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: bold;
   color: #111827;
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
 }
 
 .news-section {
-  margin-bottom: 30px;
+  margin-bottom: 60rpx;
 }
 .news-section .section-title {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 .news-scroll {
   white-space: nowrap;
@@ -448,28 +432,28 @@ const goToMessages = () => {
   display: inline-block;
   width: 82%;
   vertical-align: top;
-  margin-right: 12px;
+  margin-right: 24rpx;
   white-space: normal;
   box-sizing: border-box;
 }
 .news-slide:first-child {
-  margin-left: 24px;
+  margin-left: 48rpx;
 }
 .news-slide:last-child {
-  margin-right: 24px;
+  margin-right: 48rpx;
 }
 .news-text {
-  margin-bottom: 12px;
+  margin-bottom: 24rpx;
 }
 .news-date {
   display: block;
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
-  margin-bottom: 6px;
+  margin-bottom: 12rpx;
 }
 .news-title {
   display: block;
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: bold;
   color: #111827;
   line-height: 1.4;
@@ -477,8 +461,8 @@ const goToMessages = () => {
 .news-cover {
   position: relative;
   width: 100%;
-  height: 200px;
-  border-radius: 16px;
+  height: 400rpx;
+  border-radius: 32rpx;
   overflow: hidden;
   background-color: #e5e7eb;
 }

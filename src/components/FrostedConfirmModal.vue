@@ -135,7 +135,7 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 40px;
+  padding: 0 80rpx;
   box-sizing: border-box;
 }
 
@@ -152,13 +152,13 @@ defineExpose({
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 320px;
-  border-radius: 24px;
+  max-width: 640rpx;
+  border-radius: 48rpx;
   overflow: hidden;
 }
 
 .modal-panel-compact {
-  max-width: 260px;
+  max-width: 520rpx;
 }
 
 .modal-glass {
@@ -167,7 +167,7 @@ defineExpose({
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 24px;
+  border-radius: 48rpx;
   box-sizing: border-box;
   pointer-events: none;
 }
@@ -175,41 +175,41 @@ defineExpose({
 .modal-content {
   position: relative;
   z-index: 1;
-  padding: 28px 20px 20px;
+  padding: 56rpx 40rpx 40rpx;
   box-sizing: border-box;
 }
 
 .modal-content-compact {
-  padding: 22px 16px 16px;
+  padding: 44rpx 32rpx 32rpx;
 }
 
 .modal-body {
-  padding: 8px 8px 28px;
+  padding: 16rpx 16rpx 56rpx;
   text-align: center;
 }
 
 .modal-body-compact {
-  padding: 4px 4px 8px;
+  padding: 8rpx 8rpx 16rpx;
 }
 
 .modal-icon {
-  width: 88px;
-  height: 88px;
-  margin: 0 auto 16px;
+  width: 176rpx;
+  height: 176rpx;
+  margin: 0 auto 32rpx;
   display: block;
 }
 
 .modal-icon-large {
-  width: 120px;
-  height: 120px;
-  margin-bottom: 12px;
+  width: 240rpx;
+  height: 240rpx;
+  margin-bottom: 24rpx;
 }
 
 .modal-title {
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.4;
@@ -219,8 +219,8 @@ defineExpose({
   display: block;
   width: 100%;
   text-align: center;
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -228,12 +228,12 @@ defineExpose({
 .modal-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .cancel-btn {
-  height: 48px;
-  border-radius: 24px;
+  height: 96rpx;
+  border-radius: 48rpx;
   background-color: rgba(229, 231, 235, 0.72);
   display: flex;
   align-items: center;
@@ -241,14 +241,14 @@ defineExpose({
 }
 
 .cancel-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #374151;
 }
 
 .confirm-btn {
-  height: 48px;
-  border-radius: 24px;
+  height: 96rpx;
+  border-radius: 48rpx;
   background-color: #ff3b30;
   display: flex;
   align-items: center;
@@ -260,7 +260,7 @@ defineExpose({
 }
 
 .confirm-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #ffffff;
 }

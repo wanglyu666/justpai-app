@@ -265,25 +265,25 @@ defineExpose({ resetForm });
 <style scoped>
 .section-card {
   background-color: #ffffff;
-  border-radius: 22px;
-  padding: 20px 18px;
-  margin-bottom: 14px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  border-radius: 44rpx;
+  padding: 40rpx 36rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 8rpx 40rpx rgba(15, 23, 42, 0.04);
 }
 
 .section-title {
   display: block;
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #111827;
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
 }
 
 .section-hint {
   display: block;
-  margin-top: -8px;
-  margin-bottom: 14px;
-  font-size: 13px;
+  margin-top: -16rpx;
+  margin-bottom: 28rpx;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
 }
@@ -296,15 +296,15 @@ defineExpose({ resetForm });
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
 }
 
 .field-label {
   display: block;
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
 }
 
 .field-label-row .field-label {
@@ -312,13 +312,13 @@ defineExpose({ resetForm });
 }
 
 .field-count {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
 .required {
   color: #ef4444;
-  margin-right: 2px;
+  margin-right: 4rpx;
 }
 
 .dropdown-wrap {
@@ -326,10 +326,10 @@ defineExpose({ resetForm });
 }
 
 .picker-field {
-  height: 48px;
-  padding: 0 14px;
-  border-radius: 14px;
-  border: 1px solid #eef0ea;
+  height: 96rpx;
+  padding: 0 28rpx;
+  border-radius: 28rpx;
+  border: 2rpx solid #eef0ea;
   background-color: #f8faf9;
   display: flex;
   align-items: center;
@@ -345,13 +345,13 @@ defineExpose({ resetForm });
 .picker-text {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #111827;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding-right: 10px;
+  padding-right: 20rpx;
 }
 
 .picker-text.placeholder {
@@ -360,7 +360,7 @@ defineExpose({ resetForm });
 }
 
 .picker-arrow {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
   line-height: 1;
   transition: transform 0.2s ease;
@@ -376,26 +376,26 @@ defineExpose({ resetForm });
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(100% + 8px);
+  top: calc(100% + 16rpx);
   z-index: 20;
   background-color: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #eef2f7;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+  border-radius: 32rpx;
+  border: 2rpx solid #eef2f7;
+  box-shadow: 0 24rpx 56rpx rgba(15, 23, 42, 0.1);
   overflow: hidden;
-  max-height: 240px;
+  max-height: 480rpx;
   overflow-y: auto;
 }
 
 .dropdown-option {
-  min-height: 48px;
-  padding: 12px 14px;
+  min-height: 96rpx;
+  padding: 24rpx 28rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 20rpx;
   box-sizing: border-box;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 2rpx solid #f3f4f6;
 }
 
 .dropdown-option:last-child {
@@ -409,7 +409,7 @@ defineExpose({ resetForm });
 .dropdown-option-text {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #111827;
   line-height: 1.4;
@@ -420,19 +420,19 @@ defineExpose({ resetForm });
 }
 
 .dropdown-check-icon {
-  width: 16px;
-  height: 16px;
+  width: 32rpx;
+  height: 32rpx;
   flex-shrink: 0;
 }
 
 .field-textarea {
   width: 100%;
-  min-height: 140px;
-  padding: 12px 14px;
+  min-height: 280rpx;
+  padding: 24rpx 28rpx;
   background-color: #f8faf9;
-  border: 1px solid #eef0ea;
-  border-radius: 14px;
-  font-size: 14px;
+  border: 2rpx solid #eef0ea;
+  border-radius: 28rpx;
+  font-size: 28rpx;
   font-weight: 500;
   color: #111827;
   line-height: 1.55;
@@ -441,23 +441,23 @@ defineExpose({ resetForm });
 
 .input-placeholder {
   color: #d1d5db;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .media-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .media-grid:not(:empty) {
-  margin-bottom: 10px;
+  margin-bottom: 20rpx;
 }
 
 .media-item {
-  width: calc((100% - 20px) / 3);
+  width: calc((100% - 40rpx) / 3);
   aspect-ratio: 1;
-  border-radius: 14px;
+  border-radius: 28rpx;
   overflow: hidden;
   box-sizing: border-box;
   position: relative;
@@ -480,7 +480,7 @@ defineExpose({ resetForm });
 }
 
 .media-video-badge {
-  font-size: 11px;
+  font-size: 22rpx;
   font-weight: 800;
   color: #6d28d9;
   letter-spacing: 0.04em;
@@ -488,11 +488,11 @@ defineExpose({ resetForm });
 
 .media-remove {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
-  border-radius: 11px;
+  top: 12rpx;
+  right: 12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
   background-color: rgba(17, 24, 39, 0.72);
   display: flex;
   align-items: center;
@@ -500,43 +500,43 @@ defineExpose({ resetForm });
 }
 
 .media-remove-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #ffffff;
   line-height: 1;
 }
 
 .media-add {
   width: 100%;
-  height: 88px;
-  border-radius: 14px;
-  border: 1.5px dashed #d1d5db;
+  height: 176rpx;
+  border-radius: 28rpx;
+  border: 3rpx dashed #d1d5db;
   background-color: #f8faf9;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 16rpx;
   box-sizing: border-box;
 }
 
 .media-add-alone {
-  height: 108px;
+  height: 216rpx;
 }
 
 .media-add-icon {
-  width: 24px;
-  height: 24px;
+  width: 48rpx;
+  height: 48rpx;
 }
 
 .media-add-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #6b7280;
 }
 
 .submit-btn {
-  height: 52px;
-  border-radius: 999px;
+  height: 104rpx;
+  border-radius: 1998rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -549,7 +549,7 @@ defineExpose({ resetForm });
 }
 
 .submit-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   line-height: 1;

@@ -155,37 +155,37 @@ const handleConfirm = () => {
 <style scoped>
 .upload-materials {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .page-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .content {
-  padding: 32px 24px 0;
+  padding: 64rpx 48rpx 0;
 }
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -193,37 +193,37 @@ const handleConfirm = () => {
 
 .page-desc {
   display: block;
-  margin-top: 10px;
-  font-size: 14px;
+  margin-top: 20rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
 
 .section {
-  margin-top: 28px;
+  margin-top: 56rpx;
 }
 
 .section-title {
   display: block;
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: 800;
   color: #111827;
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
 }
 
 .field-label {
   display: block;
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
 }
 
 .upload-box {
   width: 100%;
-  height: 160px;
-  border-radius: 16px;
-  border: 1px dashed #d1d5db;
+  height: 320rpx;
+  border-radius: 32rpx;
+  border: 2rpx dashed #d1d5db;
   background-color: #ffffff;
   overflow: hidden;
   box-sizing: border-box;
@@ -236,22 +236,22 @@ const handleConfirm = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .upload-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 4px;
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 8rpx;
 }
 
 .upload-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #6b7280;
 }
 
 .upload-hint {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
@@ -263,34 +263,34 @@ const handleConfirm = () => {
 .form-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .field-input {
   width: 100%;
-  height: 48px;
-  padding: 0 14px;
+  height: 96rpx;
+  padding: 0 28rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 14px;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 24rpx;
+  font-size: 28rpx;
   color: #111827;
   box-sizing: border-box;
 }
 
 .input-placeholder {
   color: #d1d5db;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .submit-wrap {
-  padding: 32px 0 0;
+  padding: 64rpx 0 0;
 }
 
 .submit-btn {
   width: 100%;
-  height: 52px;
-  border-radius: 26px;
+  height: 104rpx;
+  border-radius: 52rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -303,7 +303,7 @@ const handleConfirm = () => {
 }
 
 .submit-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   transition: color 0.2s ease;

@@ -337,25 +337,25 @@ const resetUploadFlow = () => {
 
 <style scoped>
 .profile-content {
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
 }
 
 .page-header {
-  padding: 0 24px 8px;
+  padding: 0 48rpx 16rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .icon-btn-hover {
@@ -363,8 +363,8 @@ const resetUploadFlow = () => {
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 
@@ -372,16 +372,16 @@ const resetUploadFlow = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 24px 36px;
+  padding: 16rpx 48rpx 72rpx;
 }
 
 .avatar-wrap {
-  width: 88px;
-  height: 88px;
-  border-radius: 44px;
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 88rpx;
   background-color: #f3f4f6;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
 }
 
 .avatar-img {
@@ -390,11 +390,11 @@ const resetUploadFlow = () => {
 }
 
 .user-name {
-  font-size: 22px;
+  font-size: 44rpx;
   font-weight: 900;
   color: #111827;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
+  letter-spacing: 1rpx;
+  margin-bottom: 20rpx;
 }
 
 .user-info {
@@ -402,11 +402,11 @@ const resetUploadFlow = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .user-title {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.4;
 }
@@ -419,59 +419,59 @@ const resetUploadFlow = () => {
 }
 
 .info-label {
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
 }
 
 .info-value {
-  font-size: 13px;
+  font-size: 26rpx;
   color: #475569;
 }
 
 .sections {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 
 .section {
-  margin-bottom: 36px;
+  margin-bottom: 72rpx;
 }
 
 .section-title {
   display: block;
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: 800;
   color: #111827;
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
 }
 
 .section-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .list-item {
   display: flex;
   align-items: center;
-  padding: 14px 0;
+  padding: 28rpx 0;
 }
 
 .list-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
-  border: 1px solid #e5e7eb;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  border: 2rpx solid #e5e7eb;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
+  margin-right: 32rpx;
   flex-shrink: 0;
 }
 
 .list-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
   filter: brightness(0);
 }
 
@@ -484,24 +484,24 @@ const resetUploadFlow = () => {
 }
 
 .list-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.35;
 }
 
 .list-subtitle {
-  margin-top: 4px;
-  font-size: 13px;
+  margin-top: 8rpx;
+  font-size: 26rpx;
   color: #6b7280;
   line-height: 1.4;
 }
 
 .list-arrow {
-  font-size: 24px;
+  font-size: 48rpx;
   color: #d1d5db;
   line-height: 1;
-  margin-left: 12px;
+  margin-left: 24rpx;
   flex-shrink: 0;
 }
 </style>

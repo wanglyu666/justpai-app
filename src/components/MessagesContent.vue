@@ -76,23 +76,23 @@ const handleBack = () => {
 <style scoped>
 .messages-content {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .page-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .icon-btn-hover {
@@ -100,17 +100,17 @@ const handleBack = () => {
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .content {
-  padding: 32px 24px 0;
+  padding: 64rpx 48rpx 0;
 }
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -118,9 +118,9 @@ const handleBack = () => {
 
 .page-desc {
   display: block;
-  margin-top: 8px;
-  margin-bottom: 24px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  margin-bottom: 48rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -128,25 +128,25 @@ const handleBack = () => {
 .message-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .message-card {
   display: flex;
   align-items: flex-start;
   background-color: #ffffff;
-  border-radius: 16px;
-  padding: 12px 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 32rpx;
+  padding: 24rpx 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
 }
 
 .message-icon-circle {
-  width: 44px;
-  height: 44px;
-  margin-right: 12px;
+  width: 88rpx;
+  height: 88rpx;
+  margin-right: 24rpx;
   flex-shrink: 0;
   border-radius: 50%;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -154,8 +154,8 @@ const handleBack = () => {
 }
 
 .message-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
   filter: brightness(0);
 }
 
@@ -167,16 +167,16 @@ const handleBack = () => {
 
 .message-card-title {
   display: block;
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.3;
-  margin-bottom: 4px;
+  margin-bottom: 8rpx;
 }
 
 .message-card-desc {
   display: block;
-  font-size: 12px;
+  font-size: 24rpx;
   color: #6b7280;
   line-height: 1.45;
 }

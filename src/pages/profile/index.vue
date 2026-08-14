@@ -15,7 +15,7 @@ const goBack = () => {
 <style scoped>
 .container {
   min-height: 100vh;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 </style>

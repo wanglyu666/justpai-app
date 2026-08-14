@@ -163,15 +163,15 @@ const onDownload = (item: InquiryMessage) => {
 .sheet-page__body {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
+  gap: 24rpx;
+  margin-bottom: 8rpx;
 }
 
 .title-block {
@@ -186,9 +186,9 @@ const onDownload = (item: InquiryMessage) => {
 
 .add-btn {
   flex-shrink: 0;
-  height: 44px;
-  padding: 0 24px;
-  border-radius: 14px;
+  height: 88rpx;
+  padding: 0 48rpx;
+  border-radius: 28rpx;
   background-color: #111827;
   display: flex;
   align-items: center;
@@ -196,7 +196,7 @@ const onDownload = (item: InquiryMessage) => {
 }
 
 .add-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
@@ -204,35 +204,35 @@ const onDownload = (item: InquiryMessage) => {
 
 .inquiry-card {
   background-color: #ffffff;
-  border-radius: 22px;
-  padding: 18px;
+  border-radius: 44rpx;
+  padding: 36rpx;
   box-sizing: border-box;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 16rpx 48rpx rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .meta-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .avatar {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background-color: #b2c4d7;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.08);
 }
 
 .avatar-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #ffffff;
   line-height: 1;
@@ -242,7 +242,7 @@ const onDownload = (item: InquiryMessage) => {
   flex: 1;
   min-width: 0;
   display: flex;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .meta-field {
@@ -250,7 +250,7 @@ const onDownload = (item: InquiryMessage) => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .meta-field-time {
@@ -258,13 +258,13 @@ const onDownload = (item: InquiryMessage) => {
 }
 
 .card-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .card-value {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.3;
@@ -272,45 +272,45 @@ const onDownload = (item: InquiryMessage) => {
 }
 
 .card-value-time {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #374151;
 }
 
 .content-panel {
-  padding: 14px;
-  border-radius: 16px;
+  padding: 28rpx;
+  border-radius: 32rpx;
   background-color: #f8fafc;
-  border: 1px solid #eef2f7;
+  border: 2rpx solid #eef2f7;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20rpx;
   box-sizing: border-box;
 }
 
 .content-head {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .content-bar {
-  width: 4px;
-  height: 14px;
-  border-radius: 2px;
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
   background-color: #9fe870;
   flex-shrink: 0;
 }
 
 .content-title {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.2;
 }
 
 .card-body {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 500;
   color: #1f2937;
   line-height: 1.65;
@@ -318,26 +318,26 @@ const onDownload = (item: InquiryMessage) => {
 }
 
 .attach-panel {
-  padding: 12px;
-  border-radius: 16px;
+  padding: 24rpx;
+  border-radius: 32rpx;
   background-color: #f8fafc;
-  border: 1px solid #eef2f7;
+  border: 2rpx solid #eef2f7;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
   box-sizing: border-box;
 }
 
 .attach-file {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .attach-ext {
-  width: 42px;
-  height: 30px;
-  border-radius: 8px;
+  width: 84rpx;
+  height: 60rpx;
+  border-radius: 16rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,7 +346,7 @@ const onDownload = (item: InquiryMessage) => {
 }
 
 .attach-ext-text {
-  font-size: 10px;
+  font-size: 20rpx;
   font-weight: 800;
   color: #374151;
   line-height: 1;
@@ -389,11 +389,11 @@ const onDownload = (item: InquiryMessage) => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .attach-name {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.35;
@@ -404,37 +404,37 @@ const onDownload = (item: InquiryMessage) => {
 
 .download-btn {
   width: 100%;
-  height: 44px;
-  border-radius: 999px;
+  height: 88rpx;
+  border-radius: 1998rpx;
   background-color: #9fe870;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 16rpx;
   box-sizing: border-box;
 }
 
 .download-icon {
-  width: 16px;
-  height: 16px;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .download-btn-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1;
 }
 
 .empty-tip {
-  padding: 48px 0;
+  padding: 96rpx 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .empty-tip-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
 }
 </style>

@@ -80,6 +80,7 @@ import {
 } from '@/utils/modalTransition';
 import { getFrostedGlassStyle, getFrostedOverlayStyle } from '@/utils/frostedGlass';
 import { annualRegions, type AnnualRegionId } from '@/data/storeProducts';
+import { rpx2px } from '@/utils/rpx';
 
 export type StoreProductType = 'ordinary' | 'annual';
 
@@ -88,7 +89,7 @@ export type StoreFilterResult = {
   annualRegion: AnnualRegionId;
 };
 
-const REGION_ITEM_STEP = 112;
+const REGION_ITEM_STEP_RPX = 224;
 
 const glassStyle = getFrostedGlassStyle('modalPanel');
 const overlayStyle = getFrostedOverlayStyle();
@@ -120,7 +121,7 @@ const syncDraftFromProps = () => {
   draftAnnualRegion.value = props.annualRegion;
   const index = annualRegions.findIndex((region) => region.id === props.annualRegion);
   focusedRegionIndex.value = index >= 0 ? index : 0;
-  regionScrollLeft.value = focusedRegionIndex.value * REGION_ITEM_STEP;
+  regionScrollLeft.value = focusedRegionIndex.value * rpx2px(REGION_ITEM_STEP_RPX);
 };
 
 watch(
@@ -135,11 +136,11 @@ watch(
 const focusRegion = (index: number) => {
   focusedRegionIndex.value = index;
   draftAnnualRegion.value = annualRegions[index].id;
-  regionScrollLeft.value = index * REGION_ITEM_STEP;
+  regionScrollLeft.value = index * rpx2px(REGION_ITEM_STEP_RPX);
 };
 
 const handleRegionScroll = (e: { detail: { scrollLeft: number } }) => {
-  const index = Math.round(e.detail.scrollLeft / REGION_ITEM_STEP);
+  const index = Math.round(e.detail.scrollLeft / rpx2px(REGION_ITEM_STEP_RPX));
   const clamped = Math.max(0, Math.min(annualRegions.length - 1, index));
   if (clamped === focusedRegionIndex.value) return;
   focusedRegionIndex.value = clamped;
@@ -189,7 +190,7 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 32px;
+  padding: 0 64rpx;
   box-sizing: border-box;
 }
 
@@ -206,8 +207,8 @@ defineExpose({
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 340px;
-  border-radius: 24px;
+  max-width: 680rpx;
+  border-radius: 48rpx;
   overflow: hidden;
 }
 
@@ -217,7 +218,7 @@ defineExpose({
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 24px;
+  border-radius: 48rpx;
   box-sizing: border-box;
   pointer-events: none;
 }
@@ -225,17 +226,17 @@ defineExpose({
 .filter-modal-content {
   position: relative;
   z-index: 1;
-  padding: 24px 20px 20px;
+  padding: 48rpx 40rpx 40rpx;
   box-sizing: border-box;
 }
 
 .filter-modal-title {
   display: block;
   text-align: center;
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #111827;
-  margin-bottom: 20px;
+  margin-bottom: 40rpx;
 }
 
 .product-toggle {
@@ -246,20 +247,20 @@ defineExpose({
   position: relative;
   display: flex;
   align-items: center;
-  height: 40px;
-  padding: 4px;
-  border-radius: 999px;
+  height: 80rpx;
+  padding: 8rpx;
+  border-radius: 1998rpx;
   background-color: rgba(255, 255, 255, 0.72);
   box-sizing: border-box;
 }
 
 .toggle-thumb {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  height: calc(100% - 8px);
-  border-radius: 999px;
+  top: 8rpx;
+  left: 8rpx;
+  width: calc(50% - 8rpx);
+  height: calc(100% - 16rpx);
+  border-radius: 1998rpx;
   background-color: #9fe870;
   transition: left 280ms cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -279,7 +280,7 @@ defineExpose({
 }
 
 .toggle-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 600;
   color: #9ca3af;
   line-height: 1;
@@ -304,26 +305,26 @@ defineExpose({
 }
 
 .region-section.visible {
-  max-height: 120px;
+  max-height: 240rpx;
   opacity: 1;
-  margin-top: 20px;
+  margin-top: 40rpx;
   overflow: visible;
 }
 
 .region-label {
   display: block;
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 600;
   color: #6b7280;
-  margin-bottom: 12px;
+  margin-bottom: 24rpx;
 }
 
 .region-scroll-wrap {
   position: relative;
   overflow: hidden;
-  margin-left: -2px;
-  margin-right: -2px;
-  width: calc(100% + 4px);
+  margin-left: -4rpx;
+  margin-right: -4rpx;
+  width: calc(100% + 8rpx);
   transform: translateZ(0);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
@@ -359,12 +360,12 @@ defineExpose({
 .region-scroll-inner {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 4px;
+  gap: 24rpx;
+  padding-bottom: 8rpx;
 }
 
 .region-edge-spacer {
-  width: 96px;
+  width: 192rpx;
   flex-shrink: 0;
 }
 
@@ -372,9 +373,9 @@ defineExpose({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
-  height: 44px;
-  border-radius: 999px;
+  width: 200rpx;
+  height: 88rpx;
+  border-radius: 1998rpx;
   background-color: rgba(255, 255, 255, 0.72);
   flex-shrink: 0;
   transition:
@@ -387,11 +388,11 @@ defineExpose({
 .region-item.centered {
   transform: scale(1.06);
   background-color: #ffffff;
-  box-shadow: 0 4px 14px rgba(22, 51, 0, 0.1);
+  box-shadow: 0 8rpx 28rpx rgba(22, 51, 0, 0.1);
 }
 
 .region-item-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 600;
   color: #374151;
   white-space: nowrap;
@@ -403,9 +404,9 @@ defineExpose({
 }
 
 .filter-modal-action {
-  margin-top: 22px;
-  height: 48px;
-  border-radius: 999px;
+  margin-top: 44rpx;
+  height: 96rpx;
+  border-radius: 1998rpx;
   background-color: #9fe870;
   display: flex;
   align-items: center;
@@ -413,7 +414,7 @@ defineExpose({
 }
 
 .filter-modal-action-text {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 700;
   color: #163300;
 }

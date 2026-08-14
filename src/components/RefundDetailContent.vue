@@ -205,7 +205,7 @@ const handleBack = () => {
 }
 
 .page-header {
-  padding: 0 24px 16px;
+  padding: 0 48rpx 32rpx;
   flex-shrink: 0;
 }
 
@@ -214,56 +214,56 @@ const handleBack = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 44px;
+  height: 88rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .header-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .header-title {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #111827;
-  line-height: 44px;
+  line-height: 88rpx;
   pointer-events: none;
 }
 
 .header-placeholder {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   flex-shrink: 0;
 }
 
 .detail-scroll {
   flex: 1;
   min-height: 0;
-  padding: 0 24px;
+  padding: 0 48rpx;
   box-sizing: border-box;
 }
 
 .step-card {
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 22px 18px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
-  margin-bottom: 16px;
+  border-radius: 40rpx;
+  padding: 44rpx 36rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
+  margin-bottom: 32rpx;
 }
 
 .refund-progress-track {
@@ -272,18 +272,18 @@ const handleBack = () => {
 }
 
 .refund-progress-item {
-  width: 64px;
+  width: 128rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
   flex-shrink: 0;
 }
 
 .refund-node {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -296,7 +296,7 @@ const handleBack = () => {
 
 .refund-node--current {
   background-color: #ffffff;
-  border: 2px solid #9fe870;
+  border: 4rpx solid #9fe870;
 }
 
 .refund-node--pending {
@@ -305,13 +305,13 @@ const handleBack = () => {
 }
 
 .refund-node-check {
-  width: 18px;
-  height: 18px;
+  width: 36rpx;
+  height: 36rpx;
   filter: brightness(0) saturate(100%) invert(8%) sepia(41%) saturate(1097%) hue-rotate(62deg) brightness(98%) contrast(103%);
 }
 
 .refund-node-num {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 700;
   color: #374151;
   line-height: 1;
@@ -322,7 +322,7 @@ const handleBack = () => {
 }
 
 .refund-label {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #9ca3af;
   line-height: 1.2;
@@ -336,7 +336,7 @@ const handleBack = () => {
 }
 
 .refund-sub {
-  font-size: 12px;
+  font-size: 24rpx;
   line-height: 1.35;
   text-align: center;
 }
@@ -352,9 +352,9 @@ const handleBack = () => {
 
 .refund-line {
   flex: 1;
-  height: 2px;
+  height: 4rpx;
   background-color: #e5e7eb;
-  margin-top: 19px;
+  margin-top: 38rpx;
   min-width: 0;
 }
 
@@ -364,23 +364,23 @@ const handleBack = () => {
 
 .section-card {
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 18px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
-  margin-bottom: 16px;
+  border-radius: 40rpx;
+  padding: 36rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
+  margin-bottom: 32rpx;
 }
 
 .meta-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 36rpx;
 }
 
 .meta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 40rpx;
 }
 
 .meta-row-top {
@@ -388,14 +388,14 @@ const handleBack = () => {
 }
 
 .meta-row-amount {
-  padding-top: 10px;
-  margin-top: 6px;
-  border-top: 1px solid #f3f4f6;
+  padding-top: 20rpx;
+  margin-top: 12rpx;
+  border-top: 2rpx solid #f3f4f6;
 }
 
 .meta-label {
-  width: 96px;
-  font-size: 14px;
+  width: 192rpx;
+  font-size: 28rpx;
   color: #9ca3af;
   flex-shrink: 0;
   line-height: 1.45;
@@ -404,7 +404,7 @@ const handleBack = () => {
 .meta-value {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #374151;
   text-align: right;
@@ -412,13 +412,13 @@ const handleBack = () => {
 }
 
 .meta-value-wrap {
-  margin-left: 12px;
+  margin-left: 24rpx;
   line-height: 1.5;
   word-break: break-all;
 }
 
 .meta-value-strong {
-  font-size: 22px;
+  font-size: 44rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.1;
@@ -428,34 +428,34 @@ const handleBack = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 28rpx;
 }
 
 .section-title {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
 }
 
 .section-hint {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
 .product-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .detail-item-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 14px;
-  border-radius: 16px;
+  gap: 16rpx;
+  padding: 28rpx;
+  border-radius: 32rpx;
   background-color: #f8fafc;
-  border: 1px solid #eef2f7;
+  border: 2rpx solid #eef2f7;
   box-sizing: border-box;
 }
 
@@ -463,7 +463,7 @@ const handleBack = () => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .item-title-block {
@@ -471,18 +471,18 @@ const handleBack = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4rpx;
 }
 
 .item-name {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.35;
 }
 
 .item-code {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.3;
 }
@@ -490,25 +490,25 @@ const handleBack = () => {
 .item-price-block {
   display: flex;
   align-items: baseline;
-  gap: 2px;
+  gap: 4rpx;
   flex-shrink: 0;
-  padding-top: 2px;
+  padding-top: 4rpx;
 }
 
 .item-price {
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1;
 }
 
 .item-unit {
-  font-size: 11px;
+  font-size: 22rpx;
   color: #9ca3af;
 }
 
 .item-desc {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -516,22 +516,22 @@ const handleBack = () => {
 .item-tag-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12rpx;
   flex-wrap: wrap;
 }
 
 .item-tag {
-  font-size: 11px;
+  font-size: 22rpx;
   font-weight: 600;
   color: #6b7280;
   background-color: #ffffff;
-  border: 1px solid #eef2f7;
-  padding: 4px 8px;
-  border-radius: 6px;
+  border: 2rpx solid #eef2f7;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
   line-height: 1;
 }
 
 .bottom-spacer {
-  height: calc(24px + env(safe-area-inset-bottom, 0px));
+  height: calc(48rpx + env(safe-area-inset-bottom, 0px));
 }
 </style>

@@ -7,7 +7,7 @@ export interface FrostedGlassOptions {
   background: string;
   /** 边框色，建议带 alpha */
   borderColor: string;
-  /** 模糊半径（px） */
+  /** 模糊半径（rpx） */
   blurPx: number;
   /** 饱和度（%） */
   saturatePercent: number;
@@ -25,23 +25,23 @@ export const FROSTED_GLASS_PRESETS: Record<FrostedGlassPreset, FrostedGlassOptio
   default: {
     background: 'rgba(255, 255, 255, 0.28)',
     borderColor: 'rgba(255, 255, 255, 0.45)',
-    blurPx: 32,
+    blurPx: 64,
     saturatePercent: 170,
-    shadow: '0 20px 48px rgba(15, 23, 42, 0.12)',
+    shadow: '0 40rpx 96rpx rgba(15, 23, 42, 0.12)',
   },
   tabbar: {
     background: 'rgba(255, 255, 255, 0.38)',
     borderColor: 'rgba(255, 255, 255, 0.45)',
-    blurPx: 24,
+    blurPx: 48,
     saturatePercent: 180,
-    shadow: '0 8px 32px rgba(0, 0, 0, 0.05)',
+    shadow: '0 16rpx 64rpx rgba(0, 0, 0, 0.05)',
   },
   modalPanel: {
     background: 'rgba(255, 255, 255, 0.28)',
     borderColor: 'rgba(255, 255, 255, 0.45)',
-    blurPx: 32,
+    blurPx: 64,
     saturatePercent: 170,
-    shadow: '0 20px 48px rgba(15, 23, 42, 0.12)',
+    shadow: '0 40rpx 96rpx rgba(15, 23, 42, 0.12)',
   },
 };
 
@@ -62,7 +62,7 @@ export const FROSTED_GLASS_PRESET_CLASS: Record<FrostedGlassPreset, string> = {
 };
 
 const buildBackdropFilter = (blurPx: number, saturatePercent: number) =>
-  `blur(${blurPx}px) saturate(${saturatePercent}%)`;
+  `blur(${blurPx}rpx) saturate(${saturatePercent}%)`;
 
 /** 生成 inline style，适用于 :style 绑定 */
 export function getFrostedGlassStyle(preset: FrostedGlassPreset = 'default'): Record<string, string> {

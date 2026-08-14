@@ -35,7 +35,7 @@ const handleConfirm = () => {
 .delete-confirm {
   min-height: 100%;
   height: 100%;
-  padding: 0 24px 40px;
+  padding: 0 48rpx 80rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -48,14 +48,14 @@ const handleConfirm = () => {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0 12px;
+  padding: 0 24rpx;
 }
 
 .confirm-title {
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -65,8 +65,8 @@ const handleConfirm = () => {
   display: block;
   width: 100%;
   text-align: center;
-  margin-top: 8px;
-  font-size: 28px;
+  margin-top: 16rpx;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -76,12 +76,12 @@ const handleConfirm = () => {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .cancel-btn {
-  height: 52px;
-  border-radius: 26px;
+  height: 104rpx;
+  border-radius: 52rpx;
   background-color: #e5e7eb;
   display: flex;
   align-items: center;
@@ -89,14 +89,14 @@ const handleConfirm = () => {
 }
 
 .cancel-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #374151;
 }
 
 .confirm-btn {
-  height: 52px;
-  border-radius: 26px;
+  height: 104rpx;
+  border-radius: 52rpx;
   background-color: #ff3b30;
   display: flex;
   align-items: center;
@@ -104,7 +104,7 @@ const handleConfirm = () => {
 }
 
 .confirm-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #ffffff;
 }

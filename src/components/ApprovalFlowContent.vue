@@ -98,43 +98,43 @@ const handleBack = () => {
 <style scoped>
 .approval-flow-page {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
   background-color: #f4f5f7;
 }
 
 .page-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .content {
-  padding: 24px 24px 0;
+  padding: 48rpx 48rpx 0;
 }
 
 .hero {
-  margin-bottom: 28px;
+  margin-bottom: 56rpx;
 }
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.3;
@@ -142,17 +142,17 @@ const handleBack = () => {
 
 .hero-tag {
   display: inline-flex;
-  margin-top: 12px;
-  height: 30px;
-  padding: 0 14px;
-  border-radius: 999px;
+  margin-top: 24rpx;
+  height: 60rpx;
+  padding: 0 28rpx;
+  border-radius: 1998rpx;
   background-color: #ffffff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
   align-items: center;
 }
 
 .hero-tag-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 700;
   color: #163300;
   line-height: 1;
@@ -166,11 +166,11 @@ const handleBack = () => {
 .timeline-item {
   display: flex;
   align-items: stretch;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .timeline-left {
-  width: 44px;
+  width: 88rpx;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -178,8 +178,8 @@ const handleBack = () => {
 }
 
 .avatar {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background-color: #b2c4d7;
   display: flex;
@@ -187,22 +187,22 @@ const handleBack = () => {
   justify-content: center;
   flex-shrink: 0;
   z-index: 1;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.08);
 }
 
 .avatar-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 800;
   color: #ffffff;
   line-height: 1;
 }
 
 .timeline-line {
-  width: 2px;
+  width: 4rpx;
   flex: 1;
-  min-height: 20px;
-  margin: 8px 0;
-  border-radius: 999px;
+  min-height: 40rpx;
+  margin: 16rpx 0;
+  border-radius: 1998rpx;
   background-color: #e5e7eb;
 }
 
@@ -210,11 +210,11 @@ const handleBack = () => {
   flex: 1;
   min-width: 0;
   background-color: #ffffff;
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
-  border: 1px solid #eef0f3;
+  border-radius: 36rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
+  border: 2rpx solid #eef0f3;
 }
 
 .timeline-item:last-child .step-card {
@@ -233,8 +233,8 @@ const handleBack = () => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 24rpx;
+  margin-bottom: 28rpx;
 }
 
 .step-person {
@@ -242,26 +242,26 @@ const handleBack = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .person-name {
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.25;
 }
 
 .person-role {
-  font-size: 13px;
+  font-size: 26rpx;
   color: #6b7280;
   line-height: 1.3;
 }
 
 .result-badge {
-  height: 26px;
-  padding: 0 12px;
-  border-radius: 999px;
+  height: 52rpx;
+  padding: 0 24rpx;
+  border-radius: 1998rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -269,7 +269,7 @@ const handleBack = () => {
 }
 
 .result-badge-text {
-  font-size: 12px;
+  font-size: 24rpx;
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
@@ -290,18 +290,18 @@ const handleBack = () => {
 .step-meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-bottom: 12px;
+  gap: 8rpx;
+  margin-bottom: 24rpx;
 }
 
 .meta-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .meta-value {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #111827;
   line-height: 1.3;
@@ -309,21 +309,21 @@ const handleBack = () => {
 
 .comment-box {
   background-color: #f8fafc;
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: 24rpx;
+  padding: 24rpx 28rpx;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .comment-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.3;
 }
 
 .comment-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #374151;
   line-height: 1.55;
 }

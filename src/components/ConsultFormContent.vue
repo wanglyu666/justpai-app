@@ -152,30 +152,30 @@ const handleSubmit = () => {
 }
 
 .page-header {
-  padding: 0 24px 8px;
+  padding: 0 48rpx 16rpx;
   flex-shrink: 0;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .header-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .page-title {
   display: block;
-  margin-top: 16px;
-  font-size: 28px;
+  margin-top: 32rpx;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -183,8 +183,8 @@ const handleSubmit = () => {
 
 .page-desc {
   display: block;
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -198,7 +198,7 @@ const handleSubmit = () => {
 
 .form-scroll {
   height: 100%;
-  padding: 12px 24px 8px;
+  padding: 24rpx 48rpx 16rpx;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
@@ -214,7 +214,7 @@ const handleSubmit = () => {
 
 .form-scroll-mask-top {
   top: 0;
-  height: 36px;
+  height: 72rpx;
   background: linear-gradient(
     to bottom,
     #f4f5f7 0%,
@@ -226,7 +226,7 @@ const handleSubmit = () => {
 
 .form-scroll-mask-bottom {
   bottom: 0;
-  height: 36px;
+  height: 72rpx;
   background: linear-gradient(
     to top,
     #f4f5f7 0%,
@@ -238,31 +238,31 @@ const handleSubmit = () => {
 
 .section-card {
   background-color: #ffffff;
-  border-radius: 24px;
-  padding: 20px 18px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  border-radius: 48rpx;
+  padding: 40rpx 36rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
 }
 
 .section-title {
   display: block;
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #111827;
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
 }
 
 .section-hint {
   display: block;
-  margin-top: -8px;
-  margin-bottom: 14px;
-  font-size: 13px;
+  margin-top: -16rpx;
+  margin-bottom: 28rpx;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
 }
 
 .field-group {
-  margin-bottom: 16px;
+  margin-bottom: 32rpx;
 }
 
 .field-group:last-child {
@@ -273,15 +273,15 @@ const handleSubmit = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
 }
 
 .field-label {
   display: block;
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
 }
 
 .field-label-row .field-label {
@@ -289,35 +289,35 @@ const handleSubmit = () => {
 }
 
 .field-count {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
 .required {
   color: #ef4444;
-  margin-right: 2px;
+  margin-right: 4rpx;
 }
 
 .field-input {
   width: 100%;
-  height: 48px;
-  padding: 0 14px;
+  height: 96rpx;
+  padding: 0 28rpx;
   background-color: #f8faf9;
-  border: 1px solid #eef0ea;
-  border-radius: 14px;
-  font-size: 14px;
+  border: 2rpx solid #eef0ea;
+  border-radius: 28rpx;
+  font-size: 28rpx;
   color: #111827;
   box-sizing: border-box;
 }
 
 .field-textarea {
   width: 100%;
-  min-height: 132px;
-  padding: 12px 14px;
+  min-height: 264rpx;
+  padding: 24rpx 28rpx;
   background-color: #f8faf9;
-  border: 1px solid #eef0ea;
-  border-radius: 14px;
-  font-size: 14px;
+  border: 2rpx solid #eef0ea;
+  border-radius: 28rpx;
+  font-size: 28rpx;
   color: #111827;
   line-height: 1.55;
   box-sizing: border-box;
@@ -325,15 +325,15 @@ const handleSubmit = () => {
 
 .input-placeholder {
   color: #d1d5db;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .contact-grid {
   display: flex;
   align-items: stretch;
   background-color: #f8faf9;
-  border-radius: 16px;
-  padding: 16px 8px;
+  border-radius: 32rpx;
+  padding: 32rpx 16rpx;
 }
 
 .contact-item {
@@ -341,24 +341,24 @@ const handleSubmit = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 12rpx;
   min-width: 0;
 }
 
 .contact-divider {
-  width: 1px;
+  width: 2rpx;
   align-self: stretch;
   background-color: #e5e7eb;
-  margin: 2px 0;
+  margin: 4rpx 0;
 }
 
 .contact-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
 .contact-value {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #111827;
 }
@@ -368,52 +368,52 @@ const handleSubmit = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 132px;
-  border-radius: 16px;
-  border: 1.5px dashed #d1d5db;
+  gap: 12rpx;
+  min-height: 264rpx;
+  border-radius: 32rpx;
+  border: 3rpx dashed #d1d5db;
   background-color: #f8faf9;
 }
 
 .upload-icon {
-  width: 36px;
-  height: 36px;
-  margin-bottom: 4px;
+  width: 72rpx;
+  height: 72rpx;
+  margin-bottom: 8rpx;
 }
 
 .upload-title {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #163300;
 }
 
 .upload-hint {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
 .upload-preview-wrap {
-  border-radius: 16px;
+  border-radius: 32rpx;
   overflow: hidden;
   background-color: #f8faf9;
 }
 
 .upload-preview {
   width: 100%;
-  height: 160px;
+  height: 320rpx;
   display: block;
 }
 
 .upload-preview-actions {
   display: flex;
-  gap: 10px;
-  padding: 12px;
+  gap: 20rpx;
+  padding: 24rpx;
 }
 
 .preview-action {
   flex: 1;
-  height: 36px;
-  border-radius: 999px;
+  height: 72rpx;
+  border-radius: 1998rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -428,21 +428,21 @@ const handleSubmit = () => {
 }
 
 .preview-action-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 700;
   color: #163300;
 }
 
 .submit-footer {
   flex-shrink: 0;
-  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 32rpx 48rpx calc(32rpx + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(180deg, rgba(244, 245, 247, 0) 0%, #f4f5f7 30%);
   box-sizing: border-box;
 }
 
 .submit-btn {
-  height: 52px;
-  border-radius: 26px;
+  height: 104rpx;
+  border-radius: 52rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -455,7 +455,7 @@ const handleSubmit = () => {
 }
 
 .submit-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   transition: color 0.2s ease;

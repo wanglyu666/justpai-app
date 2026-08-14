@@ -121,6 +121,6 @@ defineExpose({
 }
 
 .slide-over-edge {
-  padding-top: calc(8px + env(safe-area-inset-top, 0px));
+  padding-top: calc(16rpx + env(safe-area-inset-top, 0px));
 }
 </style>

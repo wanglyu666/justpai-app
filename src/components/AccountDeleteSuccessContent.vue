@@ -32,7 +32,7 @@ const handleBack = () => {
 .delete-success {
   min-height: 100%;
   height: 100%;
-  padding: 0 24px 40px;
+  padding: 0 48rpx 80rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -48,21 +48,21 @@ const handleBack = () => {
 }
 
 .success-icon {
-  width: 200px;
-  height: 200px;
-  margin-bottom: 32px;
+  width: 400rpx;
+  height: 400rpx;
+  margin-bottom: 64rpx;
   display: block;
 }
 
 .success-title {
-  font-size: 24px;
+  font-size: 48rpx;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 12px;
+  margin-bottom: 24rpx;
 }
 
 .success-desc {
-  font-size: 15px;
+  font-size: 30rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -72,17 +72,17 @@ const handleBack = () => {
 }
 
 .back-btn {
-  height: 52px;
-  border-radius: 26px;
+  height: 104rpx;
+  border-radius: 52rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .back-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #111827;
 }

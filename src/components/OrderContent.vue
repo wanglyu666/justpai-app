@@ -298,7 +298,7 @@ const resetRefundDetailFlow = () => {
 }
 
 .page-header {
-  padding: 0 24px 16px;
+  padding: 0 48rpx 32rpx;
   flex-shrink: 0;
 }
 
@@ -307,51 +307,51 @@ const resetRefundDetailFlow = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 44px;
+  height: 88rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .header-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .header-title {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #111827;
-  line-height: 44px;
+  line-height: 88rpx;
   pointer-events: none;
 }
 
 .header-placeholder {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   flex-shrink: 0;
 }
 
 .status-capsule-wrap {
-  margin-top: 16px;
+  margin-top: 32rpx;
 }
 
 .order-body {
   flex: 1;
   min-height: 0;
-  padding: 0 24px calc(20px + env(safe-area-inset-bottom, 0px));
+  padding: 0 48rpx calc(40rpx + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -361,16 +361,16 @@ const resetRefundDetailFlow = () => {
 }
 
 .list-top-spacer {
-  height: 4px;
+  height: 8rpx;
 }
 
 .list-bottom-spacer {
-  height: 12px;
+  height: 24rpx;
 }
 
 .order-card-item {
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 28rpx;
 }
 
 .order-card-item:last-child {
@@ -378,14 +378,14 @@ const resetRefundDetailFlow = () => {
 }
 
 .empty-state {
-  padding: 64px 0;
+  padding: 128rpx 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .empty-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
 }
 </style>

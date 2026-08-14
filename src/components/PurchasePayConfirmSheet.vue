@@ -135,7 +135,7 @@ const handleSelfCreate = () => {
   max-height: 58vh;
   min-height: 42vh;
   background-color: #ffffff;
-  border-radius: 20px 20px 0 0;
+  border-radius: 40rpx 40rpx 0 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -151,13 +151,13 @@ const handleSelfCreate = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 52px;
+  height: 104rpx;
   flex-shrink: 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 2rpx solid #f3f4f6;
 }
 
 .purchase-sheet-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1;
@@ -165,18 +165,18 @@ const handleSelfCreate = () => {
 
 .purchase-sheet-close {
   position: absolute;
-  right: 16px;
+  right: 32rpx;
   top: 50%;
   transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .purchase-sheet-close-text {
-  font-size: 24px;
+  font-size: 48rpx;
   line-height: 1;
   color: #9ca3af;
 }
@@ -185,22 +185,22 @@ const handleSelfCreate = () => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 16px 20px;
+  padding: 32rpx 40rpx;
   box-sizing: border-box;
 }
 
 .purchase-message-wrap {
-  min-height: 160px;
-  padding: 14px 14px 14px;
-  border-radius: 12px;
+  min-height: 320rpx;
+  padding: 28rpx 28rpx 28rpx;
+  border-radius: 24rpx;
   background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
   box-sizing: border-box;
 }
 
 .purchase-message-text {
   display: block;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #374151;
   line-height: 1.6;
 }
@@ -212,18 +212,18 @@ const handleSelfCreate = () => {
 
 .purchase-sheet-footer {
   flex-shrink: 0;
-  padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid #f3f4f6;
+  padding: 24rpx 40rpx calc(24rpx + env(safe-area-inset-bottom, 0px));
+  border-top: 2rpx solid #f3f4f6;
   display: flex;
-  gap: 12px;
+  gap: 24rpx;
   box-sizing: border-box;
 }
 
 .purchase-action {
   flex: 1;
   min-width: 0;
-  height: 48px;
-  border-radius: 24px;
+  height: 96rpx;
+  border-radius: 48rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,11 +236,11 @@ const handleSelfCreate = () => {
 
 .purchase-action-secondary {
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
 }
 
 .purchase-action-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1;

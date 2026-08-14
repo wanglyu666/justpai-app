@@ -285,26 +285,26 @@ const onPreview = () => {
 <style scoped>
 .contract-archive {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .page-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
@@ -313,49 +313,49 @@ const onPreview = () => {
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .search-bar {
-  width: 168px;
+  width: 336rpx;
   flex-shrink: 0;
   margin-left: auto;
-  height: 44px;
+  height: 88rpx;
   background-color: #ffffff;
-  border-radius: 999px;
+  border-radius: 1998rpx;
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0 28rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .search-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 16rpx;
   flex-shrink: 0;
 }
 
 .search-input {
   flex: 1;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   height: 100%;
 }
 
 .search-placeholder {
   color: #9ca3af;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .content {
-  padding: 32px 24px 0;
+  padding: 64rpx 48rpx 0;
 }
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -363,9 +363,9 @@ const onPreview = () => {
 
 .page-desc {
   display: block;
-  margin-top: 8px;
-  margin-bottom: 24px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  margin-bottom: 48rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -373,23 +373,23 @@ const onPreview = () => {
 .contract-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .contract-card {
   width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 18px 18px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 40rpx;
+  padding: 36rpx 36rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .contract-name {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.3;
@@ -398,7 +398,7 @@ const onPreview = () => {
 .contract-meta-row {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .contract-meta {
@@ -406,7 +406,7 @@ const onPreview = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8rpx;
 }
 
 .contract-meta-amount {
@@ -416,20 +416,20 @@ const onPreview = () => {
 }
 
 .meta-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .meta-value {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.3;
   word-break: break-all;
 }
 
 .meta-amount {
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.3;
@@ -437,45 +437,45 @@ const onPreview = () => {
 
 .detail-page {
   min-height: 100%;
-  padding-bottom: 120px;
+  padding-bottom: 240rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
 .detail-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 
 .detail-content {
-  padding: 24px 24px 0;
+  padding: 48rpx 48rpx 0;
   flex: 1;
 }
 
 .detail-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 20px;
+  margin-bottom: 40rpx;
 }
 
 .detail-card {
   background-color: #ffffff;
-  border-radius: 24px;
-  padding: 28px 22px;
-  min-height: 420px;
+  border-radius: 48rpx;
+  padding: 56rpx 44rpx;
+  min-height: 840rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 22px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  gap: 44rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
 }
 
 .detail-row {
   display: flex;
-  gap: 18px;
+  gap: 36rpx;
 }
 
 .detail-field {
@@ -483,7 +483,7 @@ const onPreview = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .detail-field-full {
@@ -491,13 +491,13 @@ const onPreview = () => {
 }
 
 .detail-label {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .detail-value {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.35;
@@ -509,23 +509,23 @@ const onPreview = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 32rpx 48rpx calc(32rpx + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(180deg, rgba(244, 245, 247, 0) 0%, #f4f5f7 28%);
   z-index: 2;
 }
 
 .preview-btn {
-  height: 52px;
-  border-radius: 16px;
+  height: 104rpx;
+  border-radius: 32rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .preview-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #111827;
 }

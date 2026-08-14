@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220" preserveAspectRatio="none">
+  <path
+    fill="#111111"
+    d="M0 52
+       H48
+       L92 14
+       Q96 10 102 10
+       H258
+       Q264 10 268 14
+       L312 52
+       H360
+       V196
+       Q360 220 336 220
+       H24
+       Q0 220 0 196
+       Z"
+  />
+</svg>

@@ -390,7 +390,7 @@ const handleEdit = (id: string) => {
   height: 72vh;
   max-height: 72vh;
   background-color: #ffffff;
-  border-radius: 20px 20px 0 0;
+  border-radius: 40rpx 40rpx 0 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -419,16 +419,16 @@ const handleEdit = (id: string) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 18px 20px 14px;
+  gap: 24rpx;
+  padding: 36rpx 40rpx 28rpx;
   flex-shrink: 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 2rpx solid #f3f4f6;
 }
 
 .address-sheet-title {
   flex: 1;
   min-width: 0;
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.3;
@@ -436,30 +436,30 @@ const handleEdit = (id: string) => {
 
 .address-sheet-back {
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #9ca3af;
   line-height: 1;
 }
 
 .address-sheet-add {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 18px;
+  height: 72rpx;
+  padding: 0 28rpx;
+  border-radius: 36rpx;
   background-color: #9fe870;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8rpx;
   flex-shrink: 0;
 }
 
 .address-sheet-add-icon {
-  width: 16px;
-  height: 16px;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .address-sheet-add-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #163300;
   line-height: 1;
@@ -475,16 +475,16 @@ const handleEdit = (id: string) => {
 .address-sheet-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: 24rpx;
+  padding: 32rpx 40rpx;
   box-sizing: border-box;
 }
 
 .address-option-card {
-  padding: 16px;
-  border-radius: 16px;
+  padding: 32rpx;
+  border-radius: 32rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 2rpx solid #e5e7eb;
   box-sizing: border-box;
 }
 
@@ -496,14 +496,14 @@ const handleEdit = (id: string) => {
 .address-option-top {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 20rpx;
+  margin-bottom: 28rpx;
 }
 
 .address-option-icon-wrap {
-  width: 36px;
-  height: 36px;
-  border-radius: 18px;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
   background-color: #f0fdf4;
   display: flex;
   align-items: center;
@@ -516,23 +516,23 @@ const handleEdit = (id: string) => {
 }
 
 .address-option-icon {
-  width: 18px;
-  height: 18px;
+  width: 36rpx;
+  height: 36rpx;
   filter: brightness(0) saturate(100%) invert(8%) sepia(41%) saturate(1097%) hue-rotate(62deg) brightness(98%) contrast(103%);
 }
 
 .address-option-title {
   flex: 1;
   min-width: 0;
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.45;
 }
 
 .address-option-edit {
-  width: 32px;
-  height: 32px;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -540,15 +540,15 @@ const handleEdit = (id: string) => {
 }
 
 .address-option-edit-icon {
-  width: 18px;
-  height: 18px;
+  width: 36rpx;
+  height: 36rpx;
   opacity: 0.45;
 }
 
 .address-option-grid {
   display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
+  gap: 32rpx;
+  margin-bottom: 24rpx;
 }
 
 .address-option-field {
@@ -558,15 +558,15 @@ const handleEdit = (id: string) => {
 
 .address-option-label {
   display: block;
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.3;
-  margin-bottom: 4px;
+  margin-bottom: 8rpx;
 }
 
 .address-option-value {
   display: block;
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.4;
@@ -575,14 +575,14 @@ const handleEdit = (id: string) => {
 .address-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px;
+  gap: 32rpx;
+  padding: 40rpx;
   box-sizing: border-box;
 }
 
 .address-form-row {
   display: flex;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .address-form-row-2 .address-form-field {
@@ -593,42 +593,42 @@ const handleEdit = (id: string) => {
 .address-form-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .address-form-label {
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
 }
 
 .address-form-input {
   width: 100%;
-  height: 44px;
-  padding: 0 14px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  height: 88rpx;
+  padding: 0 28rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid #e5e7eb;
   background-color: #ffffff;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   box-sizing: border-box;
 }
 
 .address-form-placeholder {
   color: #d1d5db;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .address-sheet-footer {
   flex-shrink: 0;
-  padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid #f3f4f6;
+  padding: 24rpx 40rpx calc(24rpx + env(safe-area-inset-bottom, 0px));
+  border-top: 2rpx solid #f3f4f6;
   box-sizing: border-box;
 }
 
 .address-sheet-confirm {
-  height: 48px;
-  border-radius: 24px;
+  height: 96rpx;
+  border-radius: 48rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -641,7 +641,7 @@ const handleEdit = (id: string) => {
 }
 
 .address-sheet-confirm-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   line-height: 1;

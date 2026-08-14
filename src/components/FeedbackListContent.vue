@@ -278,76 +278,76 @@ const onPreviewAttachment = (_file: string) => {
 <style scoped>
 .feedback-list-page {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .page-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .search-bar {
-  width: 168px;
+  width: 336rpx;
   flex-shrink: 0;
   margin-left: auto;
-  height: 44px;
-  border-radius: 999px;
+  height: 88rpx;
+  border-radius: 1998rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0 28rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .search-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 16rpx;
   flex-shrink: 0;
 }
 
 .search-input {
   flex: 1;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   height: 100%;
 }
 
 .search-placeholder {
   color: #9ca3af;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .content {
-  padding: 32px 24px 0;
+  padding: 64rpx 48rpx 0;
 }
 
 .title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 24rpx;
+  margin-bottom: 48rpx;
 }
 
 .title-block {
@@ -357,7 +357,7 @@ const onPreviewAttachment = (_file: string) => {
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -365,17 +365,17 @@ const onPreviewAttachment = (_file: string) => {
 
 .page-desc {
   display: block;
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
 
 .add-btn {
   flex-shrink: 0;
-  height: 44px;
-  padding: 0 24px;
-  border-radius: 14px;
+  height: 88rpx;
+  padding: 0 48rpx;
+  border-radius: 28rpx;
   background-color: #111827;
   display: flex;
   align-items: center;
@@ -383,7 +383,7 @@ const onPreviewAttachment = (_file: string) => {
 }
 
 .add-btn-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
@@ -392,32 +392,32 @@ const onPreviewAttachment = (_file: string) => {
 .feedback-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .feedback-card {
   width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 20px 18px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 40rpx;
+  padding: 40rpx 36rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .feedback-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .feedback-name {
   flex: 1;
   min-width: 0;
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.35;
@@ -426,35 +426,35 @@ const onPreviewAttachment = (_file: string) => {
 .feedback-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .field-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .field-value {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 500;
   color: #111827;
   line-height: 1.45;
 }
 
 .status-badge {
-  height: 26px;
-  padding: 0 12px;
-  border-radius: 999px;
+  height: 52rpx;
+  padding: 0 24rpx;
+  border-radius: 1998rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 4rpx;
 }
 
 .status-badge-text {
-  font-size: 12px;
+  font-size: 24rpx;
   font-weight: 700;
   line-height: 1;
 }
@@ -484,57 +484,57 @@ const onPreviewAttachment = (_file: string) => {
 }
 
 .empty-tip {
-  padding: 48px 0;
+  padding: 96rpx 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .empty-tip-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
 }
 
 .detail-page {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .detail-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
 }
 
 .detail-content {
-  padding: 24px 24px 0;
+  padding: 48rpx 48rpx 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28rpx;
 }
 
 .detail-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 6px;
+  margin-bottom: 12rpx;
 }
 
 .info-card {
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 20px 18px;
+  border-radius: 40rpx;
+  padding: 40rpx 36rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  gap: 20rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
 }
 
 .info-block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .info-block-grow {
@@ -548,26 +548,26 @@ const onPreviewAttachment = (_file: string) => {
 }
 
 .info-divider {
-  height: 1px;
+  height: 2rpx;
   background-color: #eef2f7;
-  margin: 6px 0;
+  margin: 12rpx 0;
 }
 
 .info-meta-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .info-label {
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .info-value {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.45;
@@ -575,28 +575,28 @@ const onPreviewAttachment = (_file: string) => {
 }
 
 .info-value-lg {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   line-height: 1.35;
 }
 
 .info-value-body {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 600;
   line-height: 1.55;
 }
 
 .result-box {
-  margin-top: 2px;
-  padding: 12px 14px;
-  border-radius: 14px;
+  margin-top: 4rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 28rpx;
   background-color: #f8fafc;
-  border: 1px solid #eef2f7;
+  border: 2rpx solid #eef2f7;
   box-sizing: border-box;
 }
 
 .result-empty {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 500;
   color: #9ca3af;
   line-height: 1.55;
@@ -604,38 +604,38 @@ const onPreviewAttachment = (_file: string) => {
 
 .section-card {
   background-color: #ffffff;
-  border-radius: 22px;
-  padding: 18px;
+  border-radius: 44rpx;
+  padding: 36rpx;
   box-sizing: border-box;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 16rpx 48rpx rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .section-head {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .section-bar {
-  width: 4px;
-  height: 14px;
-  border-radius: 2px;
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
   background-color: #9fe870;
   flex-shrink: 0;
 }
 
 .section-title {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.2;
 }
 
 .section-empty {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
   line-height: 1.4;
 }
@@ -643,26 +643,26 @@ const onPreviewAttachment = (_file: string) => {
 .attachment-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .attachment-item {
   width: 100%;
-  min-height: 48px;
-  padding: 10px 12px;
-  border-radius: 14px;
+  min-height: 96rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 28rpx;
   background-color: #f8fafc;
-  border: 1px solid #eef2f7;
+  border: 2rpx solid #eef2f7;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .attachment-ext {
-  width: 40px;
-  height: 28px;
-  border-radius: 8px;
+  width: 80rpx;
+  height: 56rpx;
+  border-radius: 16rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -671,7 +671,7 @@ const onPreviewAttachment = (_file: string) => {
 }
 
 .attachment-ext-text {
-  font-size: 10px;
+  font-size: 20rpx;
   font-weight: 800;
   color: #374151;
   line-height: 1;
@@ -712,7 +712,7 @@ const onPreviewAttachment = (_file: string) => {
 .attachment-name {
   flex: 1;
   min-width: 0;
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 600;
   color: #111827;
   line-height: 1.35;

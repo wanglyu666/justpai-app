@@ -199,15 +199,15 @@ onMounted(() => {
   top: 0;
   right: 0;
   left: 0;
-  bottom: 120px;
+  bottom: 240rpx;
   background-color: #f4f5f7;
 }
 
 .tabbar-wrapper {
   position: fixed;
-  bottom: 24px;
-  left: 24px;
-  right: 24px;
+  bottom: 48rpx;
+  left: 48rpx;
+  right: 48rpx;
 }
 
 .tabbar {
@@ -216,18 +216,18 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 32px;
-  padding: 8px 12px;
+  border-radius: 64rpx;
+  padding: 16rpx 24rpx;
   box-sizing: border-box;
 }
 
 .tab-indicator {
   position: absolute;
-  top: 8px;
+  top: 16rpx;
   left: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 24px;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
   background-color: #9fe870;
   opacity: 0;
   will-change: transform;
@@ -246,7 +246,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   /* 扩大可点区域，App 端更稳 */
-  min-height: 48px;
+  min-height: 96rpx;
 }
 
 .tab-item-hover {
@@ -254,16 +254,16 @@ onMounted(() => {
 }
 
 .icon-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 24px;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .tab-icon {
-  width: 24px;
-  height: 24px;
+  width: 48rpx;
+  height: 48rpx;
 }
 </style>

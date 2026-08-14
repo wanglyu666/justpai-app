@@ -36,6 +36,7 @@ import {
   STATUS_CAPSULE,
   type StatusCapsuleTab,
 } from '@/config/statusCapsule';
+import { rpx2px } from '@/utils/rpx';
 
 const props = withDefaults(
   defineProps<{
@@ -62,35 +63,35 @@ const thumbStyle = ref({
 });
 
 const capsuleStyle = {
-  height: `${STATUS_CAPSULE.height}px`,
-  borderRadius: `${STATUS_CAPSULE.radius}px`,
+  height: `${STATUS_CAPSULE.height}rpx`,
+  borderRadius: `${STATUS_CAPSULE.radius}rpx`,
   backgroundColor: STATUS_CAPSULE.background,
   boxShadow: STATUS_CAPSULE.shadow,
 };
 
 const innerStyle = {
-  gap: `${STATUS_CAPSULE.itemGap}px`,
-  height: `${STATUS_CAPSULE.height}px`,
-  padding: `${STATUS_CAPSULE.innerPadding}px`,
+  gap: `${STATUS_CAPSULE.itemGap}rpx`,
+  height: `${STATUS_CAPSULE.height}rpx`,
+  padding: `${STATUS_CAPSULE.innerPadding}rpx`,
 };
 
 const itemStyle = {
-  height: `${STATUS_CAPSULE.itemHeight}px`,
-  padding: `0 ${STATUS_CAPSULE.itemPaddingX}px`,
+  height: `${STATUS_CAPSULE.itemHeight}rpx`,
+  padding: `0 ${STATUS_CAPSULE.itemPaddingX}rpx`,
 };
 
 const thumbMergedStyle = computed(() => ({
   transform: thumbStyle.value.transform,
   width: thumbStyle.value.width,
-  top: `${STATUS_CAPSULE.innerPadding}px`,
-  height: `calc(100% - ${STATUS_CAPSULE.innerPadding * 2}px)`,
-  borderRadius: `${STATUS_CAPSULE.radius}px`,
+  top: `${STATUS_CAPSULE.innerPadding}rpx`,
+  height: `calc(100% - ${STATUS_CAPSULE.innerPadding * 2}rpx)`,
+  borderRadius: `${STATUS_CAPSULE.radius}rpx`,
   backgroundColor: STATUS_CAPSULE.thumbColor,
   transition: `transform ${STATUS_CAPSULE.transition}, width ${STATUS_CAPSULE.transition}`,
 }));
 
 const textStyle = (active: boolean) => ({
-  fontSize: `${STATUS_CAPSULE.fontSize}px`,
+  fontSize: `${STATUS_CAPSULE.fontSize}rpx`,
   fontWeight: active ? STATUS_CAPSULE.activeFontWeight : STATUS_CAPSULE.fontWeight,
   color: active ? STATUS_CAPSULE.activeTextColor : STATUS_CAPSULE.textColor,
   transition: `color ${STATUS_CAPSULE.transition}`,
@@ -136,9 +137,9 @@ const measureScrollLayout = () =>
   });
 
 const getTabContentLeft = (items: ItemRect[], index: number) => {
-  let left = STATUS_CAPSULE.innerPadding;
+  let left = rpx2px(STATUS_CAPSULE.innerPadding);
   for (let i = 0; i < index; i += 1) {
-    left += items[i].width + STATUS_CAPSULE.itemGap;
+    left += items[i].width + rpx2px(STATUS_CAPSULE.itemGap);
   }
   return left;
 };

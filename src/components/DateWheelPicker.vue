@@ -134,10 +134,10 @@ watch(
 <style scoped>
 .date-wheel-picker {
   background-color: #f9fafb;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
+  border-radius: 32rpx;
+  border: 2rpx solid #e5e7eb;
   overflow: hidden;
-  padding: 4px 0;
+  padding: 8rpx 0;
 }
 
 .date-wheel-wrap {
@@ -150,7 +150,7 @@ watch(
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  height: 44px;
+  height: 88rpx;
   background-color: rgba(15, 23, 42, 0.06);
   border-radius: 0;
   pointer-events: none;
@@ -161,25 +161,25 @@ watch(
   position: relative;
   z-index: 1;
   width: 100%;
-  height: 220px;
+  height: 440rpx;
 }
 
 .wheel-item {
-  height: 44px;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .wheel-item-text {
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: 500;
   color: #374151;
   line-height: 1;
 }
 
 :deep(.date-wheel-indicator) {
-  height: 44px;
+  height: 88rpx;
   background-color: transparent;
   border: none;
 }
@@ -192,7 +192,7 @@ watch(
     ),
     linear-gradient(0deg, rgba(249, 250, 251, 0.95), rgba(249, 250, 251, 0.35));
   background-position: top, bottom;
-  background-size: 100% 88px;
+  background-size: 100% 176rpx;
   background-repeat: no-repeat;
 }
 </style>

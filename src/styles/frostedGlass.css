@@ -4,7 +4,7 @@
  * H5 下由 App.vue 注入 CSS 变量；也可直接使用 getFrostedGlassStyle() 绑定 :style
  */
 .frosted-glass {
-  border: 1px solid var(--frosted-glass-default-border);
+  border: 2rpx solid var(--frosted-glass-default-border);
   background-color: var(--frosted-glass-default-bg);
   backdrop-filter: var(--frosted-glass-default-backdrop);
   -webkit-backdrop-filter: var(--frosted-glass-default-backdrop);

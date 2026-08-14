@@ -150,28 +150,28 @@ const handleConfirm = () => {
 <style scoped>
 .address-form {
   min-height: 100%;
-  padding: 32px 24px 40px;
+  padding: 64rpx 48rpx 80rpx;
   box-sizing: border-box;
 }
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
-  margin-bottom: 28px;
+  margin-bottom: 56rpx;
 }
 
 .form-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .form-row {
   display: flex;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .form-row-2 .field-group {
@@ -190,32 +190,32 @@ const handleConfirm = () => {
 
 .field-label {
   display: block;
-  font-size: 13px;
+  font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.4;
-  margin-bottom: 8px;
+  margin-bottom: 16rpx;
 }
 
 .field-input {
   width: 100%;
-  height: 48px;
-  padding: 0 14px;
+  height: 96rpx;
+  padding: 0 28rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 14px;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 24rpx;
+  font-size: 28rpx;
   color: #111827;
   box-sizing: border-box;
 }
 
 .field-textarea {
   width: 100%;
-  min-height: 96px;
-  padding: 12px 14px;
+  min-height: 192rpx;
+  padding: 24rpx 28rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 14px;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 24rpx;
+  font-size: 28rpx;
   color: #111827;
   line-height: 1.5;
   box-sizing: border-box;
@@ -223,17 +223,17 @@ const handleConfirm = () => {
 
 .input-placeholder {
   color: #d1d5db;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .submit-wrap {
-  padding-top: 24px;
+  padding-top: 48rpx;
 }
 
 .submit-btn {
   width: 100%;
-  height: 52px;
-  border-radius: 26px;
+  height: 104rpx;
+  border-radius: 52rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -246,7 +246,7 @@ const handleConfirm = () => {
 }
 
 .submit-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   transition: color 0.2s ease;

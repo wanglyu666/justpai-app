@@ -41,7 +41,7 @@ const ensureH5Cover = (): HTMLElement | null => {
     top: '0',
     right: '0',
     // 与 App 遮罩一致：底部留给 TabBar，避免吞触摸
-    bottom: '120px',
+    bottom: '240rpx',
     left: '0',
     zIndex: String(PAGE_FADE_COVER_Z_INDEX),
     backgroundColor: '#F4F5F7',

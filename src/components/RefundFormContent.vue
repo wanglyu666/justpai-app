@@ -241,30 +241,30 @@ const handleSubmit = () => {
 }
 
 .page-header {
-  padding: 0 24px 8px;
+  padding: 0 48rpx 16rpx;
   flex-shrink: 0;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .header-icon {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .page-title {
   display: block;
-  margin-top: 16px;
-  font-size: 28px;
+  margin-top: 32rpx;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -272,8 +272,8 @@ const handleSubmit = () => {
 
 .page-desc {
   display: block;
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -286,7 +286,7 @@ const handleSubmit = () => {
 
 .form-scroll {
   height: 100%;
-  padding: 12px 24px 8px;
+  padding: 24rpx 48rpx 16rpx;
   box-sizing: border-box;
 }
 
@@ -294,13 +294,13 @@ const handleSubmit = () => {
   position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
+  gap: 24rpx;
+  padding: 32rpx;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
-  margin-bottom: 12px;
-  border: 1.5px solid transparent;
+  border-radius: 40rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
+  margin-bottom: 24rpx;
+  border: 3rpx solid transparent;
   transition:
     border-color 0.2s ease,
     background-color 0.2s ease;
@@ -312,16 +312,16 @@ const handleSubmit = () => {
 }
 
 .select-circle {
-  width: 22px;
-  height: 22px;
-  border-radius: 11px;
-  border: 2px solid #d1d5db;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  border: 4rpx solid #d1d5db;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 4rpx;
   box-sizing: border-box;
   transition: all 0.2s ease;
 }
@@ -332,8 +332,8 @@ const handleSubmit = () => {
 }
 
 .select-check-icon {
-  width: 12px;
-  height: 12px;
+  width: 24rpx;
+  height: 24rpx;
 }
 
 .item-body {
@@ -341,14 +341,14 @@ const handleSubmit = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .item-main-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .item-title-block {
@@ -356,18 +356,18 @@ const handleSubmit = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4rpx;
 }
 
 .item-name {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.35;
 }
 
 .item-code {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.3;
 }
@@ -375,25 +375,25 @@ const handleSubmit = () => {
 .item-price-block {
   display: flex;
   align-items: baseline;
-  gap: 2px;
+  gap: 4rpx;
   flex-shrink: 0;
-  padding-top: 2px;
+  padding-top: 4rpx;
 }
 
 .item-price {
-  font-size: 17px;
+  font-size: 34rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1;
 }
 
 .item-unit {
-  font-size: 11px;
+  font-size: 22rpx;
   color: #9ca3af;
 }
 
 .item-desc {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -401,41 +401,41 @@ const handleSubmit = () => {
 .item-tag-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12rpx;
   flex-wrap: wrap;
 }
 
 .item-tag {
-  font-size: 11px;
+  font-size: 22rpx;
   font-weight: 600;
   color: #6b7280;
   background-color: #f3f4f6;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
   line-height: 1;
 }
 
 .section-card {
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 18px 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  border-radius: 40rpx;
+  padding: 36rpx 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
 }
 
 .field-label {
   display: block;
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #111827;
-  margin-bottom: 10px;
+  margin-bottom: 20rpx;
 }
 
 .picker-field {
-  height: 48px;
-  padding: 0 14px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  height: 96rpx;
+  padding: 0 28rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid #e5e7eb;
   background-color: #ffffff;
   display: flex;
   align-items: center;
@@ -444,7 +444,7 @@ const handleSubmit = () => {
 }
 
 .picker-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
 }
 
@@ -453,7 +453,7 @@ const handleSubmit = () => {
 }
 
 .picker-arrow {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
   line-height: 1;
   transition: transform 0.2s ease;
@@ -469,14 +469,14 @@ const handleSubmit = () => {
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 12rpx);
   left: 0;
   right: 0;
   z-index: 50;
   background-color: #ffffff;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  border-radius: 28rpx;
+  border: 2rpx solid #e5e7eb;
+  box-shadow: 0 24rpx 64rpx rgba(15, 23, 42, 0.14);
   overflow: hidden;
 }
 
@@ -484,9 +484,9 @@ const handleSubmit = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 13px 14px;
-  border-bottom: 1px solid #f3f4f6;
+  gap: 24rpx;
+  padding: 26rpx 28rpx;
+  border-bottom: 2rpx solid #f3f4f6;
 }
 
 .dropdown-option:last-child {
@@ -498,7 +498,7 @@ const handleSubmit = () => {
 }
 
 .dropdown-option-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   line-height: 1.3;
 }
@@ -509,19 +509,19 @@ const handleSubmit = () => {
 }
 
 .dropdown-check-icon {
-  width: 16px;
-  height: 16px;
+  width: 32rpx;
+  height: 32rpx;
   flex-shrink: 0;
 }
 
 .field-textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  min-height: 240rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid #e5e7eb;
   background-color: #ffffff;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   line-height: 1.5;
   box-sizing: border-box;
@@ -534,14 +534,14 @@ const handleSubmit = () => {
 .upload-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
   flex-wrap: wrap;
 }
 
 .upload-btn {
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 999px;
+  height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: 1998rpx;
   background-color: #f3f4f6;
   display: flex;
   align-items: center;
@@ -549,52 +549,52 @@ const handleSubmit = () => {
 }
 
 .upload-btn-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 700;
   color: #374151;
   line-height: 1;
 }
 
 .upload-hint {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.4;
 }
 
 .attachment-list {
-  margin-top: 12px;
+  margin-top: 24rpx;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16rpx;
 }
 
 .attachment-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: 12px;
+  padding: 20rpx 24rpx;
+  border-radius: 24rpx;
   background-color: #f8fafc;
 }
 
 .attachment-name {
-  font-size: 13px;
+  font-size: 26rpx;
   color: #374151;
 }
 
 .attachment-remove-text {
-  font-size: 12px;
+  font-size: 24rpx;
   font-weight: 700;
   color: #ef4444;
 }
 
 .scroll-bottom-spacer {
-  height: 12px;
+  height: 24rpx;
 }
 
 .submit-footer {
   flex-shrink: 0;
-  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 32rpx 48rpx calc(32rpx + env(safe-area-inset-bottom, 0px));
   display: flex;
   justify-content: flex-end;
   background: linear-gradient(180deg, rgba(244, 245, 247, 0) 0%, #f4f5f7 30%);
@@ -602,10 +602,10 @@ const handleSubmit = () => {
 }
 
 .submit-btn {
-  min-width: 120px;
-  height: 44px;
-  padding: 0 28px;
-  border-radius: 999px;
+  min-width: 240rpx;
+  height: 88rpx;
+  padding: 0 56rpx;
+  border-radius: 1998rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -618,7 +618,7 @@ const handleSubmit = () => {
 }
 
 .submit-text {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
   transition: color 0.2s ease;

@@ -313,77 +313,77 @@ const handleBack = () => {
 <style scoped>
 .approval-config-page {
   min-height: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 80rpx;
   box-sizing: border-box;
 }
 
 .page-header {
-  padding: 0 24px;
+  padding: 0 48rpx;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .header-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .search-bar {
-  width: 168px;
+  width: 336rpx;
   flex-shrink: 0;
   margin-left: auto;
-  height: 44px;
+  height: 88rpx;
   background-color: #ffffff;
-  border-radius: 999px;
+  border-radius: 1998rpx;
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0 28rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .search-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 16rpx;
   flex-shrink: 0;
 }
 
 .search-input {
   flex: 1;
-  font-size: 14px;
+  font-size: 28rpx;
   color: #111827;
   height: 100%;
 }
 
 .search-placeholder {
   color: #9ca3af;
-  font-size: 14px;
+  font-size: 28rpx;
 }
 
 .content {
-  padding: 32px 24px 0;
+  padding: 64rpx 48rpx 0;
 }
 
 .title-block {
-  margin-bottom: 24px;
+  margin-bottom: 48rpx;
 }
 
 .page-title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.35;
@@ -391,8 +391,8 @@ const handleBack = () => {
 
 .page-desc {
   display: block;
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: 16rpx;
+  font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
 }
@@ -400,23 +400,23 @@ const handleBack = () => {
 .approval-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32rpx;
 }
 
 .approval-card {
   width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
-  border-radius: 22px;
+  border-radius: 44rpx;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-  border: 1px solid rgba(229, 231, 235, 0.9);
+  box-shadow: 0 8rpx 36rpx rgba(15, 23, 42, 0.05);
+  border: 2rpx solid rgba(229, 231, 235, 0.9);
 }
 
 .card-header {
   display: flex;
   align-items: flex-start;
-  padding: 20px 18px 0;
+  padding: 40rpx 36rpx 0;
 }
 
 .card-header-main {
@@ -424,30 +424,30 @@ const handleBack = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .type-label {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .type-title {
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: 800;
   color: #111827;
   line-height: 1.25;
 }
 
 .meta-row {
-  margin: 18px 18px 0;
-  padding: 14px 14px;
-  border-radius: 16px;
+  margin: 36rpx 36rpx 0;
+  padding: 28rpx 28rpx;
+  border-radius: 32rpx;
   background-color: #f8fafc;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .meta-item {
@@ -455,7 +455,7 @@ const handleBack = () => {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .meta-item-time {
@@ -463,8 +463,8 @@ const handleBack = () => {
 }
 
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 68rpx;
+  height: 68rpx;
   border-radius: 50%;
   background-color: #b2c4d7;
   display: flex;
@@ -474,7 +474,7 @@ const handleBack = () => {
 }
 
 .avatar-text {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 800;
   color: #ffffff;
   line-height: 1;
@@ -483,51 +483,51 @@ const handleBack = () => {
 .meta-text {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 6rpx;
   min-width: 0;
 }
 
 .meta-label {
-  font-size: 11px;
+  font-size: 22rpx;
   color: #9ca3af;
   line-height: 1.2;
 }
 
 .meta-value {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.25;
 }
 
 .meta-divider {
-  width: 1px;
-  height: 28px;
+  width: 2rpx;
+  height: 56rpx;
   background-color: #e5e7eb;
   flex-shrink: 0;
 }
 
 .card-footer {
-  margin-top: 16px;
-  padding: 16px 18px 18px;
+  margin-top: 32rpx;
+  padding: 32rpx 36rpx 36rpx;
   background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
-  border-top: 1px solid #f1f5f9;
+  border-top: 2rpx solid #f1f5f9;
 }
 
 .flow-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .flow-node-edge {
-  height: 34px;
-  padding: 0 14px;
-  border-radius: 999px;
+  height: 68rpx;
+  padding: 0 28rpx;
+  border-radius: 1998rpx;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  border: 2rpx solid #e5e7eb;
+  box-shadow: 0 2rpx 4rpx rgba(15, 23, 42, 0.04);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -535,7 +535,7 @@ const handleBack = () => {
 }
 
 .flow-node-text {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 600;
   color: #6b7280;
   line-height: 1;
@@ -543,15 +543,15 @@ const handleBack = () => {
 
 .flow-connector {
   flex: 1;
-  min-width: 10px;
+  min-width: 20rpx;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 6rpx;
 }
 
 .flow-dot {
-  width: 4px;
-  height: 4px;
+  width: 8rpx;
+  height: 8rpx;
   border-radius: 50%;
   background-color: #d1d5db;
   flex-shrink: 0;
@@ -560,31 +560,31 @@ const handleBack = () => {
 .flow-line {
   flex: 1;
   height: 0;
-  border-top: 1.5px dashed #d1d5db;
+  border-top: 3rpx dashed #d1d5db;
 }
 
 .flow-node-current {
-  min-width: 76px;
-  padding: 10px 14px;
-  border-radius: 16px;
+  min-width: 152rpx;
+  padding: 20rpx 28rpx;
+  border-radius: 32rpx;
   background-color: #111827;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 8rpx;
   flex-shrink: 0;
 }
 
 .flow-current-name {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #ffffff;
   line-height: 1.2;
 }
 
 .flow-current-label {
-  font-size: 11px;
+  font-size: 22rpx;
   color: rgba(255, 255, 255, 0.72);
   line-height: 1;
 }
@@ -596,10 +596,10 @@ const handleBack = () => {
 }
 
 .done-badge {
-  min-width: 140px;
-  height: 42px;
-  padding: 0 24px;
-  border-radius: 999px;
+  min-width: 280rpx;
+  height: 84rpx;
+  padding: 0 48rpx;
+  border-radius: 1998rpx;
   background-color: #9fe870;
   display: flex;
   align-items: center;
@@ -607,21 +607,21 @@ const handleBack = () => {
 }
 
 .done-badge-text {
-  font-size: 15px;
+  font-size: 30rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1;
 }
 
 .empty-tip {
-  padding: 48px 0;
+  padding: 96rpx 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .empty-tip-text {
-  font-size: 14px;
+  font-size: 28rpx;
   color: #9ca3af;
 }
 </style>

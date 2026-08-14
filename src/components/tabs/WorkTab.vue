@@ -6,29 +6,15 @@
 
     <view class="card-layout">
       <view class="card card-banner" @click="openContractArchive">
-        <svg
+        <view class="card-banner-fallback">
+          <view class="card-banner-fallback-lower" />
+          <view class="card-banner-fallback-upper" />
+        </view>
+        <image
           class="card-banner-shape"
-          viewBox="0 0 360 260"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="#ffffff"
-            d="M24 0
-               H165
-               C190 0 200 8 212 30
-               C224 52 234 56 255 56
-               H336
-               C349.3 56 360 66.7 360 80
-               V236
-               C360 249.3 349.3 260 336 260
-               H24
-               C10.7 260 0 249.3 0 236
-               V24
-               C0 10.7 10.7 0 24 0
-               Z"
-          />
-        </svg>
+          src="/static/images/work-card/contract-banner.svg"
+          mode="scaleToFill"
+        />
         <text class="card-banner-title">合同档案</text>
         <view class="card-banner-stat">
           <text class="card-banner-stat-label">合同数量</text>
@@ -225,41 +211,67 @@ const handleFeedbackCreateSubmit = (payload: {
 
 <style scoped>
 .header {
-  padding: 0 24px;
-  margin-bottom: 28px;
+  padding: 0 48rpx;
+  margin-bottom: 56rpx;
 }
 .title {
   display: block;
-  font-size: 28px;
+  font-size: 56rpx;
   font-weight: 900;
   color: #111827;
 }
 
 .card-layout {
-  padding: 0 24px;
+  padding: 0 48rpx;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .card {
   background-color: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border-radius: 48rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
 }
 
 .card-banner {
-  height: 260px;
+  height: 520rpx;
   position: relative;
   background-color: transparent;
   border-radius: 0;
   box-shadow: none;
-  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.05));
   overflow: visible;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 16px 18px 18px;
+  padding: 32rpx 36rpx 36rpx;
+}
+
+.card-banner-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.card-banner-fallback-lower {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 112rpx;
+  bottom: 0;
+  background-color: #ffffff;
+  border-radius: 0 48rpx 48rpx 48rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-banner-fallback-upper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 71%;
+  height: 140rpx;
+  background-color: #ffffff;
+  border-radius: 48rpx 40rpx 0 0;
 }
 
 .card-banner-shape {
@@ -268,19 +280,14 @@ const handleFeedbackCreateSubmit = (payload: {
   width: 100%;
   height: 100%;
   display: block;
-  pointer-events: none;
   z-index: 0;
-}
-
-.card-banner-shape path {
-  fill: #ffffff;
 }
 
 .card-banner-title {
   position: relative;
   z-index: 1;
   display: block;
-  font-size: 30px;
+  font-size: 60rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.12;
@@ -295,15 +302,15 @@ const handleFeedbackCreateSubmit = (payload: {
 }
 
 .card-banner-stat-label {
-  font-size: 13px;
+  font-size: 26rpx;
   font-weight: 500;
   color: #6b7280;
   line-height: 1.2;
-  margin-bottom: 4px;
+  margin-bottom: 8rpx;
 }
 
 .card-banner-stat-value {
-  font-size: 88px;
+  font-size: 176rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1;
@@ -311,13 +318,13 @@ const handleFeedbackCreateSubmit = (payload: {
 
 .card-grid {
   display: flex;
-  gap: 12px;
+  gap: 24rpx;
   align-items: stretch;
 }
 
 .card-left {
   flex: 1;
-  min-height: 300px;
+  min-height: 600rpx;
   overflow: hidden;
   position: relative;
   display: flex;
@@ -327,9 +334,9 @@ const handleFeedbackCreateSubmit = (payload: {
 
 .card-left-top {
   position: absolute;
-  top: 10px;
-  left: 16px;
-  right: 10px;
+  top: 20rpx;
+  left: 32rpx;
+  right: 20rpx;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -339,32 +346,32 @@ const handleFeedbackCreateSubmit = (payload: {
 .card-left-title {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  margin-top: 20rpx;
 }
 
 .card-left-title-line {
-  font-size: 30px;
+  font-size: 60rpx;
   font-weight: 800;
   color: #163300;
   line-height: 1.12;
 }
 
 .card-left-add-btn {
-  width: 44px;
-  height: 44px;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background-color: #111827;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: -2px;
-  margin-right: -2px;
+  margin-top: -4rpx;
+  margin-right: -4rpx;
 }
 
 .card-left-add-icon {
-  width: 22px;
-  height: 22px;
+  width: 44rpx;
+  height: 44rpx;
   filter: brightness(0) invert(1);
 }
 
@@ -378,7 +385,7 @@ const handleFeedbackCreateSubmit = (payload: {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
 }
 
 .card-right-item {
@@ -395,13 +402,13 @@ const handleFeedbackCreateSubmit = (payload: {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
-  padding: 0 12px 0 18px;
+  gap: 20rpx;
+  padding: 0 24rpx 0 36rpx;
 }
 
 .card-action-icon {
-  width: 28px;
-  height: 28px;
+  width: 56rpx;
+  height: 56rpx;
   flex-shrink: 0;
 }
 
@@ -410,7 +417,7 @@ const handleFeedbackCreateSubmit = (payload: {
 }
 
 .card-action-text {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
@@ -433,10 +440,10 @@ const handleFeedbackCreateSubmit = (payload: {
   position: absolute;
   top: 0;
   right: 0;
-  width: 34px;
-  height: 34px;
+  width: 68rpx;
+  height: 68rpx;
   background-color: #111827;
-  border-radius: 0 24px 0 14px;
+  border-radius: 0 48rpx 0 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -444,8 +451,8 @@ const handleFeedbackCreateSubmit = (payload: {
 }
 
 .card-feedback-add-icon {
-  width: 15px;
-  height: 15px;
+  width: 30rpx;
+  height: 30rpx;
   filter: brightness(0) invert(1);
 }
 </style>

@@ -113,7 +113,7 @@ const handleConfirm = () => {
   max-height: 58vh;
   min-height: 42vh;
   background-color: #ffffff;
-  border-radius: 20px 20px 0 0;
+  border-radius: 40rpx 40rpx 0 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -129,13 +129,13 @@ const handleConfirm = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 52px;
+  height: 104rpx;
   flex-shrink: 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 2rpx solid #f3f4f6;
 }
 
 .edit-sheet-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1;
@@ -143,18 +143,18 @@ const handleConfirm = () => {
 
 .edit-sheet-close {
   position: absolute;
-  right: 16px;
+  right: 32rpx;
   top: 50%;
   transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .edit-sheet-close-text {
-  font-size: 24px;
+  font-size: 48rpx;
   line-height: 1;
   color: #9ca3af;
 }
@@ -163,20 +163,20 @@ const handleConfirm = () => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 16px 20px;
+  padding: 32rpx 40rpx;
   box-sizing: border-box;
 }
 
 .edit-sheet-footer {
   flex-shrink: 0;
-  padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid #f3f4f6;
+  padding: 24rpx 40rpx calc(24rpx + env(safe-area-inset-bottom, 0px));
+  border-top: 2rpx solid #f3f4f6;
   box-sizing: border-box;
 }
 
 .edit-sheet-confirm {
-  height: 48px;
-  border-radius: 24px;
+  height: 96rpx;
+  border-radius: 48rpx;
   background-color: #9fe870;
   display: flex;
   align-items: center;
@@ -184,7 +184,7 @@ const handleConfirm = () => {
 }
 
 .edit-sheet-confirm-text {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: 700;
   color: #163300;
   line-height: 1;

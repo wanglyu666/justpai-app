@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { ref, watch, nextTick, computed } from 'vue';
+import { rpx2px } from '@/utils/rpx';
 
 type DigitState = {
   cells: [string, string];
@@ -32,8 +33,8 @@ type DigitState = {
 };
 
 const SIZE_CONFIG = {
-  sm: { cellHeight: 14, cellWidth: 9, fontSize: 14, minWidth: 22 },
-  md: { cellHeight: 18, cellWidth: 11, fontSize: 18, minWidth: 24 },
+  sm: { cellHeight: 28, cellWidth: 18, fontSize: 28, minWidth: 44 },
+  md: { cellHeight: 36, cellWidth: 22, fontSize: 36, minWidth: 48 },
 } as const;
 
 const props = withDefaults(
@@ -50,18 +51,18 @@ const config = computed(() => SIZE_CONFIG[props.size]);
 const cellHeight = computed(() => config.value.cellHeight);
 
 const rootStyle = computed(() => ({
-  minWidth: `${config.value.minWidth}px`,
+  minWidth: `${config.value.minWidth}rpx`,
 }));
 
 const viewportStyle = computed(() => ({
-  height: `${config.value.cellHeight}px`,
-  width: `${config.value.cellWidth}px`,
+  height: `${config.value.cellHeight}rpx`,
+  width: `${config.value.cellWidth}rpx`,
 }));
 
 const cellStyle = computed(() => ({
-  height: `${config.value.cellHeight}px`,
-  lineHeight: `${config.value.cellHeight}px`,
-  fontSize: `${config.value.fontSize}px`,
+  height: `${config.value.cellHeight}rpx`,
+  lineHeight: `${config.value.cellHeight}rpx`,
+  fontSize: `${config.value.fontSize}rpx`,
 }));
 
 const padValue = (value: number) => String(value).padStart(2, '0');
@@ -91,7 +92,7 @@ const animateDigit = async (
 ) => {
   if (oldDigit === newDigit) return;
 
-  const height = cellHeight.value;
+  const height = rpx2px(cellHeight.value);
   state.animating = false;
 
   if (goingUp) {
