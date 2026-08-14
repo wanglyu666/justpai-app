@@ -67,20 +67,16 @@
     </view>
 
     <BottomSheetPanel :show="refundFlowVisible" :z-index="1200" @closed="resetRefundFlow">
-      <FadeTransition mode="out-in">
+      <SuccessPageTransition :show-success="refundStep === 'success'">
         <RefundFormContent
-          v-if="refundStep === 'form'"
-          key="refund-form"
           :order="refundOrder"
           @back="closeRefundFlow"
           @submit="handleRefundSubmit"
         />
-        <RefundSuccessContent
-          v-else
-          key="refund-success"
-          @back="closeRefundFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <RefundSuccessContent @back="closeRefundFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
 
     <BottomSheetPanel :show="refundDetailFlowVisible" :z-index="1200" @closed="resetRefundDetailFlow">
@@ -101,10 +97,9 @@
     </BottomSheetPanel>
 
     <BottomSheetPanel :show="reviewFlowVisible" :z-index="1200" @closed="resetReviewFlow">
-      <FadeTransition mode="out-in">
+      <SuccessPageTransition :show-success="reviewStep === 'success'">
         <OrderReviewContent
-          v-if="(reviewStep === 'form' || reviewStep === 'view') && reviewOrder"
-          :key="reviewStep === 'view' ? 'review-view' : 'review-form'"
+          v-if="reviewOrder"
           :order="reviewOrder"
           :editable="reviewStep === 'form'"
           :existing-rating="reviewRecord?.rating"
@@ -113,12 +108,10 @@
           @back="closeReviewFlow"
           @submit="handleReviewSubmit"
         />
-        <OrderReviewSuccessContent
-          v-else-if="reviewStep === 'success'"
-          key="review-success"
-          @back="closeReviewFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <OrderReviewSuccessContent @back="closeReviewFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
   </view>
 </template>
@@ -131,7 +124,7 @@ import OrderServiceCard from '@/components/OrderServiceCard.vue';
 import OrderCompletedCard from '@/components/OrderCompletedCard.vue';
 import OrderCancelledCard from '@/components/OrderCancelledCard.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
-import FadeTransition from '@/components/FadeTransition.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import RefundFormContent from '@/components/RefundFormContent.vue';
 import RefundSuccessContent from '@/components/RefundSuccessContent.vue';
 import RefundDetailContent from '@/components/RefundDetailContent.vue';

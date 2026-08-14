@@ -1,21 +1,13 @@
 <template>
-  <!-- duration 强制结束：App 端 CSS transitionend 常丢失，避免 leave 卡死 -->
-  <Transition
-    :name="FADE_TRANSITION_NAME"
-    :mode="mode"
-    :duration="FADE_DURATION_MS"
-    @after-enter="onAfterEnter"
-    @after-leave="onAfterLeave"
-  >
-    <slot />
-  </Transition>
+  <slot />
 </template>
 
 <script setup lang="ts">
+import { Comment, Text, onMounted, onUnmounted, onUpdated, useSlots } from 'vue';
+import type { VNode } from 'vue';
 import {
   FADE_DURATION_MS,
   FADE_EASING,
-  FADE_TRANSITION_NAME,
 } from '@/utils/fadeTransition';
 
 withDefaults(
@@ -32,33 +24,49 @@ const emit = defineEmits<{
   afterLeave: [el: Element];
 }>();
 
-const onAfterEnter = (el: Element) => {
-  emit('afterEnter', el);
+const slots = useSlots();
+let lastSlotKey: string | null = null;
+let enterTimer: ReturnType<typeof setTimeout> | null = null;
+
+const clearEnterTimer = () => {
+  if (enterTimer) {
+    clearTimeout(enterTimer);
+    enterTimer = null;
+  }
 };
 
-const onAfterLeave = (el: Element) => {
-  emit('afterLeave', el);
+const emitEntered = () => {
+  clearEnterTimer();
+  emit('afterEnter', undefined as unknown as Element);
 };
+
+const readSlotKey = () => {
+  const nodes = slots.default?.() ?? [];
+  const node = nodes.find(
+    (item): item is VNode =>
+      !!item && typeof item === 'object' && item.type !== Comment && item.type !== Text,
+  );
+  if (!node) return 'empty';
+  return String(node.key ?? 'default');
+};
+
+const syncSlotKey = () => {
+  const slotKey = readSlotKey();
+  if (lastSlotKey === slotKey) return;
+  lastSlotKey = slotKey;
+  clearEnterTimer();
+  enterTimer = setTimeout(emitEntered, FADE_DURATION_MS);
+};
+
+onMounted(syncSlotKey);
+onUpdated(syncSlotKey);
+
+onUnmounted(() => {
+  clearEnterTimer();
+});
 
 defineExpose({
   duration: FADE_DURATION_MS,
   easing: FADE_EASING,
 });
 </script>
-
-<style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 300ms ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-to,
-.fade-leave-from {
-  opacity: 1;
-}
-</style>

@@ -82,7 +82,12 @@
               <view v-if="activeTab === 'params'" key="params" class="param-list tab-panel-body">
                 <view v-for="group in paramGroups" :key="group.key" class="param-row">
                   <text class="param-label">{{ group.label }}</text>
-                  <scroll-view scroll-x class="param-options-scroll" :show-scrollbar="false">
+                  <scroll-view
+                    scroll-x
+                    class="param-options-scroll"
+                    :style="paramScrollStyle"
+                    :show-scrollbar="false"
+                  >
                     <view class="param-options">
                       <view
                         v-for="option in group.options"
@@ -129,19 +134,15 @@
     </view>
 
     <BottomSheetPanel :show="consultFlowVisible" :z-index="1100" @closed="resetConsultFlow">
-      <FadeTransition mode="out-in">
+      <SuccessPageTransition :show-success="consultStep === 'success'">
         <ConsultFormContent
-          v-if="consultStep === 'form'"
-          key="consult-form"
           @back="closeConsultFlow"
           @next="goConsultSuccessStep"
         />
-        <ConsultSuccessContent
-          v-else
-          key="consult-success"
-          @back="closeConsultFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <ConsultSuccessContent @back="closeConsultFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
 
     <FrostedConfirmModal
@@ -165,6 +166,7 @@ import FadeTransition from '@/components/FadeTransition.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import ConsultFormContent from '@/components/ConsultFormContent.vue';
 import ConsultSuccessContent from '@/components/ConsultSuccessContent.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import FrostedConfirmModal from '@/components/FrostedConfirmModal.vue';
 import FlipQty from '@/components/FlipQty.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
@@ -174,6 +176,10 @@ const TAB_PANEL_HEIGHT_DURATION_MS = 320;
 
 const headerGlassStyle = getFrostedGlassStyle('default');
 const footerGlassStyle = getFrostedGlassStyle('tabbar');
+const paramScrollStyle = {
+  height: '72rpx',
+  width: '100%',
+};
 
 const { visible: consultFlowVisible, open: openConsultFlow, close: closeConsultFlow } = useSlideOver();
 const { addToCart } = useCart();

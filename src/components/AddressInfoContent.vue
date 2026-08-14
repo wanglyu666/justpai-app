@@ -7,35 +7,31 @@
     </view>
 
     <view class="flow-body">
-      <FadeTransition mode="out-in">
-        <AddressListContent
-          v-if="step === 'list'"
-          key="address-list"
-          :addresses="addresses"
-          @add="goAddForm"
-          @edit="handleEdit"
-          @delete="handleDelete"
-        />
+      <AddressListContent
+        v-if="step === 'list'"
+        :addresses="addresses"
+        @add="goAddForm"
+        @edit="handleEdit"
+        @delete="handleDelete"
+      />
+      <SuccessPageTransition v-else :show-success="step === 'success'">
         <AddressFormContent
-          v-else-if="step === 'form'"
           :key="formKey"
           :mode="editingId ? 'edit' : 'add'"
           :initial-values="formInitialValues"
           @confirm="handleFormConfirm"
         />
-        <AddressSuccessContent
-          v-else
-          key="address-success"
-          @back="goList"
-        />
-      </FadeTransition>
+        <template #success>
+          <AddressSuccessContent @back="goList" />
+        </template>
+      </SuccessPageTransition>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import FadeTransition from '@/components/FadeTransition.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import AddressListContent, { type AddressItem } from '@/components/AddressListContent.vue';
 import AddressFormContent, { type AddressFormValues } from '@/components/AddressFormContent.vue';
 import AddressSuccessContent from '@/components/AddressSuccessContent.vue';
@@ -191,6 +187,7 @@ defineExpose({
 }
 
 .flow-body {
+  position: relative;
   flex: 1;
   min-height: 0;
 }

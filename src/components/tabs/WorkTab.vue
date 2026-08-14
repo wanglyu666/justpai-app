@@ -103,19 +103,15 @@
       :z-index="1100"
       @closed="resetFeedbackCreate"
     >
-      <FadeTransition mode="out-in">
+      <SuccessPageTransition :show-success="feedbackCreateStep === 'success'">
         <FeedbackFormContent
-          v-if="feedbackCreateStep === 'form'"
-          key="work-feedback-form"
           @back="closeFeedbackCreate"
           @submit="handleFeedbackCreateSubmit"
         />
-        <FeedbackSuccessContent
-          v-else
-          key="work-feedback-success"
-          @back="closeFeedbackCreate"
-        />
-      </FadeTransition>
+        <template #success>
+          <FeedbackSuccessContent @back="closeFeedbackCreate" />
+        </template>
+      </SuccessPageTransition>
     </SlideOverPanel>
 
     <SlideOverPanel :show="approvalConfigVisible" :z-index="1100">
@@ -126,7 +122,7 @@
 
 <script setup lang="ts">
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
-import FadeTransition from '@/components/FadeTransition.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import ContractArchiveContent from '@/components/ContractArchiveContent.vue';
 import BillManagementContent from '@/components/BillManagementContent.vue';
 import ConsultTicketContent from '@/components/ConsultTicketContent.vue';

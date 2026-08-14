@@ -25,7 +25,9 @@ JustPai 是 **H5 / Android / iOS** 同一套代码的 App。验收标准不是�
 | `clip-path: path()` 作为唯一造型 | 旧 WebView 不支持 | 图片造型 + 普通圆角白底兜底 |
 | `Teleport to="body"` | App 端不稳定 | 页面内 `position: fixed` |
 | `pointer-events: none` 父级再给子级 `auto` | 真机触摸经常点不到 | 不要这样挡点击 |
-| 只靠 Vue `<Transition>` 的 leave 关面板 | App 上动画结束回调丢失，关不掉 | 超时强制卸载 |
+| 成功页用 Vue `<Transition>` out-in | App 上 leave 结束不了，表单不切到成功页 | 用 `SuccessPageTransition`：当前页渐隐后再渐显成功页 |
+| 磨砂层盖在按钮上（`pointer-events: none` + `backdrop-filter`） | 安卓仍会把点击吃掉 | 磨砂样式打在面板自己身上 |
+| 横向 `scroll-view` 不写死高度 | App 上是原生组件，会撑满父级并挡住下面的按钮；`overflow: hidden` 也裁不掉 | 用 **行内 style** 写死宽高；收起时用 `v-if` 卸载，不要只靠 CSS 折叠 |
 | 仅用 `px` 做间距 | 不同宽度安卓机卡片缝隙会乱 | 布局用 `rpx`（375 设计稿 `1px = 2rpx`） |
 
 ## 异形卡片（如工作台「合同档案」）

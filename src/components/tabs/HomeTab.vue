@@ -83,7 +83,11 @@
     <!-- Latest News -->
     <view class="news-section">
       <text class="section-title">最新动态</text>
-      <scroll-view scroll-x="true" class="news-scroll" :show-scrollbar="false">
+      <scroll-view
+        scroll-x
+        class="news-scroll"
+        :show-scrollbar="false"
+      >
         <view class="news-slide" v-for="item in newsItems" :key="item.id">
           <view class="news-text">
             <text class="news-date">{{ item.date }}</text>

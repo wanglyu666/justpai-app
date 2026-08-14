@@ -3,6 +3,7 @@
     <scroll-view
       scroll-x
       class="status-scroll"
+      :style="scrollViewStyle"
       :show-scrollbar="false"
       :scroll-left="scrollLeft"
       scroll-with-animation
@@ -67,6 +68,11 @@ const capsuleStyle = {
   borderRadius: `${STATUS_CAPSULE.radius}rpx`,
   backgroundColor: STATUS_CAPSULE.background,
   boxShadow: STATUS_CAPSULE.shadow,
+};
+
+const scrollViewStyle = {
+  width: '100%',
+  height: `${STATUS_CAPSULE.height}rpx`,
 };
 
 const innerStyle = {

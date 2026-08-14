@@ -150,19 +150,15 @@
     </BottomSheetPanel>
 
     <BottomSheetPanel :show="consultFlowVisible" :z-index="1100" @closed="resetConsultFlow">
-      <FadeTransition mode="out-in">
+      <SuccessPageTransition :show-success="consultStep === 'success'">
         <ConsultFormContent
-          v-if="consultStep === 'form'"
-          key="consult-form"
           @back="closeConsultFlow"
           @next="goConsultSuccessStep"
         />
-        <ConsultSuccessContent
-          v-else
-          key="consult-success"
-          @back="closeConsultFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <ConsultSuccessContent @back="closeConsultFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
   </view>
 </template>
@@ -175,6 +171,7 @@ import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FadeTransition from '@/components/FadeTransition.vue';
 import ConsultFormContent from '@/components/ConsultFormContent.vue';
 import ConsultSuccessContent from '@/components/ConsultSuccessContent.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import CheckoutContent from '@/components/CheckoutContent.vue';
 import PaymentSelectContent from '@/components/PaymentSelectContent.vue';
 import FlipQty from '@/components/FlipQty.vue';

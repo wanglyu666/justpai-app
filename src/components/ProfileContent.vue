@@ -72,67 +72,52 @@
     </view>
 
     <BottomSheetPanel :show="passwordFlowVisible" :z-index="1100" @closed="resetPasswordFlow">
-      <FadeTransition mode="out-in">
-        <PhoneVerifyContent
-          v-if="passwordStep === 'verify'"
-          key="verify"
-          @back="closePasswordFlow"
-          @next="goPasswordStep"
-        />
+      <PhoneVerifyContent
+        v-if="passwordStep === 'verify'"
+        @back="closePasswordFlow"
+        @next="goPasswordStep"
+      />
+      <SuccessPageTransition v-else :show-success="passwordStep === 'success'">
         <PasswordChangeContent
-          v-else-if="passwordStep === 'password'"
-          key="password"
           @back="backToVerify"
           @next="goSuccessStep"
         />
-        <PasswordSuccessContent
-          v-else
-          key="success"
-          @back="closePasswordFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <PasswordSuccessContent @back="closePasswordFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
     <BottomSheetPanel :show="phoneFlowVisible" :z-index="1100" @closed="resetPhoneFlow">
-      <FadeTransition mode="out-in">
-        <PhoneVerifyContent
-          v-if="phoneStep === 'verify'"
-          key="phone-verify"
-          @back="closePhoneFlow"
-          @next="goPhoneChangeStep"
-        />
+      <PhoneVerifyContent
+        v-if="phoneStep === 'verify'"
+        @back="closePhoneFlow"
+        @next="goPhoneChangeStep"
+      />
+      <SuccessPageTransition v-else :show-success="phoneStep === 'success'">
         <PhoneNumberChangeContent
-          v-else-if="phoneStep === 'change'"
-          key="phone-change"
           @back="backPhoneToVerify"
           @next="goPhoneSuccessStep"
         />
-        <PhoneChangeSuccessContent
-          v-else
-          key="phone-success"
-          @back="closePhoneFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <PhoneChangeSuccessContent @back="closePhoneFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
     <BottomSheetPanel :show="deleteFlowVisible" :z-index="1100" @closed="resetDeleteFlow">
-      <FadeTransition mode="out-in">
-        <PhoneVerifyContent
-          v-if="deleteStep === 'verify'"
-          key="delete-verify"
-          @back="closeDeleteFlow"
-          @next="goDeleteConfirmStep"
-        />
+      <PhoneVerifyContent
+        v-if="deleteStep === 'verify'"
+        @back="closeDeleteFlow"
+        @next="goDeleteConfirmStep"
+      />
+      <SuccessPageTransition v-else :show-success="deleteStep === 'success'">
         <AccountDeleteConfirmContent
-          v-else-if="deleteStep === 'confirm'"
-          key="delete-confirm"
           @cancel="closeDeleteFlow"
           @confirm="goDeleteSuccessStep"
         />
-        <AccountDeleteSuccessContent
-          v-else
-          key="delete-success"
-          @back="closeDeleteFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <AccountDeleteSuccessContent @back="closeDeleteFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
     <BottomSheetPanel :show="registerFlowVisible" :z-index="1100">
       <RegisterInfoContent @back="closeRegisterFlow" />
@@ -144,19 +129,15 @@
       <AddressInfoContent ref="addressInfoRef" @back="closeAddressFlow" />
     </BottomSheetPanel>
     <BottomSheetPanel :show="uploadFlowVisible" :z-index="1100" @closed="resetUploadFlow">
-      <FadeTransition mode="out-in">
+      <SuccessPageTransition :show-success="uploadStep === 'success'">
         <UploadMaterialsContent
-          v-if="uploadStep === 'form'"
-          key="upload-form"
           @back="closeUploadFlow"
           @next="goUploadSuccessStep"
         />
-        <UploadSuccessContent
-          v-else
-          key="upload-success"
-          @back="closeUploadFlow"
-        />
-      </FadeTransition>
+        <template #success>
+          <UploadSuccessContent @back="closeUploadFlow" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
   </view>
 </template>
@@ -164,7 +145,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
-import FadeTransition from '@/components/FadeTransition.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import PhoneVerifyContent from '@/components/PhoneVerifyContent.vue';
 import PasswordChangeContent from '@/components/PasswordChangeContent.vue';
 import PasswordSuccessContent from '@/components/PasswordSuccessContent.vue';

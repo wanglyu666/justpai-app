@@ -46,6 +46,7 @@ const emit = defineEmits<{
 const rendered = ref(props.show);
 const entered = ref(props.show);
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
+let showSeq = 0;
 
 const clearCloseTimer = () => {
   if (closeTimer) {
@@ -58,12 +59,14 @@ const finishClose = () => {
   clearCloseTimer();
   if (props.show) return;
   rendered.value = false;
+  entered.value = false;
   emit('closed');
 };
 
 watch(
   () => props.show,
   async (show) => {
+    const seq = ++showSeq;
     clearCloseTimer();
 
     if (show) {
@@ -71,6 +74,7 @@ watch(
       entered.value = false;
       await nextTick();
       await waitFrames(1);
+      if (seq !== showSeq) return;
       entered.value = true;
       return;
     }

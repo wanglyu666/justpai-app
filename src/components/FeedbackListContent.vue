@@ -142,20 +142,16 @@
       :z-index="1300"
       @closed="resetFormFlow"
     >
-      <FadeTransition mode="out-in">
+      <SuccessPageTransition :show-success="formStep === 'success'">
         <FeedbackFormContent
-          v-if="formStep === 'form'"
-          key="feedback-form"
           ref="formRef"
           @back="closeForm"
           @submit="handleFormSubmit"
         />
-        <FeedbackSuccessContent
-          v-else
-          key="feedback-success"
-          @back="closeForm"
-        />
-      </FadeTransition>
+        <template #success>
+          <FeedbackSuccessContent @back="closeForm" />
+        </template>
+      </SuccessPageTransition>
     </BottomSheetPanel>
   </view>
 </template>
@@ -163,7 +159,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
-import FadeTransition from '@/components/FadeTransition.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import FeedbackFormContent from '@/components/FeedbackFormContent.vue';
 import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import { useFeedbackItems, type FeedbackItem, type FeedbackStatus } from '@/composables/useFeedbackItems';

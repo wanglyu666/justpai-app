@@ -1,86 +1,84 @@
 <template>
-  <!-- App 端 Teleport to body 不可靠；fixed 根节点即可覆盖全屏 -->
-  <Transition
-    :name="MODAL_TRANSITION_NAME"
-    :duration="MODAL_DURATION_MS"
-    @after-leave="handleAfterLeave"
+  <view
+    v-if="rendered"
+    class="filter-modal-root"
+    :class="{ 'is-entered': entered }"
+    @click="handleApply"
   >
-    <view v-if="show" class="filter-modal-root" @click="handleApply">
-      <view class="filter-modal-dim frosted-overlay" :style="overlayStyle" />
-      <view class="filter-modal-panel" @click.stop>
-        <view class="filter-modal-glass frosted-glass frosted-glass--modal-panel" :style="glassStyle" />
-        <view class="filter-modal-content">
-          <text class="filter-modal-title">商品筛选</text>
+    <view class="filter-modal-dim frosted-overlay" :style="overlayStyle" />
+    <view
+      class="filter-modal-panel frosted-glass frosted-glass--modal-panel"
+      :style="glassStyle"
+      @click.stop
+    >
+      <view class="filter-modal-content">
+        <text class="filter-modal-title">商品筛选</text>
 
-          <view class="product-toggle">
-            <view class="toggle-track">
-              <view class="toggle-thumb" :class="{ right: draftProductType === 'annual' }" />
-              <view
-                class="toggle-item"
-                :class="{ active: draftProductType === 'ordinary' }"
-                hover-class="none"
-                @click="draftProductType = 'ordinary'"
-              >
-                <text class="toggle-text">普通产品</text>
-              </view>
-              <view
-                class="toggle-item"
-                :class="{ active: draftProductType === 'annual' }"
-                hover-class="none"
-                @click="draftProductType = 'annual'"
-              >
-                <text class="toggle-text">年框产品</text>
-              </view>
+        <view class="product-toggle">
+          <view class="toggle-track">
+            <view class="toggle-thumb" :class="{ right: draftProductType === 'annual' }" />
+            <view
+              class="toggle-item"
+              :class="{ active: draftProductType === 'ordinary' }"
+              hover-class="none"
+              @click.stop="draftProductType = 'ordinary'"
+            >
+              <text class="toggle-text">普通产品</text>
+            </view>
+            <view
+              class="toggle-item"
+              :class="{ active: draftProductType === 'annual' }"
+              hover-class="none"
+              @click.stop="draftProductType = 'annual'"
+            >
+              <text class="toggle-text">年框产品</text>
             </view>
           </view>
+        </view>
 
-          <view class="region-section" :class="{ visible: draftProductType === 'annual' }">
+        <view class="region-section" :class="{ visible: draftProductType === 'annual' }">
+          <template v-if="draftProductType === 'annual'">
             <text class="region-label">年框区域</text>
             <view class="region-scroll-wrap">
-              <scroll-view
-                scroll-x
-                class="region-scroll"
-                :show-scrollbar="false"
-                scroll-with-animation
-                :scroll-left="regionScrollLeft"
-                @scroll="handleRegionScroll"
+              <view
+                class="region-scroll-inner"
+                :style="regionInnerStyle"
+                @touchstart.stop="onRegionTouchStart"
+                @touchend.stop="onRegionTouchEnd"
               >
-                <view class="region-scroll-inner">
-                  <view class="region-edge-spacer" />
-                  <view
-                    v-for="(region, index) in annualRegions"
-                    :key="region.id"
-                    class="region-item"
-                    :class="{ centered: focusedRegionIndex === index }"
-                    @click="focusRegion(index)"
-                  >
-                    <text class="region-item-text">{{ region.name }}</text>
-                  </view>
-                  <view class="region-edge-spacer" />
+                <view
+                  v-for="(region, index) in annualRegions"
+                  :key="region.id"
+                  class="region-item"
+                  :class="{ centered: focusedRegionIndex === index }"
+                  :style="regionItemStyle(index)"
+                  hover-class="none"
+                  @click.stop="handleRegionClick(index)"
+                >
+                  <text class="region-item-text">{{ region.name }}</text>
                 </view>
-              </scroll-view>
+              </view>
             </view>
-          </view>
+          </template>
+        </view>
 
-          <view class="filter-modal-action" @click="handleApply">
-            <text class="filter-modal-action-text">完成</text>
-          </view>
+        <view class="filter-modal-action" hover-class="none" @click.stop="handleApply">
+          <text class="filter-modal-action-text">完成</text>
         </view>
       </view>
     </view>
-  </Transition>
+  </view>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 import {
   MODAL_DURATION_MS,
   MODAL_EASING,
-  MODAL_TRANSITION_NAME,
 } from '@/utils/modalTransition';
 import { getFrostedGlassStyle, getFrostedOverlayStyle } from '@/utils/frostedGlass';
 import { annualRegions, type AnnualRegionId } from '@/data/storeProducts';
-import { rpx2px } from '@/utils/rpx';
+import { waitFrames } from '@/utils/nextFrame';
 
 export type StoreProductType = 'ordinary' | 'annual';
 
@@ -89,7 +87,9 @@ export type StoreFilterResult = {
   annualRegion: AnnualRegionId;
 };
 
-const REGION_ITEM_STEP_RPX = 224;
+const REGION_ITEM_WIDTH_RPX = 200;
+const REGION_ITEM_GAP_RPX = 24;
+const REGION_ITEM_STEP_RPX = REGION_ITEM_WIDTH_RPX + REGION_ITEM_GAP_RPX;
 
 const glassStyle = getFrostedGlassStyle('modalPanel');
 const overlayStyle = getFrostedOverlayStyle();
@@ -114,37 +114,116 @@ const emit = defineEmits<{
 const draftProductType = ref<StoreProductType>('ordinary');
 const draftAnnualRegion = ref<AnnualRegionId>('north');
 const focusedRegionIndex = ref(0);
-const regionScrollLeft = ref(0);
+let regionTouchStartX = 0;
+let regionSwiped = false;
+
+const regionInnerStyle = computed(() => ({
+  transform: `translate3d(${-focusedRegionIndex.value * REGION_ITEM_STEP_RPX}rpx, 0, 0)`,
+}));
+
+const regionItemStyle = (index: number) => {
+  const dist = Math.abs(index - focusedRegionIndex.value);
+  const opacity = dist === 0 ? 1 : dist === 1 ? 0.36 : 0.14;
+  const scale = dist === 0 ? 1.06 : dist === 1 ? 0.9 : 0.82;
+  return {
+    opacity,
+    transform: `scale(${scale})`,
+  };
+};
+
+const rendered = ref(props.show);
+const entered = ref(props.show);
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
+let showSeq = 0;
+
+const clearCloseTimer = () => {
+  if (closeTimer) {
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  }
+};
+
+const finishClose = () => {
+  clearCloseTimer();
+  if (props.show) return;
+  rendered.value = false;
+  entered.value = false;
+  emit('closed');
+};
 
 const syncDraftFromProps = () => {
   draftProductType.value = props.productType;
   draftAnnualRegion.value = props.annualRegion;
   const index = annualRegions.findIndex((region) => region.id === props.annualRegion);
   focusedRegionIndex.value = index >= 0 ? index : 0;
-  regionScrollLeft.value = focusedRegionIndex.value * rpx2px(REGION_ITEM_STEP_RPX);
 };
 
 watch(
   () => props.show,
-  (visible) => {
+  async (visible) => {
+    const seq = ++showSeq;
+    clearCloseTimer();
+
     if (visible) {
       syncDraftFromProps();
+      rendered.value = true;
+      entered.value = false;
+      await nextTick();
+      await waitFrames(1);
+      if (seq !== showSeq) return;
+      entered.value = true;
+      return;
     }
+
+    entered.value = false;
+    closeTimer = setTimeout(finishClose, MODAL_DURATION_MS + 80);
   },
 );
 
-const focusRegion = (index: number) => {
-  focusedRegionIndex.value = index;
-  draftAnnualRegion.value = annualRegions[index].id;
-  regionScrollLeft.value = index * rpx2px(REGION_ITEM_STEP_RPX);
-};
+onUnmounted(() => {
+  clearCloseTimer();
+});
 
-const handleRegionScroll = (e: { detail: { scrollLeft: number } }) => {
-  const index = Math.round(e.detail.scrollLeft / rpx2px(REGION_ITEM_STEP_RPX));
+const focusRegion = (index: number) => {
   const clamped = Math.max(0, Math.min(annualRegions.length - 1, index));
-  if (clamped === focusedRegionIndex.value) return;
   focusedRegionIndex.value = clamped;
   draftAnnualRegion.value = annualRegions[clamped].id;
+};
+
+const getTouchX = (event: {
+  touches?: Array<{ clientX?: number; pageX?: number }>;
+  changedTouches?: Array<{ clientX?: number; pageX?: number }>;
+}) =>
+  event.changedTouches?.[0]?.clientX ??
+  event.changedTouches?.[0]?.pageX ??
+  event.touches?.[0]?.clientX ??
+  event.touches?.[0]?.pageX ??
+  0;
+
+const onRegionTouchStart = (event: {
+  touches?: Array<{ clientX?: number; pageX?: number }>;
+  changedTouches?: Array<{ clientX?: number; pageX?: number }>;
+}) => {
+  regionSwiped = false;
+  regionTouchStartX = getTouchX(event);
+};
+
+const onRegionTouchEnd = (event: {
+  touches?: Array<{ clientX?: number; pageX?: number }>;
+  changedTouches?: Array<{ clientX?: number; pageX?: number }>;
+}) => {
+  const deltaX = getTouchX(event) - regionTouchStartX;
+  if (Math.abs(deltaX) < 36) return;
+  regionSwiped = true;
+  focusRegion(focusedRegionIndex.value + (deltaX < 0 ? 1 : -1));
+};
+
+const handleRegionClick = (index: number) => {
+  if (regionSwiped) {
+    regionSwiped = false;
+    return;
+  }
+  focusRegion(index);
 };
 
 const handleApply = () => {
@@ -154,10 +233,6 @@ const handleApply = () => {
   });
 };
 
-const handleAfterLeave = () => {
-  emit('closed');
-};
-
 defineExpose({
   duration: MODAL_DURATION_MS,
   easing: MODAL_EASING,
@@ -165,21 +240,6 @@ defineExpose({
 </script>
 
 <style>
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 280ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
-
-.modal-fade-enter-to,
-.modal-fade-leave-from {
-  opacity: 1;
-}
-
 .filter-modal-root {
   position: fixed;
   top: 0;
@@ -192,6 +252,12 @@ defineExpose({
   justify-content: center;
   padding: 0 64rpx;
   box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.filter-modal-root.is-entered {
+  opacity: 1;
 }
 
 .filter-modal-dim {
@@ -200,7 +266,7 @@ defineExpose({
   left: 0;
   right: 0;
   bottom: 0;
-  pointer-events: none;
+  z-index: 0;
 }
 
 .filter-modal-panel {
@@ -210,17 +276,6 @@ defineExpose({
   max-width: 680rpx;
   border-radius: 48rpx;
   overflow: hidden;
-}
-
-.filter-modal-glass {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 48rpx;
-  box-sizing: border-box;
-  pointer-events: none;
 }
 
 .filter-modal-content {
@@ -286,6 +341,7 @@ defineExpose({
   line-height: 1;
   transition: color 280ms cubic-bezier(0.32, 0.72, 0, 1);
   white-space: nowrap;
+  pointer-events: none;
 }
 
 .toggle-item.active .toggle-text {
@@ -305,7 +361,7 @@ defineExpose({
 }
 
 .region-section.visible {
-  max-height: 240rpx;
+  max-height: 320rpx;
   opacity: 1;
   margin-top: 40rpx;
   overflow: visible;
@@ -321,56 +377,41 @@ defineExpose({
 
 .region-scroll-wrap {
   position: relative;
+  height: 168rpx;
+  margin-left: -40rpx;
+  margin-right: -40rpx;
+  width: calc(100% + 80rpx);
   overflow: hidden;
-  margin-left: -4rpx;
-  margin-right: -4rpx;
-  width: calc(100% + 8rpx);
-  transform: translateZ(0);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
   -webkit-mask-image: linear-gradient(
-    to right,
+    90deg,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.45) 8%,
-    rgba(0, 0, 0, 1) 24%,
-    rgba(0, 0, 0, 1) 76%,
-    rgba(0, 0, 0, 0.45) 92%,
+    rgba(0, 0, 0, 1) 18%,
+    rgba(0, 0, 0, 1) 82%,
     rgba(0, 0, 0, 0) 100%
   );
   mask-image: linear-gradient(
-    to right,
+    90deg,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.45) 8%,
-    rgba(0, 0, 0, 1) 24%,
-    rgba(0, 0, 0, 1) 76%,
-    rgba(0, 0, 0, 0.45) 92%,
+    rgba(0, 0, 0, 1) 18%,
+    rgba(0, 0, 0, 1) 82%,
     rgba(0, 0, 0, 0) 100%
   );
-}
-
-.region-scroll {
-  width: 100%;
-  white-space: nowrap;
-  border: none;
-  outline: none;
 }
 
 .region-scroll-inner {
   display: inline-flex;
   align-items: center;
+  height: 168rpx;
   gap: 24rpx;
-  padding-bottom: 8rpx;
-}
-
-.region-edge-spacer {
-  width: 192rpx;
-  flex-shrink: 0;
+  position: relative;
+  left: 50%;
+  margin-left: -100rpx;
+  transition: transform 280ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
 }
 
 .region-item {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 200rpx;
@@ -380,15 +421,14 @@ defineExpose({
   flex-shrink: 0;
   transition:
     transform 280ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 280ms ease,
     background-color 280ms ease,
     box-shadow 280ms ease;
-  transform: scale(0.92);
 }
 
 .region-item.centered {
-  transform: scale(1.06);
   background-color: #ffffff;
-  box-shadow: 0 8rpx 28rpx rgba(22, 51, 0, 0.1);
+  box-shadow: 0 8rpx 28rpx rgba(22, 51, 0, 0.12);
 }
 
 .region-item-text {
@@ -396,6 +436,7 @@ defineExpose({
   font-weight: 600;
   color: #374151;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 .region-item.centered .region-item-text {
@@ -404,6 +445,8 @@ defineExpose({
 }
 
 .filter-modal-action {
+  position: relative;
+  z-index: 2;
   margin-top: 44rpx;
   height: 96rpx;
   border-radius: 1998rpx;
@@ -417,5 +460,6 @@ defineExpose({
   font-size: 30rpx;
   font-weight: 700;
   color: #163300;
+  pointer-events: none;
 }
 </style>

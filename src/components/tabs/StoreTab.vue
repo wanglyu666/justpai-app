@@ -47,7 +47,12 @@
 
     <!-- Categories -->
     <view class="category-section">
-      <scroll-view scroll-x class="category-scroll" :show-scrollbar="false">
+      <scroll-view
+        scroll-x
+        class="category-scroll"
+        :style="categoryScrollStyle"
+        :show-scrollbar="false"
+      >
         <view class="category-list">
           <view
             v-for="cat in categories"
@@ -62,8 +67,13 @@
       </scroll-view>
 
       <view class="subcategory-collapse" :class="{ 'is-expanded': showSubcategories }">
-        <view class="subcategory-collapse-inner">
-          <scroll-view scroll-x class="subcategory-scroll" :show-scrollbar="false">
+        <view v-if="showSubcategories" class="subcategory-collapse-inner">
+          <scroll-view
+            scroll-x
+            class="subcategory-scroll"
+            :style="subcategoryScrollStyle"
+            :show-scrollbar="false"
+          >
             <view :key="activeCategory" class="subcategory-list">
               <view
                 v-for="sub in activeSubcategories"
@@ -173,6 +183,14 @@ import {
 
 const bannerGlassStyle = getFrostedGlassStyle('default');
 const stickyActionsGlassStyle = getFrostedGlassStyle('tabbar');
+const categoryScrollStyle = {
+  width: '100%',
+  height: '80rpx',
+};
+const subcategoryScrollStyle = {
+  width: '100%',
+  height: '64rpx',
+};
 
 const instance = getCurrentInstance();
 const stickyActionsVisible = ref(false);
@@ -698,6 +716,16 @@ watch([showSubcategories, productListKey], () => {
 
 .product-section {
   min-height: 2rpx;
+  animation: product-section-in 300ms ease;
+}
+
+@keyframes product-section-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .section-title {
