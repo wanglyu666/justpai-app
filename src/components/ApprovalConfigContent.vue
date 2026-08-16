@@ -119,6 +119,7 @@ import ApprovalFlowContent, {
   type ApprovalFlowStep,
 } from '@/components/ApprovalFlowContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { usePageBack } from '@/composables/usePageBack';
 
 type ApprovalStatus = 'in_progress' | 'done';
 
@@ -305,9 +306,7 @@ const resetFlow = () => {
   selectedItem.value = null;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 </script>
 
 <style scoped>

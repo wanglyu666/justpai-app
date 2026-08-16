@@ -36,6 +36,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageBack } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
@@ -68,9 +69,7 @@ const messages = ref([
   },
 ]);
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 </script>
 
 <style scoped>

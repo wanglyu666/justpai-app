@@ -176,6 +176,7 @@ import CheckoutContent from '@/components/CheckoutContent.vue';
 import PaymentSelectContent from '@/components/PaymentSelectContent.vue';
 import FlipQty from '@/components/FlipQty.vue';
 import { FADE_DURATION_MS } from '@/utils/fadeTransition';
+import { usePageBack } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
@@ -220,9 +221,7 @@ const orderAmount = computed(() => {
 
 const hasSelection = computed(() => visibleCartItems.value.some((item) => item.selected));
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const handleDeleteSelected = async () => {
   if (!hasSelection.value || isDeleting.value) return;

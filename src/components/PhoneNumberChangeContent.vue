@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
+import { usePageBack } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
@@ -95,9 +96,7 @@ const sendCode = () => {
   });
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const handleConfirm = () => {
   if (!isConfirmEnabled.value) return;

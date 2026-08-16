@@ -62,6 +62,7 @@
 </template>
 
 <script setup lang="ts">
+import { usePageBack } from '@/composables/usePageBack';
 export type ApprovalResult = 'approved' | 'pending' | 'not_started';
 
 export type ApprovalFlowStep = {
@@ -90,9 +91,7 @@ const RESULT_LABEL: Record<ApprovalResult, string> = {
 
 const resultLabel = (result: ApprovalResult) => RESULT_LABEL[result];
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 </script>
 
 <style scoped>

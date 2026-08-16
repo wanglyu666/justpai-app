@@ -68,6 +68,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { usePageBack } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
@@ -98,9 +99,7 @@ const toggleConfirmPassword = () => {
   showConfirmPassword.value = !showConfirmPassword.value;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const handleConfirm = () => {
   if (!isConfirmEnabled.value) return;

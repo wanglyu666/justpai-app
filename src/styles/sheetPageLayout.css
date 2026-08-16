@@ -18,6 +18,10 @@
   padding: 0 48rpx;
 }
 
+.sheet-page__header--safe {
+  padding-top: var(--page-safe-top);
+}
+
 .sheet-page__back-btn {
   width: 88rpx;
   height: 88rpx;

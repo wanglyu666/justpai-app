@@ -170,6 +170,7 @@ import AddressInfoContent from '@/components/AddressInfoContent.vue';
 import UploadMaterialsContent from '@/components/UploadMaterialsContent.vue';
 import UploadSuccessContent from '@/components/UploadSuccessContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { usePageBack } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
@@ -229,9 +230,7 @@ const menuGroups = ref([
   },
 ]);
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const handleEdit = () => {
   emit('edit');

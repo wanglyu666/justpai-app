@@ -100,6 +100,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue';
+import { usePageBack } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
@@ -117,9 +118,7 @@ const isSubmitEnabled = computed(() =>
   form.address.trim() !== '' && form.content.trim() !== '',
 );
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const handleChooseFile = () => {
   uni.chooseImage({

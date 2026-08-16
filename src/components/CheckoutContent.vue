@@ -396,6 +396,7 @@ import DateWheelPicker from '@/components/DateWheelPicker.vue';
 import PurchasePayConfirmSheet, {
   type PurchasePayConfirmAction,
 } from '@/components/PurchasePayConfirmSheet.vue';
+import { usePageBack } from '@/composables/usePageBack';
 
 type EditField =
   | 'serviceDate'
@@ -736,9 +737,7 @@ const confirmEditSheet = () => {
   activeSheet.value = null;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const openAddressSheet = () => {
   addressSheetVisible.value = true;

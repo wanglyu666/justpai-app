@@ -61,13 +61,12 @@
 </template>
 
 <script setup lang="ts">
+import { usePageBack } from '@/composables/usePageBack';
 const emit = defineEmits<{
   back: [];
 }>();
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 </script>
 
 <style scoped>

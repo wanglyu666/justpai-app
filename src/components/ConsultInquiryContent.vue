@@ -86,6 +86,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import ShortChatSheet from '@/components/ShortChatSheet.vue';
+import { usePageBack } from '@/composables/usePageBack';
 
 export type InquiryMessage = {
   id: number;
@@ -130,9 +131,7 @@ const fileKind = (name: string) => {
   return 'file';
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const onShortChat = () => {
   shortChatVisible.value = true;

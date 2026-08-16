@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageBack } from '@/composables/usePageBack';
 import StepFadeTransition from '@/components/StepFadeTransition.vue';
 import AddressListContent, { type AddressItem } from '@/components/AddressListContent.vue';
 import AddressFormContent, { type AddressFormValues } from '@/components/AddressFormContent.vue';
@@ -111,13 +112,13 @@ const goSuccess = () => {
   step.value = 'success';
 };
 
-const handleBack = () => {
+const handleBack = usePageBack(() => {
   if (step.value === 'form' || step.value === 'success') {
     goList();
     return;
   }
   emit('back');
-};
+});
 
 const handleEdit = (id: string) => {
   const item = addresses.value.find((address) => address.id === id);

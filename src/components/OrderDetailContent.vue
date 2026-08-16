@@ -112,6 +112,7 @@
 import { computed } from 'vue';
 import type { OrderRecord } from '@/data/orders';
 import { getRefundItemsForOrder } from '@/data/refundForm';
+import { usePageBack } from '@/composables/usePageBack';
 
 const props = defineProps<{
   order: OrderRecord;
@@ -146,9 +147,7 @@ const contactPhone = computed(() => props.order.contactPhone ?? '138-0013-8000')
 
 const lineItems = computed(() => getRefundItemsForOrder(props.order.id));
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 </script>
 
 <style scoped>

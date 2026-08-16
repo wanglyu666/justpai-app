@@ -102,6 +102,7 @@
 
     <SlideOverPanel
       :show="feedbackCreateVisible"
+      content-safe-top
       @closed="resetFeedbackCreate"
     >
       <SuccessPageTransition :show-success="feedbackCreateStep === 'success'">

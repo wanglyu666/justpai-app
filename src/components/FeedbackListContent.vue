@@ -140,6 +140,7 @@
     <BottomSheetPanel
       :show="formVisible"
       :z-index="2300"
+      content-safe-top
       @closed="resetFormFlow"
     >
       <SuccessPageTransition :show-success="formStep === 'success'">
@@ -164,6 +165,7 @@ import FeedbackFormContent from '@/components/FeedbackFormContent.vue';
 import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import { useFeedbackItems, type FeedbackItem, type FeedbackStatus } from '@/composables/useFeedbackItems';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
 const STATUS_LABEL: Record<FeedbackStatus, string> = {
   pending_reply: '待回复',
@@ -190,6 +192,7 @@ const {
   open: openFormPanel,
   close: closeFormPanel,
 } = useSlideOver();
+usePageBackWhen(detailVisible, closeDetail);
 
 const filteredItems = computed(() => {
   const q = keyword.value.trim().toLowerCase();
@@ -234,9 +237,7 @@ const resetDetail = () => {
   selectedItem.value = null;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const onAdd = () => {
   formStep.value = 'form';

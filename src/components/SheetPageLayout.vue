@@ -4,8 +4,8 @@
     :class="{ 'sheet-page--with-footer': showFooter }"
     @click="emit('click')"
   >
-    <view v-if="showBack" class="sheet-page__header">
-      <view class="sheet-page__back-btn" @click.stop="emit('back')">
+    <view v-if="showBack" class="sheet-page__header sheet-page__header--safe">
+      <view class="sheet-page__back-btn" @click.stop="handleBack">
         <image
           src="/static/icons/chevron-left.svg"
           mode="aspectFit"
@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
+import { usePageBack } from '@/composables/usePageBack';
 
 withDefaults(
   defineProps<{
@@ -49,6 +50,8 @@ const emit = defineEmits<{
   back: [];
   click: [];
 }>();
+
+const handleBack = usePageBack(() => emit('back'));
 
 const slots = useSlots();
 const showFooter = computed(() => !!slots.footer);

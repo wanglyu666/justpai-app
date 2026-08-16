@@ -138,6 +138,7 @@
 import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
 type ContractItem = {
   id: number;
@@ -165,6 +166,7 @@ const {
   open: openDetailPanel,
   close: closeDetail,
 } = useSlideOver();
+usePageBackWhen(detailVisible, closeDetail);
 
 const contracts = ref<ContractItem[]>([
   {
@@ -264,9 +266,7 @@ const filteredContracts = computed(() => {
   );
 });
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const openDetail = (item: ContractItem) => {
   selectedContract.value = item;

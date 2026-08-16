@@ -171,6 +171,7 @@ import FrostedConfirmModal from '@/components/FrostedConfirmModal.vue';
 import FlipQty from '@/components/FlipQty.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { useCart } from '@/composables/useCart';
+import { usePageBack } from '@/composables/usePageBack';
 
 const TAB_PANEL_HEIGHT_DURATION_MS = 320;
 
@@ -407,9 +408,7 @@ const onSwiperChange = (e: { detail: { current: number } }) => {
   currentImage.value = e.detail.current;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 </script>
 
 <style scoped>

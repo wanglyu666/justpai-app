@@ -136,6 +136,7 @@ import { useSlideOver } from '@/composables/useSlideOver';
 import { useOrderRefunds } from '@/composables/useOrderRefunds';
 import { useOrderReviews } from '@/composables/useOrderReviews';
 import { getOrdersByStatus, getOrderById, type OrderRecord, type OrderStatusId } from '@/data/orders';
+import { usePageBack } from '@/composables/usePageBack';
 
 type OrderStatusTabId = OrderStatusId;
 
@@ -181,9 +182,7 @@ const reviewRecord = computed(() =>
   reviewOrder.value ? getReview(reviewOrder.value.id) : null,
 );
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const handleOrderDetail = (orderId: string) => {
   const order = getOrderById(orderId);

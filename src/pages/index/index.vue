@@ -32,6 +32,7 @@
     </view>
 
     <CustomTabBar :currentPath="activeTabPath" />
+    <EdgeSwipeBack />
   </view>
 </template>
 
@@ -39,6 +40,7 @@
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
+import EdgeSwipeBack from '@/components/EdgeSwipeBack.vue';
 import HomeTab from '@/components/tabs/HomeTab.vue';
 import StoreTab from '@/components/tabs/StoreTab.vue';
 import WorkTab from '@/components/tabs/WorkTab.vue';

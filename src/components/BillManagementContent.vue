@@ -209,6 +209,7 @@ import { computed, ref } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
 type BillStatus = 'pending_confirm' | 'pending_pay' | 'paid';
 
@@ -254,6 +255,7 @@ const {
   open: openDetailPanel,
   close: closeDetail,
 } = useSlideOver();
+usePageBackWhen(detailVisible, closeDetail);
 
 const statusTabs: { id: BillStatus; label: string }[] = [
   { id: 'pending_confirm', label: '待确认' },
@@ -413,9 +415,7 @@ const resetDetail = () => {
   selectedBill.value = null;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const onViewRequestFile = () => {
   // TODO: open payment request file

@@ -7,7 +7,7 @@
   >
     <view
       class="slide-over-scroll"
-      :class="edgeToEdge ? 'slide-over-edge' : 'page-safe-top'"
+      :class="scrollClass"
     >
       <slot />
     </view>
@@ -29,12 +29,19 @@ const props = withDefaults(
     show: boolean;
     zIndex?: number;
     edgeToEdge?: boolean;
+    contentSafeTop?: boolean;
   }>(),
   {
     zIndex: SECONDARY_PAGE_Z_INDEX,
     edgeToEdge: false,
+    contentSafeTop: false,
   },
 );
+
+const scrollClass = computed(() => {
+  if (props.contentSafeTop) return '';
+  return props.edgeToEdge ? 'slide-over-edge' : 'page-safe-top';
+});
 
 const panelStyle = computed(() => ({
   zIndex: props.zIndex,

@@ -80,6 +80,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import type { OrderRecord } from '@/data/orders';
+import { usePageBack } from '@/composables/usePageBack';
 
 const starOutlineIcon = '/static/icons/star-outline.svg';
 const starFilledIcon = '/static/icons/star-filled.svg';
@@ -124,9 +125,7 @@ const setRating = (value: number) => {
   rating.value = value;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const handleSubmit = () => {
   if (rating.value <= 0) return;

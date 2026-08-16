@@ -128,6 +128,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import type { OrderRecord } from '@/data/orders';
+import { usePageBack } from '@/composables/usePageBack';
 import {
   getRefundItemsForOrder,
   refundReasons,
@@ -174,9 +175,7 @@ const isSubmitEnabled = computed(
   () => selectedIds.value.length > 0 && reasonIndex.value >= 0,
 );
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const toggleItem = (id: string) => {
   if (selectedIds.value.includes(id)) {

@@ -69,7 +69,7 @@
       :z-index="2200"
       @closed="resetDetail"
     >
-      <view class="sheet-page sheet-page--with-footer" v-if="selectedTicket">
+      <view class="sheet-page" v-if="selectedTicket">
         <view class="sheet-page__header">
           <view class="sheet-page__back-btn" @click="closeDetail">
             <image
@@ -81,7 +81,12 @@
         </view>
 
         <view class="sheet-page__body">
-          <text class="sheet-page__title">咨询详情</text>
+          <view class="detail-title-row">
+            <text class="sheet-page__title">咨询详情</text>
+            <view class="end-btn" @click="onEndConsult">
+              <text class="end-btn-text">结束咨询</text>
+            </view>
+          </view>
 
           <view class="info-card">
             <view class="info-row">
@@ -165,12 +170,6 @@
             </view>
           </view>
         </view>
-
-        <view class="sheet-page__footer">
-          <view class="end-btn" @click="onEndConsult">
-            <text class="end-btn-text">结束咨询</text>
-          </view>
-        </view>
       </view>
     </BottomSheetPanel>
 
@@ -197,6 +196,7 @@ import ConsultInquiryContent, {
   type InquiryMessage,
 } from '@/components/ConsultInquiryContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
 type ConsultStatus = 'pending_reply' | 'in_progress' | 'closed';
 
@@ -234,6 +234,7 @@ const {
   open: openInquiryPanel,
   close: closeInquiry,
 } = useSlideOver();
+usePageBackWhen(detailVisible, closeDetail);
 
 const inquiryMessages = computed(
   () => selectedTicket.value?.inquiryMessages ?? [],
@@ -443,9 +444,7 @@ const resetDetail = () => {
   selectedTicket.value = null;
 };
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 
 const onAdd = () => {
   // TODO: open create consult form
@@ -684,6 +683,18 @@ const onEndConsult = () => {
   gap: 28rpx;
 }
 
+.detail-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.detail-title-row .sheet-page__title {
+  flex: 1;
+  min-width: 0;
+}
+
 .info-card {
   background-color: #ffffff;
   border-radius: 40rpx;
@@ -883,8 +894,10 @@ const onEndConsult = () => {
 }
 
 .end-btn {
-  height: 104rpx;
-  border-radius: 1998rpx;
+  flex-shrink: 0;
+  height: 88rpx;
+  padding: 0 48rpx;
+  border-radius: 28rpx;
   background-color: #ef4444;
   display: flex;
   align-items: center;

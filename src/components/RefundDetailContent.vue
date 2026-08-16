@@ -130,6 +130,7 @@ import { computed } from 'vue';
 import type { OrderRecord } from '@/data/orders';
 import type { OrderRefundRecord } from '@/composables/useOrderRefunds';
 import { getRefundItemsForOrder } from '@/data/refundForm';
+import { usePageBack } from '@/composables/usePageBack';
 
 type StepStatus = 'completed' | 'current' | 'pending';
 
@@ -190,9 +191,7 @@ const refundItems = computed(() => {
   return allItems.filter((item) => props.refund.itemIds.includes(item.id));
 });
 
-const handleBack = () => {
-  emit('back');
-};
+const handleBack = usePageBack(() => emit('back'));
 </script>
 
 <style scoped>
