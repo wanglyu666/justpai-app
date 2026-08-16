@@ -46,7 +46,9 @@ JustPai 是 **H5 / Android / iOS** 同一套代码的 App。验收标准不是�
 
 - 用 `usePageBack` 登记该页返回（与按钮同一函数）。多层叠开时右滑只关最上面一层
 - 同一组件里后打开的详情页用 `usePageBackWhen`
-- 左缘热区由 `EdgeSwipeBack` 统一处理，不要在新页再写一套 touch
+- H5 / iOS：左缘热区由 `EdgeSwipeBack` 统一处理，不要在新页再写一套 touch
+- 安卓：系统左滑 / 返回键走壳页面的 `onBackPress` → `consumePageBack()`（有二级页就关一层并拦住退出）。系统半圆标可以留着
+- 两套监听并存、接到同一个返回栈，不要按平台 `if` 拆开
 - 不要依赖系统路由 `popGesture`：本应用二级页是单页壳里的侧滑/底部面板，系统手势扫不到
 
 新做带返回的页面，在返回函数上包一层 `usePageBack`。

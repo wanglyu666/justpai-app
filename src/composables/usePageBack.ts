@@ -30,6 +30,13 @@ export const triggerPageBack = () => {
   stack[stack.length - 1]?.handler();
 };
 
+/** 系统 Back（安卓手势 / 返回键）有二级页时吃掉并关最上层。返回 true 表示已处理。 */
+export const consumePageBack = () => {
+  if (!hasPageBack.value) return false;
+  triggerPageBack();
+  return true;
+};
+
 /**
  * 当前页有返回按钮时登记。组件卸载后自动取消。
  * 多层叠开时，右滑只关掉最上面那一层。

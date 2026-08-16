@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onBackPress, onLoad } from '@dcloudio/uni-app';
 import CustomTabBar from '@/components/CustomTabBar.vue';
 import EdgeSwipeBack from '@/components/EdgeSwipeBack.vue';
 import HomeTab from '@/components/tabs/HomeTab.vue';
@@ -46,6 +46,7 @@ import StoreTab from '@/components/tabs/StoreTab.vue';
 import WorkTab from '@/components/tabs/WorkTab.vue';
 import ManageTab from '@/components/tabs/ManageTab.vue';
 import { useMainTab, type MainTabPath } from '@/composables/useMainTab';
+import { consumePageBack } from '@/composables/usePageBack';
 import {
   PAGE_FADE_DURATION_MS,
   PAGE_FADE_EASING,
@@ -76,6 +77,8 @@ const panelStyle = (visible: boolean) => {
 const onStorePanelScroll = () => {
   storeTabRef.value?.scheduleStickyActionsUpdate();
 };
+
+onBackPress(() => consumePageBack());
 
 onLoad((query) => {
   const tabQuery = typeof query?.tab === 'string' ? query.tab : '';
