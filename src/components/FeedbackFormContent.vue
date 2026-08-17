@@ -70,7 +70,7 @@
 
     <view class="section-card">
       <text class="section-title">上传附件</text>
-      <text class="section-hint">支持图片与视频，最多 6 个</text>
+      <text class="section-hint">最多上传 {{ MAX_MEDIA }} 个文件（{{ mediaFiles.length }}/{{ MAX_MEDIA }}）</text>
 
       <view class="media-grid">
         <view
@@ -79,32 +79,28 @@
           class="media-item"
         >
           <image
-            v-if="file.type === 'image'"
             :src="file.path"
             mode="aspectFill"
             class="media-thumb"
           />
-          <view v-else class="media-video">
-            <text class="media-video-badge">VIDEO</text>
-          </view>
           <view class="media-remove" @click.stop="removeMedia(index)">
             <text class="media-remove-text">×</text>
           </view>
         </view>
-      </view>
 
-      <view
-        v-if="mediaFiles.length < MAX_MEDIA"
-        class="media-add"
-        :class="{ 'media-add-alone': mediaFiles.length === 0 }"
-        @click="handleChooseMedia"
-      >
-        <image
-          src="/static/icons/image-plus.svg"
-          mode="aspectFit"
-          class="media-add-icon"
-        />
-        <text class="media-add-text">添加</text>
+        <view
+          v-if="mediaFiles.length < MAX_MEDIA"
+          class="media-add"
+          :class="{ 'media-add-alone': mediaFiles.length === 0 }"
+          @click="handleChooseMedia"
+        >
+          <image
+            src="/static/icons/image-plus.svg"
+            mode="aspectFit"
+            class="media-add-icon"
+          />
+          <text class="media-add-text">添加</text>
+        </view>
       </view>
     </view>
 
@@ -131,11 +127,10 @@ type ProjectOption = {
 
 type MediaFile = {
   path: string;
-  type: 'image' | 'video';
   name: string;
 };
 
-const MAX_MEDIA = 6;
+const MAX_MEDIA = 4;
 
 const projects: ProjectOption[] = [
   { id: 'p1', name: '精装房改造工期与进场条件' },
@@ -193,18 +188,13 @@ const handleChooseMedia = () => {
   if (typeof chooseMediaApi === 'function') {
     chooseMediaApi({
       count: remain,
-      mediaType: ['image', 'video'],
+      mediaType: ['image'],
       sourceType: ['album', 'camera'],
       success: (res) => {
         const next = res.tempFiles.map((file) => {
-          const isVideo = file.fileType === 'video';
           const path = file.tempFilePath;
-          const name = path.split('/').pop() || (isVideo ? 'video.mp4' : 'image.jpg');
-          return {
-            path,
-            type: (isVideo ? 'video' : 'image') as MediaFile['type'],
-            name,
-          };
+          const name = path.split('/').pop() || 'image.jpg';
+          return { path, name };
         });
         mediaFiles.value = [...mediaFiles.value, ...next].slice(0, MAX_MEDIA);
       },
@@ -226,7 +216,6 @@ const chooseImagesFallback = (remain: number) => {
     success: (res) => {
       const next = res.tempFilePaths.map((path) => ({
         path,
-        type: 'image' as const,
         name: path.split('/').pop() || 'image.jpg',
       }));
       mediaFiles.value = [...mediaFiles.value, ...next].slice(0, MAX_MEDIA);
@@ -450,10 +439,6 @@ defineExpose({ resetForm });
   gap: 20rpx;
 }
 
-.media-grid:not(:empty) {
-  margin-bottom: 20rpx;
-}
-
 .media-item {
   width: calc((100% - 40rpx) / 3);
   aspect-ratio: 1;
@@ -461,29 +446,13 @@ defineExpose({ resetForm });
   overflow: hidden;
   box-sizing: border-box;
   position: relative;
+  background-color: #f3f4f6;
 }
 
 .media-thumb {
   width: 100%;
   height: 100%;
   display: block;
-  background-color: #f3f4f6;
-}
-
-.media-video {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(145deg, #ede9fe 0%, #ddd6fe 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.media-video-badge {
-  font-size: 22rpx;
-  font-weight: 800;
-  color: #6d28d9;
-  letter-spacing: 0.04em;
 }
 
 .media-remove {
@@ -506,21 +475,25 @@ defineExpose({ resetForm });
 }
 
 .media-add {
-  width: 100%;
-  height: 176rpx;
+  width: calc((100% - 40rpx) / 3);
+  aspect-ratio: 1;
   border-radius: 28rpx;
   border: 3rpx dashed #d1d5db;
   background-color: #f8faf9;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16rpx;
+  gap: 12rpx;
   box-sizing: border-box;
 }
 
 .media-add-alone {
-  height: 216rpx;
+  width: 100%;
+  aspect-ratio: auto;
+  height: 176rpx;
+  flex-direction: row;
+  gap: 16rpx;
 }
 
 .media-add-icon {
