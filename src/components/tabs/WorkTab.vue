@@ -116,6 +116,23 @@
       </SuccessPageTransition>
     </SlideOverPanel>
 
+    <SlideOverPanel
+      :show="consultCreateVisible"
+      content-safe-top
+      @closed="resetConsultCreate"
+    >
+      <SuccessPageTransition :show-success="consultCreateStep === 'success'">
+        <ConsultTicketFormContent
+          ref="consultFormRef"
+          @back="closeConsultCreate"
+          @submit="handleConsultCreateSubmit"
+        />
+        <template #success>
+          <ConsultTicketSuccessContent @back="closeConsultCreate" />
+        </template>
+      </SuccessPageTransition>
+    </SlideOverPanel>
+
     <SlideOverPanel :show="approvalConfigVisible">
       <ApprovalConfigContent @back="closeApprovalConfig" />
     </SlideOverPanel>
@@ -128,16 +145,24 @@ import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import ContractArchiveContent from '@/components/ContractArchiveContent.vue';
 import BillManagementContent from '@/components/BillManagementContent.vue';
 import ConsultTicketContent from '@/components/ConsultTicketContent.vue';
+import ConsultTicketFormContent, {
+  type ConsultTicketFormPayload,
+} from '@/components/ConsultTicketFormContent.vue';
+import ConsultTicketSuccessContent from '@/components/ConsultTicketSuccessContent.vue';
 import FeedbackListContent from '@/components/FeedbackListContent.vue';
 import FeedbackFormContent from '@/components/FeedbackFormContent.vue';
 import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import ApprovalConfigContent from '@/components/ApprovalConfigContent.vue';
+import { useConsultTickets } from '@/composables/useConsultTickets';
 import { useFeedbackItems } from '@/composables/useFeedbackItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { ref } from 'vue';
 
 const { addFeedback } = useFeedbackItems();
+const { addConsultTicket } = useConsultTickets();
 const feedbackCreateStep = ref<'form' | 'success'>('form');
+const consultCreateStep = ref<'form' | 'success'>('form');
+const consultFormRef = ref<InstanceType<typeof ConsultTicketFormContent> | null>(null);
 
 const {
   visible: contractArchiveVisible,
@@ -170,13 +195,20 @@ const {
 } = useSlideOver();
 
 const {
+  visible: consultCreateVisible,
+  open: openConsultCreate,
+  close: closeConsultCreate,
+} = useSlideOver();
+
+const {
   visible: approvalConfigVisible,
   open: openApprovalConfig,
   close: closeApprovalConfig,
 } = useSlideOver();
 
 const onConsultAdd = () => {
-  // TODO: open create consult form
+  consultCreateStep.value = 'form';
+  openConsultCreate();
 };
 
 const onFeedbackAdd = () => {
@@ -186,6 +218,11 @@ const onFeedbackAdd = () => {
 
 const resetFeedbackCreate = () => {
   feedbackCreateStep.value = 'form';
+};
+
+const resetConsultCreate = () => {
+  consultCreateStep.value = 'form';
+  consultFormRef.value?.resetForm();
 };
 
 const handleFeedbackCreateSubmit = (payload: {
@@ -200,6 +237,11 @@ const handleFeedbackCreateSubmit = (payload: {
     attachments: payload.attachments,
   });
   feedbackCreateStep.value = 'success';
+};
+
+const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
+  addConsultTicket(payload);
+  consultCreateStep.value = 'success';
 };
 </script>
 
