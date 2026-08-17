@@ -8,7 +8,7 @@
       <view class="tabbar frosted-glass frosted-glass--tabbar" :style="tabbarGlassStyle">
         <view
           class="tab-indicator"
-          :class="{ ready: indicatorReady }"
+          :class="{ ready: indicatorReady, 'is-animating': indicatorAnimating }"
           :style="indicatorStyle"
         />
 
@@ -95,6 +95,8 @@ const indicatorStyle = computed(() => ({
     : 'none',
 }));
 
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
 const snapTo = (index: number) => {
   indicatorAnimating.value = false;
   displayIndex.value = index;
@@ -118,7 +120,7 @@ const animateTo = async (index: number) => {
 };
 
 /**
- * 绿球与页面交叉淡入淡出同时开始；连点只落到最后一次目标。
+ * 绿球滑动与页面交叉淡入淡出同时开始；连点只落到最后一次目标。
  */
 let pendingTargetPath: string | null = null;
 let pendingTargetIndex = -1;
@@ -146,8 +148,10 @@ const flushPendingSwitch = async () => {
         continue;
       }
 
-      void animateTo(targetIndex);
-      await switchTabWithFade('/' + targetPath);
+      const slideBall = animateTo(targetIndex).then(() =>
+        wait(TAB_INDICATOR_DURATION_MS),
+      );
+      await Promise.all([slideBall, switchTabWithFade('/' + targetPath)]);
     }
   } finally {
     transitioning = false;
@@ -208,6 +212,10 @@ onMounted(() => {
 
 .tab-indicator.ready {
   opacity: 1;
+}
+
+.tab-indicator.is-animating {
+  transition: transform 380ms cubic-bezier(0.22, 1.45, 0.36, 1);
 }
 
 .tab-item {
