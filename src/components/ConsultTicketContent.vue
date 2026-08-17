@@ -185,6 +185,18 @@
         @short-chat-submit="handleShortChatSubmit"
       />
     </BottomSheetPanel>
+
+    <BottomSheetPanel
+      :show="checklistVisible"
+      :z-index="2300"
+      @closed="resetChecklist"
+    >
+      <ConsultChecklistContent
+        v-if="selectedTicket"
+        :checklist="checklistDetail"
+        @back="closeChecklist"
+      />
+    </BottomSheetPanel>
   </view>
 </template>
 
@@ -195,6 +207,9 @@ import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import ConsultInquiryContent, {
   type InquiryMessage,
 } from '@/components/ConsultInquiryContent.vue';
+import ConsultChecklistContent, {
+  type ChecklistDetail,
+} from '@/components/ConsultChecklistContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
@@ -234,11 +249,53 @@ const {
   open: openInquiryPanel,
   close: closeInquiry,
 } = useSlideOver();
+const {
+  visible: checklistVisible,
+  open: openChecklistPanel,
+  close: closeChecklist,
+} = useSlideOver();
 usePageBackWhen(detailVisible, closeDetail);
+usePageBackWhen(inquiryVisible, closeInquiry);
+usePageBackWhen(checklistVisible, closeChecklist);
 
 const inquiryMessages = computed(
   () => selectedTicket.value?.inquiryMessages ?? [],
 );
+
+const checklistDetail = computed<ChecklistDetail>(() => {
+  const quoteTime = selectedTicket.value?.quoteTime;
+  return {
+    quoter: '—',
+    contact: '—',
+    quoteTime:
+      quoteTime && quoteTime !== '暂无' ? quoteTime : '2026-01-04',
+    remark: '—',
+    items: [
+      {
+        id: 1,
+        specialty: '产品',
+        subjectCode: '1001',
+        subjectName: '测试1001',
+        brand: '测试1001',
+        series: '测试1001',
+        quantity: 100,
+        materialFee: 0,
+        installFee: 20,
+        unitPrice: 20,
+        totalPrice: 2000,
+      },
+    ],
+    summary: {
+      specialty: '产品',
+      price: 2000,
+      taxRate: 9,
+      tax: 180,
+      totalPrice: 2000,
+      priceInclTax: 2180,
+    },
+    attachments: ['报价清单附图.png'],
+  };
+});
 
 const statusTabs: { id: ConsultStatus; label: string }[] = [
   { id: 'pending_reply', label: '待回复' },
@@ -451,7 +508,11 @@ const onAdd = () => {
 };
 
 const onChecklist = () => {
-  // TODO: open checklist
+  openChecklistPanel();
+};
+
+const resetChecklist = () => {
+  // keep selectedTicket for detail page underneath
 };
 
 const onInquiry = () => {
