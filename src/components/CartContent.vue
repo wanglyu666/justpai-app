@@ -149,7 +149,12 @@
       <PaymentSelectContent @confirm="handlePaymentConfirm" />
     </BottomSheetPanel>
 
-    <BottomSheetPanel :show="consultFlowVisible" :z-index="2100" @closed="resetConsultFlow">
+    <BottomSheetPanel
+      :show="consultFlowVisible"
+      :z-index="2100"
+      content-safe-top
+      @closed="resetConsultFlow"
+    >
       <SuccessPageTransition :show-success="consultStep === 'success'">
         <ConsultFormContent
           @back="closeConsultFlow"

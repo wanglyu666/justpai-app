@@ -1,106 +1,116 @@
 <template>
-  <view class="consult-form">
-    <view class="page-header">
-      <view class="icon-btn" @click="handleBack">
-        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+  <SheetPageLayout
+    title="咨询"
+    desc="填写服务信息后提交，顾问将尽快与您联系"
+    @back="handleBack"
+  >
+    <view class="section-card">
+      <text class="section-title">咨询信息</text>
+
+      <view class="field-group">
+        <text class="field-label">
+          <text class="required">*</text>
+          服务地址
+        </text>
+        <input
+          v-model="form.address"
+          class="field-input"
+          placeholder="请输入服务地址"
+          placeholder-class="input-placeholder"
+        />
       </view>
-      <text class="page-title">咨询</text>
-      <text class="page-desc">填写服务信息后提交，顾问将尽快与您联系</text>
-    </view>
 
-    <view class="form-scroll-wrap">
-      <view class="form-scroll-mask form-scroll-mask-top" />
-      <view class="form-scroll">
-      <view class="section-card">
-        <text class="section-title">咨询信息</text>
-
-        <view class="field-group">
+      <view class="field-group">
+        <view class="field-label-row">
           <text class="field-label">
             <text class="required">*</text>
-            服务地址
+            交流内容
           </text>
-          <input
-            v-model="form.address"
-            class="field-input"
-            placeholder="请输入服务地址"
-            placeholder-class="input-placeholder"
-          />
+          <text class="field-count">{{ form.content.length }}/500</text>
         </view>
+        <textarea
+          v-model="form.content"
+          class="field-textarea"
+          placeholder="请描述您的需求或问题，便于我们更快响应"
+          placeholder-class="input-placeholder"
+          :maxlength="500"
+        />
+      </view>
+    </view>
 
-        <view class="field-group">
-          <view class="field-label-row">
-            <text class="field-label">
-              <text class="required">*</text>
-              交流内容
-            </text>
-            <text class="field-count">{{ form.content.length }}/500</text>
-          </view>
-          <textarea
-            v-model="form.content"
-            class="field-textarea"
-            placeholder="请描述您的需求或问题，便于我们更快响应"
-            placeholder-class="input-placeholder"
-            :maxlength="500"
-          />
+    <view class="section-card">
+      <text class="section-title">联系信息</text>
+      <view class="contact-grid">
+        <view class="contact-item">
+          <text class="contact-label">联系人</text>
+          <text class="contact-value">管理员</text>
+        </view>
+        <view class="contact-divider" />
+        <view class="contact-item">
+          <text class="contact-label">联系电话</text>
+          <text class="contact-value">138-0013-8000</text>
         </view>
       </view>
+    </view>
 
-      <view class="section-card">
-        <text class="section-title">联系信息</text>
-        <view class="contact-grid">
-          <view class="contact-item">
-            <text class="contact-label">联系人</text>
-            <text class="contact-value">管理员</text>
-          </view>
-          <view class="contact-divider" />
-          <view class="contact-item">
-            <text class="contact-label">联系电话</text>
-            <text class="contact-value">138-0013-8000</text>
+    <view class="section-card">
+      <text class="section-title">交流附件</text>
+      <text class="section-hint">最多上传 {{ MAX_MEDIA }} 个文件（{{ mediaFiles.length }}/{{ MAX_MEDIA }}）</text>
+
+      <view class="media-grid">
+        <view
+          v-for="(file, index) in mediaFiles"
+          :key="`${file.path}-${index}`"
+          class="media-item"
+        >
+          <image
+            :src="file.path"
+            mode="aspectFill"
+            class="media-thumb"
+          />
+          <view class="media-remove" @click.stop="removeMedia(index)">
+            <text class="media-remove-text">×</text>
           </view>
         </view>
-      </view>
-
-      <view class="section-card">
-        <text class="section-title">交流附件</text>
-        <text class="section-hint">可选，支持上传图片辅助说明</text>
 
         <view
-          v-if="!attachmentPreview"
-          class="upload-box"
-          @click="handleChooseFile"
+          v-if="mediaFiles.length < MAX_MEDIA"
+          class="media-add"
+          :class="{ 'media-add-alone': mediaFiles.length === 0 }"
+          @click="handleChooseMedia"
         >
-          <image src="/static/icons/image-plus.svg" mode="aspectFit" class="upload-icon" />
-          <text class="upload-title">选取文件</text>
-          <text class="upload-hint">点击上传 JPG、PNG 等图片</text>
-        </view>
-
-        <view v-else class="upload-preview-wrap">
-          <image :src="attachmentPreview" mode="aspectFill" class="upload-preview" />
-          <view class="upload-preview-actions">
-            <view class="preview-action preview-action-light" @click="handleChooseFile">
-              <text class="preview-action-text">更换</text>
-            </view>
-            <view class="preview-action preview-action-solid" @click="clearAttachment">
-              <text class="preview-action-text">移除</text>
-            </view>
-          </view>
+          <image
+            src="/static/icons/image-plus.svg"
+            mode="aspectFit"
+            class="media-add-icon"
+          />
+          <text class="media-add-text">添加</text>
         </view>
       </view>
-      </view>
-      <view class="form-scroll-mask form-scroll-mask-bottom" />
     </view>
 
-    <view class="submit-footer">
-      <view class="submit-btn" :class="{ active: isSubmitEnabled }" @click="handleSubmit">
+    <template #footer>
+      <view
+        class="submit-btn"
+        :class="{ active: isSubmitEnabled }"
+        @click="handleSubmit"
+      >
         <text class="submit-text">提交</text>
       </view>
-    </view>
-  </view>
+    </template>
+  </SheetPageLayout>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue';
-import { usePageBack } from '@/composables/usePageBack';
+import SheetPageLayout from '@/components/SheetPageLayout.vue';
+
+type MediaFile = {
+  path: string;
+  name: string;
+};
+
+const MAX_MEDIA = 4;
 
 const emit = defineEmits<{
   back: [];
@@ -112,27 +122,62 @@ const form = reactive({
   content: '',
 });
 
-const attachmentPreview = ref('');
+const mediaFiles = ref<MediaFile[]>([]);
 
 const isSubmitEnabled = computed(() =>
   form.address.trim() !== '' && form.content.trim() !== '',
 );
 
-const handleBack = usePageBack(() => emit('back'));
+const handleBack = () => {
+  emit('back');
+};
 
-const handleChooseFile = () => {
+const handleChooseMedia = () => {
+  const remain = MAX_MEDIA - mediaFiles.value.length;
+  if (remain <= 0) return;
+
+  const chooseMediaApi = (uni as any).chooseMedia as typeof uni.chooseMedia | undefined;
+
+  if (typeof chooseMediaApi === 'function') {
+    chooseMediaApi({
+      count: remain,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const next = res.tempFiles.map((file) => {
+          const path = file.tempFilePath;
+          const name = path.split('/').pop() || 'image.jpg';
+          return { path, name };
+        });
+        mediaFiles.value = [...mediaFiles.value, ...next].slice(0, MAX_MEDIA);
+      },
+      fail: () => {
+        chooseImagesFallback(remain);
+      },
+    });
+    return;
+  }
+
+  chooseImagesFallback(remain);
+};
+
+const chooseImagesFallback = (remain: number) => {
   uni.chooseImage({
-    count: 1,
+    count: remain,
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
     success: (res) => {
-      attachmentPreview.value = res.tempFilePaths[0] ?? '';
+      const next = res.tempFilePaths.map((path) => ({
+        path,
+        name: path.split('/').pop() || 'image.jpg',
+      }));
+      mediaFiles.value = [...mediaFiles.value, ...next].slice(0, MAX_MEDIA);
     },
   });
 };
 
-const clearAttachment = () => {
-  attachmentPreview.value = '';
+const removeMedia = (index: number) => {
+  mediaFiles.value = mediaFiles.value.filter((_, i) => i !== index);
 };
 
 const handleSubmit = () => {
@@ -142,99 +187,6 @@ const handleSubmit = () => {
 </script>
 
 <style scoped>
-.consult-form {
-  min-height: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-.page-header {
-  padding: 0 48rpx 16rpx;
-  flex-shrink: 0;
-}
-
-.icon-btn {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 44rpx;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
-}
-
-.header-icon {
-  width: 40rpx;
-  height: 40rpx;
-}
-
-.page-title {
-  display: block;
-  margin-top: 32rpx;
-  font-size: 56rpx;
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.35;
-}
-
-.page-desc {
-  display: block;
-  margin-top: 16rpx;
-  font-size: 28rpx;
-  color: #6b7280;
-  line-height: 1.5;
-}
-
-.form-scroll-wrap {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.form-scroll {
-  height: 100%;
-  padding: 24rpx 48rpx 16rpx;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  box-sizing: border-box;
-}
-
-.form-scroll-mask {
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.form-scroll-mask-top {
-  top: 0;
-  height: 72rpx;
-  background: linear-gradient(
-    to bottom,
-    #f4f5f7 0%,
-    rgba(244, 245, 247, 0.85) 35%,
-    rgba(244, 245, 247, 0.35) 70%,
-    rgba(244, 245, 247, 0) 100%
-  );
-}
-
-.form-scroll-mask-bottom {
-  bottom: 0;
-  height: 72rpx;
-  background: linear-gradient(
-    to top,
-    #f4f5f7 0%,
-    rgba(244, 245, 247, 0.85) 35%,
-    rgba(244, 245, 247, 0.35) 70%,
-    rgba(244, 245, 247, 0) 100%
-  );
-}
-
 .section-card {
   background-color: #ffffff;
   border-radius: 48rpx;
@@ -362,86 +314,83 @@ const handleSubmit = () => {
   color: #111827;
 }
 
-.upload-box {
+.media-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.media-item {
+  width: calc((100% - 40rpx) / 3);
+  aspect-ratio: 1;
+  border-radius: 28rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+  background-color: #f3f4f6;
+}
+
+.media-thumb {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.media-remove {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  background-color: rgba(17, 24, 39, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-remove-text {
+  font-size: 28rpx;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.media-add {
+  width: calc((100% - 40rpx) / 3);
+  aspect-ratio: 1;
+  border-radius: 28rpx;
+  border: 3rpx dashed #d1d5db;
+  background-color: #f8faf9;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  min-height: 264rpx;
-  border-radius: 32rpx;
-  border: 3rpx dashed #d1d5db;
-  background-color: #f8faf9;
+  box-sizing: border-box;
 }
 
-.upload-icon {
-  width: 72rpx;
-  height: 72rpx;
-  margin-bottom: 8rpx;
+.media-add-alone {
+  width: 100%;
+  aspect-ratio: auto;
+  height: 176rpx;
+  flex-direction: row;
+  gap: 16rpx;
 }
 
-.upload-title {
+.media-add-icon {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.media-add-text {
   font-size: 28rpx;
   font-weight: 700;
-  color: #163300;
-}
-
-.upload-hint {
-  font-size: 24rpx;
-  color: #9ca3af;
-}
-
-.upload-preview-wrap {
-  border-radius: 32rpx;
-  overflow: hidden;
-  background-color: #f8faf9;
-}
-
-.upload-preview {
-  width: 100%;
-  height: 320rpx;
-  display: block;
-}
-
-.upload-preview-actions {
-  display: flex;
-  gap: 20rpx;
-  padding: 24rpx;
-}
-
-.preview-action {
-  flex: 1;
-  height: 72rpx;
-  border-radius: 1998rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.preview-action-light {
-  background-color: rgba(159, 232, 112, 0.45);
-}
-
-.preview-action-solid {
-  background-color: #9fe870;
-}
-
-.preview-action-text {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #163300;
-}
-
-.submit-footer {
-  flex-shrink: 0;
-  padding: 32rpx 48rpx calc(32rpx + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(180deg, rgba(244, 245, 247, 0) 0%, #f4f5f7 30%);
-  box-sizing: border-box;
+  color: #6b7280;
 }
 
 .submit-btn {
   height: 104rpx;
-  border-radius: 52rpx;
+  border-radius: 1998rpx;
   background-color: rgba(159, 232, 112, 0.38);
   display: flex;
   align-items: center;
@@ -457,6 +406,7 @@ const handleSubmit = () => {
   font-size: 32rpx;
   font-weight: 700;
   color: rgba(22, 51, 0, 0.45);
+  line-height: 1;
   transition: color 0.2s ease;
 }
 

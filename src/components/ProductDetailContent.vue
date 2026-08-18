@@ -133,7 +133,11 @@
       </view>
     </view>
 
-    <BottomSheetPanel :show="consultFlowVisible" @closed="resetConsultFlow">
+    <BottomSheetPanel
+      :show="consultFlowVisible"
+      content-safe-top
+      @closed="resetConsultFlow"
+    >
       <SuccessPageTransition :show-success="consultStep === 'success'">
         <ConsultFormContent
           @back="closeConsultFlow"
