@@ -119,7 +119,7 @@ watch(
       rendered.value = true;
       entered.value = false;
       await nextTick();
-      await waitFrames(1);
+      await waitFrames(2);
       if (seq !== showSeq) return;
       entered.value = true;
       return;
@@ -166,12 +166,6 @@ defineExpose({
   justify-content: center;
   padding: 0 80rpx;
   box-sizing: border-box;
-  opacity: 0;
-  transition: opacity 280ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.modal-root.is-entered {
-  opacity: 1;
 }
 
 .modal-dim {
@@ -181,6 +175,12 @@ defineExpose({
   right: 0;
   bottom: 0;
   z-index: 0;
+  opacity: 0;
+  transition: opacity 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.modal-root.is-entered .modal-dim {
+  opacity: 1;
 }
 
 .modal-panel {
@@ -190,6 +190,11 @@ defineExpose({
   max-width: 640rpx;
   border-radius: 48rpx;
   overflow: hidden;
+  opacity: 0;
+}
+
+.modal-root.is-entered .modal-panel {
+  opacity: 1;
 }
 
 .modal-panel-compact {

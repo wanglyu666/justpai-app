@@ -2,9 +2,12 @@
  * 磨砂玻璃全局样式类
  * 参数来源：src/utils/frostedGlass.ts
  * H5 下由 App.vue 注入 CSS 变量；也可直接使用 getFrostedGlassStyle() 绑定 :style
+ *
+ * 不要对带 backdrop-filter 的节点做 opacity / transform 动画，
+ * WebView 会每帧重算模糊，弹窗出现时就会卡一下。
  */
 .frosted-glass {
-  border: 2rpx solid var(--frosted-glass-default-border);
+  border: 1px solid var(--frosted-glass-default-border);
   background-color: var(--frosted-glass-default-bg);
   backdrop-filter: var(--frosted-glass-default-backdrop);
   -webkit-backdrop-filter: var(--frosted-glass-default-backdrop);
@@ -22,6 +25,7 @@
 .frosted-glass--modal-panel {
   border-color: var(--frosted-glass-modalPanel-border);
   background-color: var(--frosted-glass-modalPanel-bg);
+  background-image: var(--frosted-glass-modalPanel-sheen);
   backdrop-filter: var(--frosted-glass-modalPanel-backdrop);
   -webkit-backdrop-filter: var(--frosted-glass-modalPanel-backdrop);
   box-shadow: var(--frosted-glass-modalPanel-shadow);

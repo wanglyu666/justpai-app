@@ -37,29 +37,27 @@
         </view>
 
         <view class="region-section" :class="{ visible: draftProductType === 'annual' }">
-          <template v-if="draftProductType === 'annual'">
-            <text class="region-label">年框区域</text>
-            <view class="region-scroll-wrap">
+          <text class="region-label">年框区域</text>
+          <view class="region-scroll-wrap">
+            <view
+              class="region-scroll-inner"
+              :style="regionInnerStyle"
+              @touchstart.stop="onRegionTouchStart"
+              @touchend.stop="onRegionTouchEnd"
+            >
               <view
-                class="region-scroll-inner"
-                :style="regionInnerStyle"
-                @touchstart.stop="onRegionTouchStart"
-                @touchend.stop="onRegionTouchEnd"
+                v-for="(region, index) in annualRegions"
+                :key="region.id"
+                class="region-item"
+                :class="{ centered: focusedRegionIndex === index }"
+                :style="regionItemStyle(index)"
+                hover-class="none"
+                @click.stop="handleRegionClick(index)"
               >
-                <view
-                  v-for="(region, index) in annualRegions"
-                  :key="region.id"
-                  class="region-item"
-                  :class="{ centered: focusedRegionIndex === index }"
-                  :style="regionItemStyle(index)"
-                  hover-class="none"
-                  @click.stop="handleRegionClick(index)"
-                >
-                  <text class="region-item-text">{{ region.name }}</text>
-                </view>
+                <text class="region-item-text">{{ region.name }}</text>
               </view>
             </view>
-          </template>
+          </view>
         </view>
 
         <view class="filter-modal-action" hover-class="none" @click.stop="handleApply">
@@ -171,7 +169,7 @@ watch(
       rendered.value = true;
       entered.value = false;
       await nextTick();
-      await waitFrames(1);
+      await waitFrames(2);
       if (seq !== showSeq) return;
       entered.value = true;
       return;
@@ -254,12 +252,6 @@ defineExpose({
   justify-content: center;
   padding: 0 64rpx;
   box-sizing: border-box;
-  opacity: 0;
-  transition: opacity 280ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.filter-modal-root.is-entered {
-  opacity: 1;
 }
 
 .filter-modal-dim {
@@ -269,6 +261,12 @@ defineExpose({
   right: 0;
   bottom: 0;
   z-index: 0;
+  opacity: 0;
+  transition: opacity 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.filter-modal-root.is-entered .filter-modal-dim {
+  opacity: 1;
 }
 
 .filter-modal-panel {
@@ -278,6 +276,11 @@ defineExpose({
   max-width: 680rpx;
   border-radius: 48rpx;
   overflow: hidden;
+  opacity: 0;
+}
+
+.filter-modal-root.is-entered .filter-modal-panel {
+  opacity: 1;
 }
 
 .filter-modal-content {
@@ -355,6 +358,7 @@ defineExpose({
   max-height: 0;
   opacity: 0;
   overflow: hidden;
+  pointer-events: none;
   transition:
     max-height 320ms cubic-bezier(0.32, 0.72, 0, 1),
     opacity 280ms ease,
@@ -367,6 +371,7 @@ defineExpose({
   opacity: 1;
   margin-top: 40rpx;
   overflow: visible;
+  pointer-events: auto;
 }
 
 .region-label {

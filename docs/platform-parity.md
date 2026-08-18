@@ -27,6 +27,7 @@ JustPai 是 **H5 / Android / iOS** 同一套代码的 App。验收标准不是�
 | `pointer-events: none` 父级再给子级 `auto` | 真机触摸经常点不到 | 不要这样挡点击 |
 | 成功页用 Vue `<Transition>` out-in | App 上 leave 结束不了，表单不切到成功页 | 用 `SuccessPageTransition`：当前页渐隐后再渐显成功页 |
 | 磨砂层盖在按钮上（`pointer-events: none` + `backdrop-filter`） | 安卓仍会把点击吃掉 | 磨砂样式打在面板自己身上 |
+| `backdrop-filter` 的模糊用 `rpx`，或对磨砂层做 opacity/transform 动画 | 高分屏模糊被放大到几十～上百 px；动画时每帧重算，弹窗一出来就卡 | 模糊用 **CSS px**（约 20–22px）；只淡遮罩，磨砂面板保持静止 |
 | 横向 `scroll-view` 不写死高度 | App 上是原生组件，会撑满父级并挡住下面的按钮；`overflow: hidden` 也裁不掉 | 用 **行内 style** 写死宽高；收起时用 `v-if` 卸载，不要只靠 CSS 折叠 |
 | 仅用 `px` 做间距 | 不同宽度安卓机卡片缝隙会乱 | 布局用 `rpx`（375 设计稿 `1px = 2rpx`） |
 
