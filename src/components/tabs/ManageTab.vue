@@ -6,28 +6,34 @@
     </view>
 
     <view class="card-layout">
-      <view class="card card-top"></view>
+      <view class="card card-top">
+        <text class="card-top-title">工程项目管理</text>
+        <image
+          class="card-top-img"
+          src="/static/images/wrench.png"
+          mode="aspectFit"
+        />
+      </view>
       <view class="card card-middle"></view>
 
       <view class="card card-bottom wallet-stack">
         <view class="wallet-layer wallet-visa">
-          <text class="wallet-brand wallet-brand-visa">VISA</text>
+          <text class="wallet-brand wallet-brand-visa">待开工</text>
         </view>
         <view class="wallet-layer wallet-stripe">
-          <text class="wallet-brand wallet-brand-stripe">stripe</text>
+          <text class="wallet-brand wallet-brand-stripe">施工中</text>
         </view>
         <view class="wallet-layer wallet-paypal">
-          <text class="wallet-brand wallet-brand-paypal">PayPal</text>
+          <text class="wallet-brand wallet-brand-paypal">已完工</text>
         </view>
         <view class="wallet-front">
           <image
             class="wallet-front-shape"
-            src="/static/images/work-card/wallet-front.png"
+            src="/static/images/work-card/wallet-front.png?v=2"
             mode="scaleToFill"
           />
           <view class="wallet-balance">
-            <text class="wallet-amount">$120,000</text>
-            <text class="wallet-label">Total Balance</text>
+            <text class="wallet-amount">维保项目管理</text>
           </view>
         </view>
       </view>
@@ -80,6 +86,29 @@
 .card-top {
   height: 280rpx;
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 40rpx 36rpx;
+}
+
+.card-top-title {
+  position: relative;
+  z-index: 1;
+  display: block;
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #1a2332;
+  line-height: 1.2;
+}
+
+.card-top-img {
+  position: absolute;
+  right: 8rpx;
+  bottom: -16rpx;
+  width: 220rpx;
+  height: 280rpx;
+  z-index: 0;
 }
 
 .card-middle {
@@ -95,8 +124,8 @@
 .wallet-stack {
   position: relative;
   overflow: hidden;
-  background-color: #1a1a1a;
-  border: 6rpx solid #2a2a2a;
+  background-color: #b2c4d7;
+  border: 6rpx solid #b2c4d7;
   padding: 0;
   box-sizing: border-box;
 }
@@ -116,13 +145,13 @@
 
 .wallet-visa {
   top: 24rpx;
-  background-color: #1a1f71;
+  background-color: #000000;
   z-index: 1;
 }
 
 .wallet-stripe {
   top: 120rpx;
-  background-color: #635bff;
+  background-color: #9fe870;
   z-index: 2;
 }
 
@@ -140,16 +169,14 @@
 
 .wallet-brand-visa {
   color: #ffffff;
-  letter-spacing: 2rpx;
 }
 
 .wallet-brand-stripe {
-  color: #ffffff;
-  letter-spacing: 0.4rpx;
+  color: #163300;
 }
 
 .wallet-brand-paypal {
-  color: #003087;
+  color: #111827;
 }
 
 .wallet-front {
@@ -182,16 +209,8 @@
 .wallet-amount {
   font-size: 72rpx;
   font-weight: 800;
-  color: #ffffff;
+  color: #1a2332;
   line-height: 1.1;
   letter-spacing: -1rpx;
-}
-
-.wallet-label {
-  margin-top: 12rpx;
-  font-size: 26rpx;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.2;
 }
 </style>
