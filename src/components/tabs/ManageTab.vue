@@ -14,7 +14,13 @@
           mode="aspectFit"
         />
       </view>
-      <view class="card card-middle"></view>
+      <view class="card card-middle">
+        <text class="card-middle-title">维保报修管理</text>
+        <view class="card-middle-add">
+          <text class="card-middle-add-text">新增</text>
+        </view>
+        <text class="card-middle-stat-value">12</text>
+      </view>
 
       <view class="card card-bottom wallet-stack">
         <view class="wallet-layer wallet-visa">
@@ -89,14 +95,16 @@
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 40rpx 36rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 36rpx;
 }
 
 .card-top-title {
   position: relative;
   z-index: 1;
   display: block;
-  font-size: 40rpx;
+  font-size: 52rpx;
   font-weight: 800;
   color: #1a2332;
   line-height: 1.2;
@@ -104,7 +112,7 @@
 
 .card-top-img {
   position: absolute;
-  right: 8rpx;
+  right: 56rpx;
   bottom: -16rpx;
   width: 220rpx;
   height: 280rpx;
@@ -114,6 +122,59 @@
 .card-middle {
   height: 240rpx;
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 28rpx 36rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.card-middle-title {
+  position: relative;
+  z-index: 1;
+  display: block;
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #1a2332;
+  line-height: 1.2;
+}
+
+.card-middle-stat-value {
+  position: absolute;
+  top: -80rpx;
+  right: -64rpx;
+  z-index: 0;
+  font-size: 400rpx;
+  font-weight: 800;
+  color: #1a2332;
+  line-height: 0.85;
+  letter-spacing: -12rpx;
+  opacity: 0.28;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.card-middle-add {
+  position: absolute;
+  left: 28rpx;
+  bottom: 24rpx;
+  z-index: 1;
+  height: 72rpx;
+  padding: 0 40rpx;
+  background-color: #000000;
+  border-radius: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-middle-add-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
 }
 
 .card-bottom {
