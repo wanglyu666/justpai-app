@@ -19,7 +19,15 @@
         <view class="card-middle-add">
           <text class="card-middle-add-text">新增</text>
         </view>
-        <text class="card-middle-stat-value">12</text>
+        <image
+          class="card-middle-img"
+          src="/static/images/road.png"
+          mode="aspectFit"
+        />
+        <view class="card-middle-stat">
+          <text class="card-middle-stat-value">12</text>
+          <text class="card-middle-stat-label">项目数量</text>
+        </view>
       </view>
 
       <view class="card card-bottom wallet-stack">
@@ -141,19 +149,42 @@
   line-height: 1.2;
 }
 
-.card-middle-stat-value {
+.card-middle-img {
   position: absolute;
-  top: -80rpx;
-  right: -64rpx;
+  top: 50%;
+  left: 50%;
+  width: 500rpx;
+  height: 500rpx;
+  margin-top: -235rpx;
+  margin-left: -275rpx;
   z-index: 0;
-  font-size: 400rpx;
+}
+
+.card-middle-stat {
+  position: absolute;
+  top: 16rpx;
+  right: 28rpx;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-middle-stat-value {
+  font-size: 88rpx;
   font-weight: 800;
-  color: #1a2332;
-  line-height: 0.85;
-  letter-spacing: -12rpx;
-  opacity: 0.28;
-  pointer-events: none;
+  color: #000000;
+  line-height: 1;
+  letter-spacing: -2rpx;
   white-space: nowrap;
+}
+
+.card-middle-stat-label {
+  margin-top: 2rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  color: #9ca3af;
+  line-height: 1.2;
 }
 
 .card-middle-add {
@@ -206,13 +237,13 @@
 
 .wallet-visa {
   top: 24rpx;
-  background-color: #000000;
+  background-color: #1a1f71;
   z-index: 1;
 }
 
 .wallet-stripe {
   top: 120rpx;
-  background-color: #9fe870;
+  background-color: #635bff;
   z-index: 2;
 }
 
@@ -233,11 +264,11 @@
 }
 
 .wallet-brand-stripe {
-  color: #163300;
+  color: #ffffff;
 }
 
 .wallet-brand-paypal {
-  color: #111827;
+  color: #003087;
 }
 
 .wallet-front {
