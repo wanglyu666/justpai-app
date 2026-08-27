@@ -1,5 +1,5 @@
 <template>
-  <view class="feedback-list-page">
+  <view class="maintenance-list-page">
     <view class="page-header">
       <view class="icon-btn" @click="handleBack">
         <image
@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索反馈"
+          placeholder="搜索维保"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,36 +23,48 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">意见反馈</text>
-          <text class="page-desc">查看全部意见反馈</text>
+          <text class="page-title">维保报修管理</text>
+          <text class="page-desc">查看全部维保报修</text>
         </view>
-        <view class="add-btn" @click="onAdd">
+        <view class="add-btn">
           <text class="add-btn-text">新增</text>
         </view>
       </view>
 
-      <view class="feedback-list">
+      <view class="item-list">
         <view
           v-for="item in filteredItems"
           :key="item.id"
-          class="feedback-card"
+          class="item-card"
           @click="openDetail(item)"
         >
-          <view class="feedback-top">
-            <text class="feedback-name">{{ item.name }}</text>
+          <view class="item-top">
+            <text class="item-name">{{ item.projectName }}</text>
             <view class="status-badge" :class="`status-${item.status}`">
               <text class="status-badge-text">{{ statusLabel(item.status) }}</text>
             </view>
           </view>
 
-          <view class="feedback-field">
-            <text class="field-label">反馈时间</text>
-            <text class="field-value">{{ item.time }}</text>
+          <view class="item-field">
+            <text class="field-label">维保编号</text>
+            <text class="field-value">{{ item.code }}</text>
+          </view>
+          <view class="item-field">
+            <text class="field-label">项目地址</text>
+            <text class="field-value">{{ item.address }}</text>
+          </view>
+          <view class="item-field">
+            <text class="field-label">项目主管姓名</text>
+            <text class="field-value">{{ item.managerName }}</text>
+          </view>
+          <view class="item-field">
+            <text class="field-label">项目主管电话</text>
+            <text class="field-value">{{ item.managerPhone }}</text>
           </view>
         </view>
 
         <view v-if="filteredItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关反馈</text>
+          <text class="empty-tip-text">暂无相关维保</text>
         </view>
       </view>
     </view>
@@ -74,68 +86,69 @@
         </view>
 
         <view class="detail-content" v-if="selectedItem">
-          <text class="detail-title">反馈详情</text>
+          <text class="detail-title">维保详情</text>
 
-          <view class="info-card">
+          <view class="info-card info-card-no-line">
             <view class="info-block">
-              <text class="info-label">项目名称</text>
-              <text class="info-value info-value-lg">{{ selectedItem.name }}</text>
+              <text class="info-label">项目</text>
+              <text class="info-value info-value-lg">{{ selectedItem.projectName }}</text>
             </view>
             <view class="info-divider" />
-            <view class="info-meta-row">
-              <view class="info-block info-block-grow">
-                <text class="info-label">反馈时间</text>
-                <text class="info-value">{{ selectedItem.time }}</text>
+            <view class="info-block">
+              <text class="info-label">项目组信息</text>
+              <text class="info-value">
+                {{ selectedItem.managerName }}（{{ selectedItem.managerPhone }}）
+              </text>
+            </view>
+            <view class="info-divider" />
+            <view class="info-block">
+              <text class="info-label">维保编号</text>
+              <text class="info-value">{{ selectedItem.code }}</text>
+            </view>
+            <view class="info-divider" />
+            <view class="info-block">
+              <text class="info-label">项目编号</text>
+              <text class="info-value">{{ selectedItem.projectCode }}</text>
+            </view>
+            <view class="info-divider" />
+            <view class="info-block">
+              <text class="info-label">项目地址</text>
+              <text class="info-value">{{ selectedItem.address }}</text>
+            </view>
+          </view>
+
+          <view class="info-card">
+            <view class="meta-row">
+              <view class="meta-col">
+                <text class="info-label">报修类型</text>
+                <view class="type-badge" :class="`type-${selectedItem.repairType}`">
+                  <text class="type-badge-text">{{ typeLabel(selectedItem.repairType) }}</text>
+                </view>
               </view>
-              <view class="info-block info-block-status">
-                <text class="info-label">状态</text>
+              <view class="meta-col meta-col-end">
+                <text class="info-label">工单状态</text>
                 <view class="status-badge" :class="`status-${selectedItem.status}`">
                   <text class="status-badge-text">{{ statusLabel(selectedItem.status) }}</text>
                 </view>
               </view>
             </view>
-          </view>
 
-          <view class="info-card">
             <view class="info-block">
-              <text class="info-label">反馈内容</text>
-              <text class="info-value info-value-body">{{ selectedItem.content }}</text>
+              <text class="info-label">上门时间</text>
+              <text class="info-value visit-time">{{ selectedItem.visitTime }}</text>
             </view>
 
             <view class="info-divider" />
 
             <view class="info-block">
-              <text class="info-label">反馈结果</text>
-              <view v-if="selectedItem.result" class="result-box">
-                <text class="info-value info-value-body">{{ selectedItem.result }}</text>
-              </view>
-              <text v-else class="result-empty">暂无反馈结果</text>
+              <text class="info-label">报修原因</text>
+              <text class="info-value info-value-body">{{ selectedItem.reason }}</text>
             </view>
           </view>
 
-          <FileAttachmentCard
-            :files="selectedItem.attachments"
-            @preview="onPreviewAttachment"
-          />
+          <FileAttachmentCard :files="selectedItem.media" />
         </view>
       </view>
-    </BottomSheetPanel>
-    <BottomSheetPanel
-      :show="formVisible"
-      :z-index="2300"
-      content-safe-top
-      @closed="resetFormFlow"
-    >
-      <SuccessPageTransition :show-success="formStep === 'success'">
-        <FeedbackFormContent
-          ref="formRef"
-          @back="closeForm"
-          @submit="handleFormSubmit"
-        />
-        <template #success>
-          <FeedbackSuccessContent @back="closeForm" />
-        </template>
-      </SuccessPageTransition>
     </BottomSheetPanel>
   </view>
 </template>
@@ -144,17 +157,24 @@
 import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
-import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
-import FeedbackFormContent from '@/components/FeedbackFormContent.vue';
-import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
-import { useFeedbackItems, type FeedbackItem, type FeedbackStatus } from '@/composables/useFeedbackItems';
+import {
+  useMaintenanceItems,
+  type MaintenanceItem,
+  type MaintenanceStatus,
+  type RepairType,
+} from '@/composables/useMaintenanceItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
-const STATUS_LABEL: Record<FeedbackStatus, string> = {
-  pending_reply: '待回复',
-  in_progress: '进行中',
-  closed: '已结束',
+const STATUS_LABEL: Record<MaintenanceStatus, string> = {
+  in_maintenance: '维保中',
+  pending: '待处理',
+  completed: '已完成',
+};
+
+const TYPE_LABEL: Record<RepairType, string> = {
+  normal: '普通',
+  urgent: '紧急',
 };
 
 const emit = defineEmits<{
@@ -162,19 +182,12 @@ const emit = defineEmits<{
 }>();
 
 const keyword = ref('');
-const selectedItem = ref<FeedbackItem | null>(null);
-const formRef = ref<InstanceType<typeof FeedbackFormContent> | null>(null);
-const formStep = ref<'form' | 'success'>('form');
-const { items, addFeedback } = useFeedbackItems();
+const selectedItem = ref<MaintenanceItem | null>(null);
+const { items } = useMaintenanceItems();
 const {
   visible: detailVisible,
   open: openDetailPanel,
   close: closeDetail,
-} = useSlideOver();
-const {
-  visible: formVisible,
-  open: openFormPanel,
-  close: closeFormPanel,
 } = useSlideOver();
 usePageBackWhen(detailVisible, closeDetail);
 
@@ -183,22 +196,24 @@ const filteredItems = computed(() => {
   if (!q) return items.value;
   return items.value.filter((item) => {
     const statusText = STATUS_LABEL[item.status];
+    const typeText = TYPE_LABEL[item.repairType];
     return (
-      item.name.toLowerCase().includes(q) ||
-      item.time.toLowerCase().includes(q) ||
-      item.content.toLowerCase().includes(q) ||
-      statusText.includes(q)
+      item.code.toLowerCase().includes(q) ||
+      item.projectName.toLowerCase().includes(q) ||
+      item.address.toLowerCase().includes(q) ||
+      item.managerName.toLowerCase().includes(q) ||
+      item.managerPhone.includes(q) ||
+      statusText.includes(q) ||
+      typeText.includes(q)
     );
   });
 });
 
-const statusLabel = (status: FeedbackStatus) => STATUS_LABEL[status];
+const statusLabel = (status: MaintenanceStatus) => STATUS_LABEL[status];
+const typeLabel = (type: RepairType) => TYPE_LABEL[type];
 
-const openDetail = (item: FeedbackItem) => {
-  selectedItem.value = {
-    ...item,
-    attachments: [...item.attachments],
-  };
+const openDetail = (item: MaintenanceItem) => {
+  selectedItem.value = { ...item, media: [...item.media] };
   openDetailPanel();
 };
 
@@ -207,42 +222,10 @@ const resetDetail = () => {
 };
 
 const handleBack = usePageBack(() => emit('back'));
-
-const onAdd = () => {
-  formStep.value = 'form';
-  openFormPanel();
-};
-
-const closeForm = () => {
-  closeFormPanel();
-};
-
-const resetFormFlow = () => {
-  formStep.value = 'form';
-  formRef.value?.resetForm();
-};
-
-const handleFormSubmit = (payload: {
-  projectId: string;
-  projectName: string;
-  content: string;
-  attachments: string[];
-}) => {
-  addFeedback({
-    projectName: payload.projectName,
-    content: payload.content,
-    attachments: payload.attachments,
-  });
-  formStep.value = 'success';
-};
-
-const onPreviewAttachment = (_file: string) => {
-  // TODO: preview attachment
-};
 </script>
 
 <style scoped>
-.feedback-list-page {
+.maintenance-list-page {
   min-height: 100%;
   padding-bottom: 80rpx;
   box-sizing: border-box;
@@ -355,13 +338,13 @@ const onPreviewAttachment = (_file: string) => {
   line-height: 1;
 }
 
-.feedback-list {
+.item-list {
   display: flex;
   flex-direction: column;
   gap: 28rpx;
 }
 
-.feedback-card {
+.item-card {
   width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
@@ -370,17 +353,17 @@ const onPreviewAttachment = (_file: string) => {
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
+  gap: 28rpx;
 }
 
-.feedback-top {
+.item-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 24rpx;
 }
 
-.feedback-name {
+.item-name {
   flex: 1;
   min-width: 0;
   font-size: 36rpx;
@@ -389,7 +372,7 @@ const onPreviewAttachment = (_file: string) => {
   line-height: 1.35;
 }
 
-.feedback-field {
+.item-field {
   display: flex;
   flex-direction: column;
   gap: 12rpx;
@@ -425,28 +408,28 @@ const onPreviewAttachment = (_file: string) => {
   line-height: 1;
 }
 
-.status-pending_reply {
+.status-in_maintenance {
+  background-color: #ffedd5;
+}
+
+.status-in_maintenance .status-badge-text {
+  color: #ea580c;
+}
+
+.status-pending {
   background-color: #dbeafe;
 }
 
-.status-pending_reply .status-badge-text {
+.status-pending .status-badge-text {
   color: #2563eb;
 }
 
-.status-in_progress {
+.status-completed {
   background-color: #dcfce7;
 }
 
-.status-in_progress .status-badge-text {
+.status-completed .status-badge-text {
   color: #15803d;
-}
-
-.status-closed {
-  background-color: #f3f4f6;
-}
-
-.status-closed .status-badge-text {
-  color: #6b7280;
 }
 
 .empty-tip {
@@ -503,27 +486,15 @@ const onPreviewAttachment = (_file: string) => {
   gap: 16rpx;
 }
 
-.info-block-grow {
-  flex: 1;
-  min-width: 0;
-}
-
-.info-block-status {
-  flex-shrink: 0;
-  align-items: flex-start;
-}
-
 .info-divider {
   height: 2rpx;
   background-color: #eef2f7;
   margin: 12rpx 0;
 }
 
-.info-meta-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 32rpx;
+.info-card-no-line .info-divider {
+  background-color: transparent;
+  margin: 4rpx 0;
 }
 
 .info-label {
@@ -552,19 +523,56 @@ const onPreviewAttachment = (_file: string) => {
   line-height: 1.55;
 }
 
-.result-box {
-  margin-top: 4rpx;
-  padding: 24rpx 28rpx;
-  border-radius: 28rpx;
-  background-color: #f8fafc;
-  border: 2rpx solid #eef2f7;
-  box-sizing: border-box;
+.meta-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
 }
 
-.result-empty {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #9ca3af;
-  line-height: 1.55;
+.meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.meta-col-end {
+  align-items: flex-end;
+}
+
+.visit-time {
+  white-space: nowrap;
+}
+
+.type-badge {
+  height: 52rpx;
+  padding: 0 24rpx;
+  border-radius: 1998rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+}
+
+.type-badge-text {
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.type-normal {
+  background-color: #dbeafe;
+}
+
+.type-normal .type-badge-text {
+  color: #2563eb;
+}
+
+.type-urgent {
+  background-color: #fee2e2;
+}
+
+.type-urgent .type-badge-text {
+  color: #dc2626;
 }
 </style>

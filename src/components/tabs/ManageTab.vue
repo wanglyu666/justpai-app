@@ -7,14 +7,16 @@
 
     <view class="card-layout">
       <view class="card card-top">
+        <view class="card-top-media">
+          <image
+            class="card-top-img"
+            src="/static/images/work.png"
+            mode="aspectFit"
+          />
+        </view>
         <text class="card-top-title">工程项目管理</text>
-        <image
-          class="card-top-img"
-          src="/static/images/wrench.png"
-          mode="aspectFit"
-        />
       </view>
-      <view class="card card-middle">
+      <view class="card card-middle" @click="openMaintenanceList">
         <text class="card-middle-title">维保报修管理</text>
         <view class="card-middle-add">
           <text class="card-middle-add-text">新增</text>
@@ -53,10 +55,24 @@
       </view>
     </view>
     </view>
+
+    <SlideOverPanel :show="maintenanceListVisible">
+      <MaintenanceListContent @back="closeMaintenanceList" />
+    </SlideOverPanel>
   </view>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import MaintenanceListContent from '@/components/MaintenanceListContent.vue';
+import { useSlideOver } from '@/composables/useSlideOver';
+
+const {
+  visible: maintenanceListVisible,
+  open: openMaintenanceList,
+  close: closeMaintenanceList,
+} = useSlideOver();
+</script>
 
 <style scoped>
 .tab-root {
@@ -101,18 +117,27 @@
   height: 280rpx;
   flex-shrink: 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  padding: 0 36rpx;
+}
+
+.card-top-media {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -160rpx;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .card-top-title {
-  position: relative;
+  position: absolute;
+  right: 36rpx;
+  bottom: 28rpx;
   z-index: 1;
-  display: block;
-  font-size: 52rpx;
+  font-size: 40rpx;
   font-weight: 800;
   color: #1a2332;
   line-height: 1.2;
@@ -120,11 +145,11 @@
 
 .card-top-img {
   position: absolute;
-  right: 56rpx;
-  bottom: -16rpx;
-  width: 220rpx;
-  height: 280rpx;
-  z-index: 0;
+  left: 8rpx;
+  top: 300rpx;
+  width: 700rpx;
+  height: 392rpx;
+  margin-top: -187rpx;
 }
 
 .card-middle {
@@ -158,6 +183,7 @@
   margin-top: -235rpx;
   margin-left: -275rpx;
   z-index: 0;
+  pointer-events: none;
 }
 
 .card-middle-stat {

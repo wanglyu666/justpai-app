@@ -50,15 +50,7 @@
         </view>
 
         <view v-if="item.attachmentName" class="attach-panel">
-          <view class="attach-file">
-            <view class="attach-ext" :class="`ext-${fileKind(item.attachmentName)}`">
-              <text class="attach-ext-text">{{ fileExt(item.attachmentName) }}</text>
-            </view>
-            <view class="attach-meta">
-              <text class="card-label">附件</text>
-              <text class="attach-name">{{ item.attachmentName }}</text>
-            </view>
-          </view>
+          <FileAttachmentItem :name="item.attachmentName" />
           <view class="download-btn" @click="onDownload(item)">
             <image
               src="/static/icons/download.svg"
@@ -85,6 +77,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import FileAttachmentItem from '@/components/FileAttachmentItem.vue';
 import ShortChatSheet from '@/components/ShortChatSheet.vue';
 import { usePageBack } from '@/composables/usePageBack';
 
@@ -114,22 +107,6 @@ const emit = defineEmits<{
 const shortChatVisible = ref(false);
 
 const senderInitial = (name: string) => (name ? name.slice(0, 1) : '?');
-
-const fileExt = (name: string) => {
-  const index = name.lastIndexOf('.');
-  if (index < 0) return 'FILE';
-  return name.slice(index + 1).toUpperCase();
-};
-
-const fileKind = (name: string) => {
-  const ext = fileExt(name).toLowerCase();
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
-  if (['mp4', 'mov', 'avi'].includes(ext)) return 'video';
-  if (['pdf'].includes(ext)) return 'pdf';
-  if (['xls', 'xlsx', 'csv'].includes(ext)) return 'sheet';
-  if (['doc', 'docx'].includes(ext)) return 'doc';
-  return 'file';
-};
 
 const handleBack = usePageBack(() => emit('back'));
 
@@ -317,88 +294,9 @@ const onDownload = (item: InquiryMessage) => {
 }
 
 .attach-panel {
-  padding: 24rpx;
-  border-radius: 32rpx;
-  background-color: #f8fafc;
-  border: 2rpx solid #eef2f7;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
-  box-sizing: border-box;
-}
-
-.attach-file {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-}
-
-.attach-ext {
-  width: 84rpx;
-  height: 60rpx;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background-color: #e5e7eb;
-}
-
-.attach-ext-text {
-  font-size: 20rpx;
-  font-weight: 800;
-  color: #374151;
-  line-height: 1;
-}
-
-.ext-pdf {
-  background-color: #fee2e2;
-}
-
-.ext-pdf .attach-ext-text {
-  color: #b91c1c;
-}
-
-.ext-image {
-  background-color: #dbeafe;
-}
-
-.ext-image .attach-ext-text {
-  color: #1d4ed8;
-}
-
-.ext-sheet {
-  background-color: #dcfce7;
-}
-
-.ext-sheet .attach-ext-text {
-  color: #15803d;
-}
-
-.ext-doc {
-  background-color: #dbeafe;
-}
-
-.ext-doc .attach-ext-text {
-  color: #1d4ed8;
-}
-
-.attach-meta {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-}
-
-.attach-name {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #111827;
-  line-height: 1.35;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .download-btn {

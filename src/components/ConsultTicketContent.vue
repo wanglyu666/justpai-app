@@ -144,26 +144,7 @@
             </view>
           </view>
 
-          <view class="section-card">
-            <view class="section-head">
-              <view class="section-bar" />
-              <text class="section-title">附件</text>
-            </view>
-
-            <view v-if="selectedTicket.attachments.length" class="attachment-grid">
-              <view
-                v-for="(file, index) in selectedTicket.attachments"
-                :key="`${file}-${index}`"
-                class="attachment-item"
-              >
-                <view class="attachment-ext" :class="`ext-${fileKind(file)}`">
-                  <text class="attachment-ext-text">{{ fileExt(file) }}</text>
-                </view>
-                <text class="attachment-name">{{ file }}</text>
-              </view>
-            </view>
-            <text v-else class="section-empty">暂无附件</text>
-          </view>
+          <FileAttachmentCard :files="selectedTicket.attachments" />
 
           <view class="action-card-row">
             <view class="action-card" @click="onChecklist">
@@ -226,6 +207,7 @@
 import { computed, ref } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
+import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import ConsultInquiryContent, {
   type InquiryMessage,
@@ -338,20 +320,6 @@ const filteredTickets = computed(() => {
   });
 });
 
-const fileExt = (name: string) => {
-  const index = name.lastIndexOf('.');
-  if (index < 0) return 'FILE';
-  return name.slice(index + 1).toUpperCase();
-};
-
-const fileKind = (name: string) => {
-  const ext = fileExt(name).toLowerCase();
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
-  if (['mp4', 'mov', 'avi'].includes(ext)) return 'video';
-  if (['pdf'].includes(ext)) return 'pdf';
-  if (['xls', 'xlsx', 'csv'].includes(ext)) return 'sheet';
-  return 'file';
-};
 
 const openDetail = (item: ConsultTicket) => {
   selectedTicket.value = item;
@@ -686,125 +654,6 @@ const onEndConsult = () => {
   font-size: 30rpx;
   font-weight: 600;
   line-height: 1.55;
-}
-
-.section-card {
-  background-color: #ffffff;
-  border-radius: 44rpx;
-  padding: 36rpx;
-  box-sizing: border-box;
-  box-shadow: 0 16rpx 48rpx rgba(15, 23, 42, 0.04);
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.section-head {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.section-bar {
-  width: 8rpx;
-  height: 28rpx;
-  border-radius: 4rpx;
-  background-color: #9fe870;
-  flex-shrink: 0;
-}
-
-.section-title {
-  font-size: 28rpx;
-  font-weight: 800;
-  color: #111827;
-  line-height: 1.2;
-}
-
-.section-empty {
-  font-size: 28rpx;
-  color: #9ca3af;
-  line-height: 1.4;
-}
-
-.attachment-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.attachment-item {
-  width: 100%;
-  min-height: 96rpx;
-  padding: 20rpx 24rpx;
-  border-radius: 28rpx;
-  background-color: #f8fafc;
-  border: 2rpx solid #eef2f7;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-}
-
-.attachment-ext {
-  width: 80rpx;
-  height: 56rpx;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background-color: #e5e7eb;
-}
-
-.attachment-ext-text {
-  font-size: 20rpx;
-  font-weight: 800;
-  color: #374151;
-  line-height: 1;
-}
-
-.ext-pdf {
-  background-color: #fee2e2;
-}
-
-.ext-pdf .attachment-ext-text {
-  color: #b91c1c;
-}
-
-.ext-image {
-  background-color: #dbeafe;
-}
-
-.ext-image .attachment-ext-text {
-  color: #1d4ed8;
-}
-
-.ext-video {
-  background-color: #ede9fe;
-}
-
-.ext-video .attachment-ext-text {
-  color: #6d28d9;
-}
-
-.ext-sheet {
-  background-color: #dcfce7;
-}
-
-.ext-sheet .attachment-ext-text {
-  color: #15803d;
-}
-
-.attachment-name {
-  flex: 1;
-  min-width: 0;
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #111827;
-  line-height: 1.35;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .action-card-row {

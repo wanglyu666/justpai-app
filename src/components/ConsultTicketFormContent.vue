@@ -241,6 +241,7 @@ import { computed, reactive, ref } from 'vue';
 import SheetPageLayout from '@/components/SheetPageLayout.vue';
 import CheckoutEditSheet from '@/components/CheckoutEditSheet.vue';
 import DateWheelPicker from '@/components/DateWheelPicker.vue';
+import { fileExt } from '@/utils/fileDisplay';
 
 type EditField =
   | 'address'
@@ -385,12 +386,6 @@ const confirmEditSheet = () => {
   }
 
   activeSheet.value = null;
-};
-
-const fileExt = (name: string) => {
-  const index = name.lastIndexOf('.');
-  if (index < 0) return 'FILE';
-  return name.slice(index + 1).toUpperCase();
 };
 
 const handleChooseMedia = () => {
