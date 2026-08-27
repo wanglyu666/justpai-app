@@ -26,7 +26,7 @@
           <text class="page-title">维保报修管理</text>
           <text class="page-desc">查看全部维保报修</text>
         </view>
-        <view class="add-btn">
+        <view class="add-btn" @click="onAdd">
           <text class="add-btn-text">新增</text>
         </view>
       </view>
@@ -150,6 +150,23 @@
         </view>
       </view>
     </BottomSheetPanel>
+    <BottomSheetPanel
+      :show="formVisible"
+      :z-index="2300"
+      content-safe-top
+      @closed="resetFormFlow"
+    >
+      <SuccessPageTransition :show-success="formStep === 'success'">
+        <MaintenanceFormContent
+          ref="formRef"
+          @back="closeForm"
+          @submit="handleFormSubmit"
+        />
+        <template #success>
+          <MaintenanceSuccessContent @back="closeForm" />
+        </template>
+      </SuccessPageTransition>
+    </BottomSheetPanel>
   </view>
 </template>
 
@@ -157,6 +174,11 @@
 import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import MaintenanceFormContent, {
+  type MaintenanceFormPayload,
+} from '@/components/MaintenanceFormContent.vue';
+import MaintenanceSuccessContent from '@/components/MaintenanceSuccessContent.vue';
 import {
   useMaintenanceItems,
   type MaintenanceItem,
@@ -183,11 +205,18 @@ const emit = defineEmits<{
 
 const keyword = ref('');
 const selectedItem = ref<MaintenanceItem | null>(null);
-const { items } = useMaintenanceItems();
+const formRef = ref<InstanceType<typeof MaintenanceFormContent> | null>(null);
+const formStep = ref<'form' | 'success'>('form');
+const { items, addMaintenance } = useMaintenanceItems();
 const {
   visible: detailVisible,
   open: openDetailPanel,
   close: closeDetail,
+} = useSlideOver();
+const {
+  visible: formVisible,
+  open: openFormPanel,
+  close: closeFormPanel,
 } = useSlideOver();
 usePageBackWhen(detailVisible, closeDetail);
 
@@ -222,6 +251,35 @@ const resetDetail = () => {
 };
 
 const handleBack = usePageBack(() => emit('back'));
+
+const onAdd = () => {
+  formStep.value = 'form';
+  openFormPanel();
+};
+
+const closeForm = () => {
+  closeFormPanel();
+};
+
+const resetFormFlow = () => {
+  formStep.value = 'form';
+  formRef.value?.resetForm();
+};
+
+const handleFormSubmit = (payload: MaintenanceFormPayload) => {
+  addMaintenance({
+    projectName: payload.projectName,
+    address: payload.address,
+    managerName: payload.managerName,
+    managerPhone: payload.managerPhone,
+    projectCode: payload.projectCode,
+    repairType: payload.repairType,
+    visitTime: payload.visitTime,
+    reason: payload.reason,
+    attachments: payload.attachments,
+  });
+  formStep.value = 'success';
+};
 </script>
 
 <style scoped>

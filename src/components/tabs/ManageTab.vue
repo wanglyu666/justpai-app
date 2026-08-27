@@ -18,7 +18,7 @@
       </view>
       <view class="card card-middle" @click="openMaintenanceList">
         <text class="card-middle-title">维保报修管理</text>
-        <view class="card-middle-add">
+        <view class="card-middle-add" @click.stop="onMaintenanceAdd">
           <text class="card-middle-add-text">新增</text>
         </view>
         <image
@@ -59,19 +59,78 @@
     <SlideOverPanel :show="maintenanceListVisible">
       <MaintenanceListContent @back="closeMaintenanceList" />
     </SlideOverPanel>
+
+    <SlideOverPanel
+      :show="maintenanceCreateVisible"
+      content-safe-top
+      @closed="resetMaintenanceCreate"
+    >
+      <SuccessPageTransition :show-success="maintenanceCreateStep === 'success'">
+        <MaintenanceFormContent
+          ref="maintenanceFormRef"
+          @back="closeMaintenanceCreate"
+          @submit="handleMaintenanceCreateSubmit"
+        />
+        <template #success>
+          <MaintenanceSuccessContent @back="closeMaintenanceCreate" />
+        </template>
+      </SuccessPageTransition>
+    </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import MaintenanceListContent from '@/components/MaintenanceListContent.vue';
+import MaintenanceFormContent, {
+  type MaintenanceFormPayload,
+} from '@/components/MaintenanceFormContent.vue';
+import MaintenanceSuccessContent from '@/components/MaintenanceSuccessContent.vue';
+import { useMaintenanceItems } from '@/composables/useMaintenanceItems';
 import { useSlideOver } from '@/composables/useSlideOver';
+
+const { addMaintenance } = useMaintenanceItems();
+const maintenanceCreateStep = ref<'form' | 'success'>('form');
+const maintenanceFormRef = ref<InstanceType<typeof MaintenanceFormContent> | null>(null);
 
 const {
   visible: maintenanceListVisible,
   open: openMaintenanceList,
   close: closeMaintenanceList,
 } = useSlideOver();
+
+const {
+  visible: maintenanceCreateVisible,
+  open: openMaintenanceCreate,
+  close: closeMaintenanceCreate,
+} = useSlideOver();
+
+const onMaintenanceAdd = () => {
+  maintenanceCreateStep.value = 'form';
+  openMaintenanceCreate();
+};
+
+const resetMaintenanceCreate = () => {
+  maintenanceCreateStep.value = 'form';
+  maintenanceFormRef.value?.resetForm();
+};
+
+const handleMaintenanceCreateSubmit = (payload: MaintenanceFormPayload) => {
+  addMaintenance({
+    projectName: payload.projectName,
+    address: payload.address,
+    managerName: payload.managerName,
+    managerPhone: payload.managerPhone,
+    projectCode: payload.projectCode,
+    repairType: payload.repairType,
+    visitTime: payload.visitTime,
+    reason: payload.reason,
+    attachments: payload.attachments,
+  });
+  maintenanceCreateStep.value = 'success';
+};
 </script>
 
 <style scoped>

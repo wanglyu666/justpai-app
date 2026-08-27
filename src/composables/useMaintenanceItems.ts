@@ -3,6 +3,15 @@ import { ref } from 'vue';
 export type MaintenanceStatus = 'in_maintenance' | 'pending' | 'completed';
 export type RepairType = 'normal' | 'urgent';
 
+export type MaintenanceProject = {
+  id: string;
+  name: string;
+  address: string;
+  managerName: string;
+  managerPhone: string;
+  projectCode: string;
+};
+
 export type MaintenanceItem = {
   id: number;
   code: string;
@@ -17,6 +26,57 @@ export type MaintenanceItem = {
   reason: string;
   media: string[];
 };
+
+export const maintenanceProjects: MaintenanceProject[] = [
+  {
+    id: 'p1',
+    name: '星巴克上海臻选烘焙工坊',
+    address: '上海市静安区南京西路789号',
+    managerName: '张伟',
+    managerPhone: '13812345678',
+    projectCode: 'PJ20260324001',
+  },
+  {
+    id: 'p2',
+    name: '星巴克深圳海岸城店',
+    address: '深圳市南山区文心五路33号',
+    managerName: '李娜',
+    managerPhone: '13987654321',
+    projectCode: 'PJ20260322002',
+  },
+  {
+    id: 'p3',
+    name: '星巴克杭州湖滨银泰店',
+    address: '杭州市上城区延安路298号',
+    managerName: '王强',
+    managerPhone: '13700112233',
+    projectCode: 'PJ20260318003',
+  },
+  {
+    id: 'p4',
+    name: '星巴克北京三里屯店',
+    address: '北京市朝阳区三里屯路19号',
+    managerName: '赵敏',
+    managerPhone: '13699887766',
+    projectCode: 'PJ20260315004',
+  },
+  {
+    id: 'p5',
+    name: '星巴克成都太古里店',
+    address: '成都市锦江区中纱帽街8号',
+    managerName: '陈晨',
+    managerPhone: '13566778899',
+    projectCode: 'PJ20260328005',
+  },
+  {
+    id: 'p6',
+    name: '星巴克广州太古汇店',
+    address: '广州市天河区天河路383号',
+    managerName: '刘洋',
+    managerPhone: '13455667788',
+    projectCode: 'PJ20260328006',
+  },
+];
 
 const maintenanceItems = ref<MaintenanceItem[]>([
   {
@@ -77,8 +137,47 @@ const maintenanceItems = ref<MaintenanceItem[]>([
   },
 ]);
 
+const pad = (value: number, length = 2) => String(value).padStart(length, '0');
+
+const createMaintenanceCode = () => {
+  const now = new Date();
+  return `WB${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}${pad(now.getMilliseconds(), 3)}`;
+};
+
 export function useMaintenanceItems() {
+  const addMaintenance = (payload: {
+    projectName: string;
+    address: string;
+    managerName: string;
+    managerPhone: string;
+    projectCode: string;
+    repairType: RepairType;
+    visitTime: string;
+    reason: string;
+    attachments: string[];
+  }) => {
+    const nextId = Math.max(0, ...maintenanceItems.value.map((item) => item.id)) + 1;
+    maintenanceItems.value = [
+      {
+        id: nextId,
+        code: createMaintenanceCode(),
+        projectCode: payload.projectCode,
+        projectName: payload.projectName,
+        address: payload.address,
+        managerName: payload.managerName,
+        managerPhone: payload.managerPhone,
+        status: 'pending',
+        repairType: payload.repairType,
+        visitTime: payload.visitTime,
+        reason: payload.reason,
+        media: payload.attachments,
+      },
+      ...maintenanceItems.value,
+    ];
+  };
+
   return {
     items: maintenanceItems,
+    addMaintenance,
   };
 }
