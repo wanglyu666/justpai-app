@@ -40,9 +40,7 @@
         >
           <view class="feedback-top">
             <text class="feedback-name">{{ item.name }}</text>
-            <view class="status-badge" :class="`status-${item.status}`">
-              <text class="status-badge-text">{{ statusLabel(item.status) }}</text>
-            </view>
+            <StatusBadge :status="item.status" :label="statusLabel(item.status)" />
           </view>
 
           <view class="feedback-field">
@@ -89,9 +87,7 @@
               </view>
               <view class="info-block info-block-status">
                 <text class="info-label">状态</text>
-                <view class="status-badge" :class="`status-${selectedItem.status}`">
-                  <text class="status-badge-text">{{ statusLabel(selectedItem.status) }}</text>
-                </view>
+                <StatusBadge :status="selectedItem.status" :label="statusLabel(selectedItem.status)" />
               </view>
             </view>
           </view>
@@ -143,6 +139,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import FeedbackFormContent from '@/components/FeedbackFormContent.vue';
@@ -406,47 +403,6 @@ const onPreviewAttachment = (_file: string) => {
   font-weight: 500;
   color: #111827;
   line-height: 1.45;
-}
-
-.status-badge {
-  height: 52rpx;
-  padding: 0 24rpx;
-  border-radius: 1998rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 4rpx;
-}
-
-.status-badge-text {
-  font-size: 24rpx;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.status-pending_reply {
-  background-color: #dbeafe;
-}
-
-.status-pending_reply .status-badge-text {
-  color: #2563eb;
-}
-
-.status-in_progress {
-  background-color: #dcfce7;
-}
-
-.status-in_progress .status-badge-text {
-  color: #15803d;
-}
-
-.status-closed {
-  background-color: #f3f4f6;
-}
-
-.status-closed .status-badge-text {
-  color: #6b7280;
 }
 
 .empty-tip {

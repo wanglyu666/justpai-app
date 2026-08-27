@@ -2,9 +2,7 @@
   <view class="order-card">
     <view class="card-meta-row">
       <text class="deadline-text">{{ order.completedAt }}</text>
-      <view class="status-badge">
-        <text class="status-badge-text">已完工</text>
-      </view>
+      <StatusBadge :status="order.status" label="已完工" size="compact" />
     </view>
 
     <view class="card-body">
@@ -48,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import StatusBadge from '@/components/StatusBadge.vue';
 import type { OrderRecord } from '@/data/orders';
 
 defineProps<{
@@ -81,24 +80,6 @@ const emit = defineEmits<{
   font-size: 22rpx;
   color: #9ca3af;
   line-height: 1.2;
-}
-
-.status-badge {
-  height: 44rpx;
-  padding: 0 20rpx;
-  border-radius: 1998rpx;
-  background-color: #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.status-badge-text {
-  font-size: 22rpx;
-  font-weight: 700;
-  color: #374151;
-  line-height: 1;
 }
 
 .card-body {

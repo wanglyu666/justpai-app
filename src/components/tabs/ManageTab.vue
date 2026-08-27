@@ -42,6 +42,10 @@
         <view class="wallet-layer wallet-paypal">
           <text class="wallet-brand wallet-brand-paypal">已完工</text>
         </view>
+        <view
+          class="wallet-completed-hit"
+          @click.stop="openCompletedProjects"
+        />
         <view class="wallet-front">
           <image
             class="wallet-front-shape"
@@ -58,6 +62,13 @@
 
     <SlideOverPanel :show="maintenanceListVisible">
       <MaintenanceListContent @back="closeMaintenanceList" />
+    </SlideOverPanel>
+
+    <SlideOverPanel :show="completedProjectsVisible">
+      <MaintenanceProjectListContent
+        initial-status="completed"
+        @back="closeCompletedProjects"
+      />
     </SlideOverPanel>
 
     <SlideOverPanel
@@ -88,6 +99,7 @@ import MaintenanceFormContent, {
   type MaintenanceFormPayload,
 } from '@/components/MaintenanceFormContent.vue';
 import MaintenanceSuccessContent from '@/components/MaintenanceSuccessContent.vue';
+import MaintenanceProjectListContent from '@/components/MaintenanceProjectListContent.vue';
 import { useMaintenanceItems } from '@/composables/useMaintenanceItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 
@@ -105,6 +117,12 @@ const {
   visible: maintenanceCreateVisible,
   open: openMaintenanceCreate,
   close: closeMaintenanceCreate,
+} = useSlideOver();
+
+const {
+  visible: completedProjectsVisible,
+  open: openCompletedProjects,
+  close: closeCompletedProjects,
 } = useSlideOver();
 
 const onMaintenanceAdd = () => {
@@ -336,6 +354,15 @@ const handleMaintenanceCreateSubmit = (payload: MaintenanceFormPayload) => {
   top: 216rpx;
   background-color: #ffffff;
   z-index: 3;
+}
+
+.wallet-completed-hit {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  top: 216rpx;
+  height: 200rpx;
+  z-index: 5;
 }
 
 .wallet-brand {

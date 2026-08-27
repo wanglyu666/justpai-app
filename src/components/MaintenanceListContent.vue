@@ -40,9 +40,7 @@
         >
           <view class="item-top">
             <text class="item-name">{{ item.projectName }}</text>
-            <view class="status-badge" :class="`status-${item.status}`">
-              <text class="status-badge-text">{{ statusLabel(item.status) }}</text>
-            </view>
+            <StatusBadge :status="item.status" :label="statusLabel(item.status)" />
           </view>
 
           <view class="item-field">
@@ -121,15 +119,17 @@
             <view class="meta-row">
               <view class="meta-col">
                 <text class="info-label">报修类型</text>
-                <view class="type-badge" :class="`type-${selectedItem.repairType}`">
-                  <text class="type-badge-text">{{ typeLabel(selectedItem.repairType) }}</text>
-                </view>
+                <StatusBadge
+                  :status="selectedItem.repairType"
+                  :label="typeLabel(selectedItem.repairType)"
+                />
               </view>
               <view class="meta-col meta-col-end">
                 <text class="info-label">工单状态</text>
-                <view class="status-badge" :class="`status-${selectedItem.status}`">
-                  <text class="status-badge-text">{{ statusLabel(selectedItem.status) }}</text>
-                </view>
+                <StatusBadge
+                  :status="selectedItem.status"
+                  :label="statusLabel(selectedItem.status)"
+                />
               </view>
             </view>
 
@@ -173,6 +173,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import MaintenanceFormContent, {
@@ -449,47 +450,6 @@ const handleFormSubmit = (payload: MaintenanceFormPayload) => {
   line-height: 1.45;
 }
 
-.status-badge {
-  height: 52rpx;
-  padding: 0 24rpx;
-  border-radius: 1998rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 4rpx;
-}
-
-.status-badge-text {
-  font-size: 24rpx;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.status-in_maintenance {
-  background-color: #ffedd5;
-}
-
-.status-in_maintenance .status-badge-text {
-  color: #ea580c;
-}
-
-.status-pending {
-  background-color: #dbeafe;
-}
-
-.status-pending .status-badge-text {
-  color: #2563eb;
-}
-
-.status-completed {
-  background-color: #dcfce7;
-}
-
-.status-completed .status-badge-text {
-  color: #15803d;
-}
-
 .empty-tip {
   padding: 96rpx 0;
   display: flex;
@@ -600,37 +560,5 @@ const handleFormSubmit = (payload: MaintenanceFormPayload) => {
 
 .visit-time {
   white-space: nowrap;
-}
-
-.type-badge {
-  height: 52rpx;
-  padding: 0 24rpx;
-  border-radius: 1998rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: flex-start;
-}
-
-.type-badge-text {
-  font-size: 24rpx;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.type-normal {
-  background-color: #dbeafe;
-}
-
-.type-normal .type-badge-text {
-  color: #2563eb;
-}
-
-.type-urgent {
-  background-color: #fee2e2;
-}
-
-.type-urgent .type-badge-text {
-  color: #dc2626;
 }
 </style>
