@@ -5,7 +5,7 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="header-title">{{ editable ? '订单评价' : '查看评价' }}</text>
+        <text class="header-title">{{ editable ? formTitle : '查看评价' }}</text>
         <view class="header-placeholder" />
       </view>
     </view>
@@ -13,11 +13,22 @@
     <scroll-view scroll-y class="form-scroll" :show-scrollbar="false">
       <view class="product-card">
         <view class="product-thumb">
-          <image :src="order.productImage" mode="aspectFill" class="product-image" />
+          <image
+            v-if="subject.image"
+            :src="subject.image"
+            mode="aspectFill"
+            class="product-image"
+          />
+          <image
+            v-else
+            src="/static/icons/building-2.svg"
+            mode="aspectFit"
+            class="product-placeholder"
+          />
         </view>
         <view class="product-info">
-          <text class="product-name">{{ order.productName }}</text>
-          <text class="product-order-no">订单编号：{{ order.orderNo }}</text>
+          <text class="product-name">{{ subject.name }}</text>
+          <text class="product-order-no">{{ codeLabel }}：{{ subject.code }}</text>
         </view>
       </view>
 
@@ -79,28 +90,37 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import type { OrderRecord } from '@/data/orders';
 import { usePageBack } from '@/composables/usePageBack';
+
+export type ReviewSubject = {
+  id: string;
+  name: string;
+  code: string;
+  image?: string;
+  codeLabel?: string;
+};
 
 const starOutlineIcon = '/static/icons/star-outline.svg';
 const starFilledIcon = '/static/icons/star-filled.svg';
 
 const props = withDefaults(
   defineProps<{
-    order: OrderRecord;
+    subject: ReviewSubject;
+    formTitle?: string;
     editable?: boolean;
     existingRating?: number;
     existingContent?: string;
     submittedAt?: string;
   }>(),
   {
+    formTitle: '订单评价',
     editable: true,
   },
 );
 
 const emit = defineEmits<{
   back: [];
-  submit: [payload: { orderId: string; rating: number; content: string }];
+  submit: [payload: { id: string; rating: number; content: string }];
 }>();
 
 const rating = ref(props.existingRating ?? 0);
@@ -118,6 +138,8 @@ const ratingLabels = ['', '非常不满意', '不满意', '一般', '满意', '�
 
 const ratingLabel = computed(() => ratingLabels[rating.value] ?? '');
 
+const codeLabel = computed(() => props.subject.codeLabel || '订单编号');
+
 const displayContent = computed(() => content.value.trim() || '无');
 
 const setRating = (value: number) => {
@@ -131,7 +153,7 @@ const handleSubmit = () => {
   if (rating.value <= 0) return;
 
   emit('submit', {
-    orderId: props.order.id,
+    id: props.subject.id,
     rating: rating.value,
     content: content.value.trim(),
   });
@@ -219,12 +241,22 @@ const handleSubmit = () => {
   overflow: hidden;
   background-color: #f3f4f6;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+.product-placeholder {
+  width: 64rpx;
+  height: 64rpx;
+  display: block;
+  margin: auto;
 }
 
 .product-info {

@@ -31,6 +31,11 @@ export const STATUS_BADGE_TONE_BY_KEY: Record<string, StatusBadgeTone> = {
   pending: 'waiting',
   pending_pay: 'waiting',
   pending_confirm: 'waiting',
+  pending_start: 'waiting',
+  pending_acceptance: 'waiting',
+  pending_confirm_time: 'waiting',
+  pending_confirm_change: 'waiting',
+  pending_visit: 'waiting',
   normal: 'waiting',
 
   in_progress: 'progress',
@@ -45,6 +50,8 @@ export const STATUS_BADGE_TONE_BY_KEY: Record<string, StatusBadgeTone> = {
 
   cancelled: 'failed',
   urgent: 'failed',
+  order_suspended: 'done',
+  appointment_abnormal: 'failed',
 };
 
 export function resolveStatusBadgeTone(

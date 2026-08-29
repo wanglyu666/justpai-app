@@ -99,8 +99,8 @@
     <BottomSheetPanel :show="reviewFlowVisible" :z-index="2200" @closed="resetReviewFlow">
       <SuccessPageTransition :show-success="reviewStep === 'success'">
         <OrderReviewContent
-          v-if="reviewOrder"
-          :order="reviewOrder"
+          v-if="reviewSubject"
+          :subject="reviewSubject"
           :editable="reviewStep === 'form'"
           :existing-rating="reviewRecord?.rating"
           :existing-content="reviewRecord?.content"
@@ -181,6 +181,17 @@ const reviewStep = ref<'form' | 'view' | 'success'>('form');
 const reviewRecord = computed(() =>
   reviewOrder.value ? getReview(reviewOrder.value.id) : null,
 );
+const reviewSubject = computed(() =>
+  reviewOrder.value
+    ? {
+        id: reviewOrder.value.id,
+        name: reviewOrder.value.productName,
+        code: reviewOrder.value.orderNo,
+        image: reviewOrder.value.productImage,
+        codeLabel: '订单编号',
+      }
+    : null,
+);
 
 const handleBack = usePageBack(() => emit('back'));
 
@@ -224,11 +235,11 @@ const resetReviewFlow = () => {
 };
 
 const handleReviewSubmit = (payload: {
-  orderId: string;
+  id: string;
   rating: number;
   content: string;
 }) => {
-  submitReview(payload.orderId, {
+  submitReview(payload.id, {
     rating: payload.rating,
     content: payload.content,
   });

@@ -85,9 +85,15 @@
           <text class="sheet-page__title">项目详情</text>
 
           <view class="info-card">
-            <view class="card-heading-block">
-              <text class="card-title">{{ selectedItem.name }}</text>
-              <text class="card-code">{{ selectedItem.code }}</text>
+            <view class="card-heading">
+              <view class="card-heading-block">
+                <text class="card-title">{{ selectedItem.name }}</text>
+                <text class="card-code">{{ selectedItem.code }}</text>
+              </view>
+              <StatusBadge
+                :status="selectedItem.status"
+                :label="statusLabel(selectedItem.status)"
+              />
             </view>
 
             <view class="info-row">
@@ -102,23 +108,75 @@
             </view>
           </view>
 
-          <FileAttachmentCard :files="selectedItem.attachments" />
+          <view class="action-card-row">
+            <ActionSquareCard
+              icon="/static/icons/calendar-clock.svg"
+              label="预约管理"
+              @click="openAppointment"
+            />
+            <ActionSquareCard
+              icon="/static/icons/star-yellow.svg"
+              label="评价"
+              @click="openReview"
+            />
+          </view>
         </view>
       </view>
     </BottomSheetPanel>
+
+    <SlideOverPanel
+      :show="appointmentVisible"
+      :z-index="2300"
+    >
+      <AppointmentManageContent
+        v-if="selectedItem"
+        :project-id="selectedItem.id"
+        @back="closeAppointment"
+      />
+    </SlideOverPanel>
+
+    <SlideOverPanel
+      :show="reviewVisible"
+      :z-index="2300"
+      @closed="resetReviewFlow"
+    >
+      <SuccessPageTransition :show-success="reviewStep === 'success'">
+        <OrderReviewContent
+          v-if="reviewSubject"
+          :subject="reviewSubject"
+          form-title="项目评价"
+          :editable="reviewStep === 'form'"
+          :existing-rating="reviewRecord?.rating"
+          :existing-content="reviewRecord?.content"
+          :submitted-at="reviewRecord?.submittedAt"
+          @back="closeReview"
+          @submit="handleReviewSubmit"
+        />
+        <template #success>
+          <OrderReviewSuccessContent back-text="返回项目" @back="closeReview" />
+        </template>
+      </SuccessPageTransition>
+    </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
+import StatusBadge from '@/components/StatusBadge.vue';
+import ActionSquareCard from '@/components/ActionSquareCard.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
-import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
+import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import OrderReviewContent from '@/components/OrderReviewContent.vue';
+import OrderReviewSuccessContent from '@/components/OrderReviewSuccessContent.vue';
+import AppointmentManageContent from '@/components/AppointmentManageContent.vue';
 import {
   useMaintenanceProjects,
   type MaintenanceProjectItem,
   type MaintenanceProjectStatus,
 } from '@/composables/useMaintenanceProjects';
+import { useOrderReviews } from '@/composables/useOrderReviews';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
@@ -138,6 +196,12 @@ const emit = defineEmits<{
 const { projects } = useMaintenanceProjects();
 const keyword = ref('');
 const activeStatus = ref<MaintenanceProjectStatus>(props.initialStatus);
+watch(
+  () => props.initialStatus,
+  (status) => {
+    activeStatus.value = status;
+  },
+);
 const selectedItem = ref<MaintenanceProjectItem | null>(null);
 const {
   visible: detailVisible,
@@ -146,11 +210,50 @@ const {
 } = useSlideOver();
 usePageBackWhen(detailVisible, closeDetail);
 
+const {
+  visible: appointmentVisible,
+  open: openAppointmentPanel,
+  close: closeAppointment,
+} = useSlideOver();
+
+const {
+  visible: reviewVisible,
+  open: openReviewPanel,
+  close: closeReview,
+} = useSlideOver();
+const reviewStep = ref<'form' | 'view' | 'success'>('form');
+const { hasReview, getReview, submitReview } = useOrderReviews();
+
+const projectReviewId = (projectId: number) => `project-${projectId}`;
+
+const reviewSubject = computed(() =>
+  selectedItem.value
+    ? {
+        id: projectReviewId(selectedItem.value.id),
+        name: selectedItem.value.name,
+        code: selectedItem.value.code,
+        codeLabel: '项目编号',
+      }
+    : null,
+);
+
+const reviewRecord = computed(() =>
+  selectedItem.value ? getReview(projectReviewId(selectedItem.value.id)) : null,
+);
+
 const statusTabs: { id: MaintenanceProjectStatus; label: string }[] = [
   { id: 'pending_start', label: '待开工' },
   { id: 'in_progress', label: '施工中' },
   { id: 'completed', label: '已完工' },
 ];
+
+const STATUS_LABEL: Record<MaintenanceProjectStatus, string> = {
+  pending_start: '待开工',
+  in_progress: '施工中',
+  completed: '已完工',
+};
+
+const statusLabel = (status: MaintenanceProjectStatus) => STATUS_LABEL[status];
 
 const filteredProjects = computed(() => {
   const q = keyword.value.trim().toLowerCase();
@@ -183,6 +286,30 @@ const formatPhone = (phone: string) => {
 
 const resetDetail = () => {
   selectedItem.value = null;
+  closeAppointment();
+};
+
+const openAppointment = () => {
+  if (!selectedItem.value) return;
+  openAppointmentPanel();
+};
+
+const openReview = () => {
+  if (!selectedItem.value) return;
+  reviewStep.value = hasReview(projectReviewId(selectedItem.value.id)) ? 'view' : 'form';
+  openReviewPanel();
+};
+
+const resetReviewFlow = () => {
+  reviewStep.value = 'form';
+};
+
+const handleReviewSubmit = (payload: { id: string; rating: number; content: string }) => {
+  submitReview(payload.id, {
+    rating: payload.rating,
+    content: payload.content,
+  });
+  reviewStep.value = 'success';
 };
 
 const handleBack = usePageBack(() => emit('back'));
@@ -324,6 +451,11 @@ const handleBack = usePageBack(() => emit('back'));
   gap: 28rpx;
 }
 
+.action-card-row {
+  display: flex;
+  gap: 24rpx;
+}
+
 .info-card {
   background-color: #ffffff;
   border-radius: 40rpx;
@@ -335,7 +467,16 @@ const handleBack = usePageBack(() => emit('back'));
   box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
 }
 
+.card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
 .card-heading-block {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 12rpx;

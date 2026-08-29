@@ -10,7 +10,7 @@
         <view class="card-top-media">
           <image
             class="card-top-img"
-            src="/static/images/work.png"
+            src="/static/images/work.png?v=3"
             mode="aspectFit"
           />
         </view>
@@ -43,8 +43,16 @@
           <text class="wallet-brand wallet-brand-paypal">已完工</text>
         </view>
         <view
-          class="wallet-completed-hit"
-          @click.stop="openCompletedProjects"
+          class="wallet-status-hit wallet-pending-hit"
+          @click.stop="openProjectList('pending_start')"
+        />
+        <view
+          class="wallet-status-hit wallet-progress-hit"
+          @click.stop="openProjectList('in_progress')"
+        />
+        <view
+          class="wallet-status-hit wallet-completed-hit"
+          @click.stop="openProjectList('completed')"
         />
         <view class="wallet-front">
           <image
@@ -64,10 +72,11 @@
       <MaintenanceListContent @back="closeMaintenanceList" />
     </SlideOverPanel>
 
-    <SlideOverPanel :show="completedProjectsVisible">
+    <SlideOverPanel :show="projectListVisible">
       <MaintenanceProjectListContent
-        initial-status="completed"
-        @back="closeCompletedProjects"
+        :key="projectListStatus"
+        :initial-status="projectListStatus"
+        @back="closeProjectList"
       />
     </SlideOverPanel>
 
@@ -101,6 +110,7 @@ import MaintenanceFormContent, {
 import MaintenanceSuccessContent from '@/components/MaintenanceSuccessContent.vue';
 import MaintenanceProjectListContent from '@/components/MaintenanceProjectListContent.vue';
 import { useMaintenanceItems } from '@/composables/useMaintenanceItems';
+import type { MaintenanceProjectStatus } from '@/composables/useMaintenanceProjects';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const { addMaintenance } = useMaintenanceItems();
@@ -120,10 +130,17 @@ const {
 } = useSlideOver();
 
 const {
-  visible: completedProjectsVisible,
-  open: openCompletedProjects,
-  close: closeCompletedProjects,
+  visible: projectListVisible,
+  open: openProjectListPanel,
+  close: closeProjectList,
 } = useSlideOver();
+
+const projectListStatus = ref<MaintenanceProjectStatus>('completed');
+
+const openProjectList = (status: MaintenanceProjectStatus) => {
+  projectListStatus.value = status;
+  openProjectListPanel();
+};
 
 const onMaintenanceAdd = () => {
   maintenanceCreateStep.value = 'form';
@@ -222,7 +239,7 @@ const handleMaintenanceCreateSubmit = (payload: MaintenanceFormPayload) => {
 
 .card-top-img {
   position: absolute;
-  left: 8rpx;
+  left: -65rpx;
   top: 300rpx;
   width: 700rpx;
   height: 392rpx;
@@ -356,13 +373,26 @@ const handleMaintenanceCreateSubmit = (payload: MaintenanceFormPayload) => {
   z-index: 3;
 }
 
-.wallet-completed-hit {
+.wallet-status-hit {
   position: absolute;
   left: 24rpx;
   right: 24rpx;
+  z-index: 5;
+}
+
+.wallet-pending-hit {
+  top: 24rpx;
+  height: 96rpx;
+}
+
+.wallet-progress-hit {
+  top: 120rpx;
+  height: 96rpx;
+}
+
+.wallet-completed-hit {
   top: 216rpx;
   height: 200rpx;
-  z-index: 5;
 }
 
 .wallet-brand {

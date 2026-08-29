@@ -12,7 +12,7 @@
 
     <view class="action-wrap">
       <view class="back-btn" @click="handleBack">
-        <text class="back-btn-text">返回订单</text>
+        <text class="back-btn-text">{{ backText }}</text>
       </view>
     </view>
   </view>
@@ -20,6 +20,16 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+
+withDefaults(
+  defineProps<{
+    backText?: string;
+  }>(),
+  {
+    backText: '返回订单',
+  },
+);
+
 const emit = defineEmits<{
   back: [];
 }>();

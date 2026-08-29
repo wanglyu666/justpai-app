@@ -147,12 +147,16 @@
           <FileAttachmentCard :files="selectedTicket.attachments" />
 
           <view class="action-card-row">
-            <view class="action-card" @click="onChecklist">
-              <text class="action-card-text">清单</text>
-            </view>
-            <view class="action-card" @click="onInquiry">
-              <text class="action-card-text">询价</text>
-            </view>
+            <ActionSquareCard
+              icon="/static/icons/order.svg"
+              label="清单"
+              @click="onChecklist"
+            />
+            <ActionSquareCard
+              icon="/static/icons/message-circle.svg"
+              label="询价"
+              @click="onInquiry"
+            />
           </view>
         </view>
       </view>
@@ -206,6 +210,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
+import ActionSquareCard from '@/components/ActionSquareCard.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
@@ -659,25 +664,6 @@ const onEndConsult = () => {
 .action-card-row {
   display: flex;
   gap: 24rpx;
-}
-
-.action-card {
-  flex: 1;
-  min-height: 144rpx;
-  border-radius: 40rpx;
-  background-color: #ffffff;
-  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-.action-card-text {
-  font-size: 32rpx;
-  font-weight: 800;
-  color: #111827;
-  line-height: 1;
 }
 
 .end-btn {
