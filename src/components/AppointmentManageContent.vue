@@ -34,7 +34,8 @@
           v-for="item in filteredAppointments"
           :key="item.id"
           class="appointment-card"
-          @click="openDetail(item)"
+          :class="{ 'is-static': item.status === 'pending_acceptance' }"
+          @click="onCardClick(item)"
         >
           <view class="card-heading">
             <text class="appointment-name">{{ item.projectName }}</text>
@@ -137,16 +138,53 @@
         </view>
       </view>
     </BottomSheetPanel>
+
+    <SlideOverPanel
+      :show="acceptanceVisible"
+      :z-index="2500"
+      @closed="resetAcceptance"
+    >
+      <AppointmentAcceptanceContent
+        v-if="acceptanceAppointment"
+        :files="acceptanceAppointment.attachments ?? []"
+        @back="closeAcceptance"
+        @confirm="handleAcceptanceConfirm"
+      />
+    </SlideOverPanel>
+
+    <AppointmentTimeConfirmSheet
+      :show="timeConfirmVisible"
+      :show-success="timeConfirmStep === 'success'"
+      :scheduled-at="timeConfirmAppointment?.scheduledAt ?? ''"
+      @close="onTimeConfirmClosed"
+      @confirm="handleTimeConfirm"
+    />
+
+    <AppointmentChangeConfirmSheet
+      :show="changeConfirmVisible"
+      :show-success="changeConfirmStep === 'success'"
+      :scheduled-at="changeConfirmAppointment?.scheduledAt ?? ''"
+      :change-reason="changeConfirmAppointment?.changeReason ?? ''"
+      @close="onChangeConfirmClosed"
+      @confirm="handleChangeConfirm"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
+import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
+import AppointmentAcceptanceContent from '@/components/AppointmentAcceptanceContent.vue';
+import AppointmentTimeConfirmSheet from '@/components/AppointmentTimeConfirmSheet.vue';
+import AppointmentChangeConfirmSheet from '@/components/AppointmentChangeConfirmSheet.vue';
 import {
   APPOINTMENT_STATUS_LABEL,
   canConfirmAppointment,
+  confirmAppointmentAcceptance,
+  confirmAppointmentChange,
+  confirmAppointmentTime,
   useAppointments,
   type AppointmentItem,
 } from '@/composables/useAppointments';
@@ -171,6 +209,32 @@ const {
 } = useSlideOver();
 usePageBackWhen(detailVisible, closeDetail);
 
+const {
+  visible: acceptanceVisible,
+  open: openAcceptancePanel,
+  close: closeAcceptance,
+} = useSlideOver();
+
+const acceptanceAppointment = ref<AppointmentItem | null>(null);
+
+const {
+  visible: timeConfirmVisible,
+  open: openTimeConfirmPanel,
+  close: closeTimeConfirmPanel,
+} = useSlideOver();
+const timeConfirmAppointment = ref<AppointmentItem | null>(null);
+const timeConfirmStep = ref<'form' | 'success'>('form');
+usePageBackWhen(timeConfirmVisible, closeTimeConfirmPanel);
+
+const {
+  visible: changeConfirmVisible,
+  open: openChangeConfirmPanel,
+  close: closeChangeConfirmPanel,
+} = useSlideOver();
+const changeConfirmAppointment = ref<AppointmentItem | null>(null);
+const changeConfirmStep = ref<'form' | 'success'>('form');
+usePageBackWhen(changeConfirmVisible, closeChangeConfirmPanel);
+
 const statusLabel = (status: AppointmentItem['status']) =>
   APPOINTMENT_STATUS_LABEL[status];
 
@@ -191,6 +255,11 @@ const filteredAppointments = computed(() => {
 
 const handleBack = usePageBack(() => emit('back'));
 
+const onCardClick = (item: AppointmentItem) => {
+  if (item.status === 'pending_acceptance') return;
+  openDetail(item);
+};
+
 const openDetail = (item: AppointmentItem) => {
   selectedAppointment.value = item;
   openDetailPanel();
@@ -200,7 +269,66 @@ const resetDetail = () => {
   selectedAppointment.value = null;
 };
 
-const onConfirm = (_item: AppointmentItem) => {};
+const resetAcceptance = () => {
+  acceptanceAppointment.value = null;
+};
+
+const onConfirm = (item: AppointmentItem) => {
+  if (item.status === 'pending_acceptance') {
+    acceptanceAppointment.value = item;
+    openAcceptancePanel();
+    return;
+  }
+  if (item.status === 'pending_confirm_time') {
+    timeConfirmAppointment.value = item;
+    timeConfirmStep.value = 'form';
+    openTimeConfirmPanel();
+    return;
+  }
+  if (item.status === 'pending_confirm_change') {
+    changeConfirmAppointment.value = item;
+    changeConfirmStep.value = 'form';
+    openChangeConfirmPanel();
+  }
+};
+
+const handleChangeConfirm = () => {
+  if (!changeConfirmAppointment.value) return;
+  confirmAppointmentChange(changeConfirmAppointment.value.id);
+  changeConfirmStep.value = 'success';
+};
+
+const resetChangeConfirm = () => {
+  changeConfirmAppointment.value = null;
+  changeConfirmStep.value = 'form';
+};
+
+const onChangeConfirmClosed = () => {
+  closeChangeConfirmPanel();
+  resetChangeConfirm();
+};
+
+const handleTimeConfirm = () => {
+  if (!timeConfirmAppointment.value) return;
+  confirmAppointmentTime(timeConfirmAppointment.value.id);
+  timeConfirmStep.value = 'success';
+};
+
+const resetTimeConfirm = () => {
+  timeConfirmAppointment.value = null;
+  timeConfirmStep.value = 'form';
+};
+
+const onTimeConfirmClosed = () => {
+  closeTimeConfirmPanel();
+  resetTimeConfirm();
+};
+
+const handleAcceptanceConfirm = () => {
+  if (!acceptanceAppointment.value) return;
+  confirmAppointmentAcceptance(acceptanceAppointment.value.id);
+  closeAcceptance();
+};
 </script>
 
 <style scoped>

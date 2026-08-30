@@ -1,4 +1,4 @@
-import { computed, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 
 export type AppointmentStatus =
   | 'pending_acceptance'
@@ -19,6 +19,8 @@ export type AppointmentItem = {
   contact: string;
   phone: string;
   address: string;
+  attachments?: string[];
+  changeReason?: string;
 };
 
 export const APPOINTMENT_STATUS_LABEL: Record<AppointmentStatus, string> = {
@@ -40,7 +42,7 @@ const CONFIRMABLE_STATUS = new Set<AppointmentStatus>([
 export const canConfirmAppointment = (status: AppointmentStatus) =>
   CONFIRMABLE_STATUS.has(status);
 
-const appointments: AppointmentItem[] = [
+const appointments = ref<AppointmentItem[]>([
   {
     id: 1,
     projectId: 1,
@@ -51,6 +53,7 @@ const appointments: AppointmentItem[] = [
     contact: '李志强',
     phone: '13912345678',
     address: '杭州市上城区延安路298号',
+    attachments: ['竣工验收单.pdf', '现场验收照片.jpg', '设备运行记录.xlsx'],
   },
   {
     id: 2,
@@ -73,6 +76,7 @@ const appointments: AppointmentItem[] = [
     contact: '李志强',
     phone: '13912345678',
     address: '杭州市上城区延安路298号',
+    changeReason: '客户临时有会议，需将上门时间调整至当晚。',
   },
   {
     id: 4,
@@ -161,6 +165,7 @@ const appointments: AppointmentItem[] = [
     contact: '陈晨',
     phone: '13566778899',
     address: '成都市锦江区中纱帽街8号',
+    attachments: ['验收报告.pdf', '现场竣工照片.jpg'],
   },
   {
     id: 12,
@@ -183,6 +188,7 @@ const appointments: AppointmentItem[] = [
     contact: '张伟',
     phone: '13812345678',
     address: '上海市静安区南京西路789号',
+    changeReason: '现场设备到货延期，申请改期上门。',
   },
   {
     id: 14,
@@ -206,11 +212,30 @@ const appointments: AppointmentItem[] = [
     phone: '13987654321',
     address: '深圳市南山区文心五路33号',
   },
-];
+]);
+
+export function confirmAppointmentAcceptance(id: number) {
+  const item = appointments.value.find((entry) => entry.id === id);
+  if (!item || item.status !== 'pending_acceptance') return;
+  item.status = 'completed';
+  item.countdown = '-';
+}
+
+export function confirmAppointmentTime(id: number) {
+  const item = appointments.value.find((entry) => entry.id === id);
+  if (!item || item.status !== 'pending_confirm_time') return;
+  item.status = 'pending_visit';
+}
+
+export function confirmAppointmentChange(id: number) {
+  const item = appointments.value.find((entry) => entry.id === id);
+  if (!item || item.status !== 'pending_confirm_change') return;
+  item.status = 'pending_visit';
+}
 
 export function useAppointments(projectId: Ref<number>) {
   const projectAppointments = computed(() =>
-    appointments.filter((item) => item.projectId === projectId.value),
+    appointments.value.filter((item) => item.projectId === projectId.value),
   );
 
   return {
