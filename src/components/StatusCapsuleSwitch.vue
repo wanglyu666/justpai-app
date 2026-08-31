@@ -2,6 +2,7 @@
   <view class="status-capsule" :style="capsuleStyle">
     <scroll-view
       scroll-x
+      enable-flex
       class="status-scroll"
       :style="scrollViewStyle"
       :show-scrollbar="false"
@@ -58,6 +59,8 @@ const emit = defineEmits<{
 
 const instance = getCurrentInstance();
 const scrollLeft = ref(0);
+const innerWidthPx = ref<number | null>(null);
+const itemMinWidthPx = ref<number | null>(null);
 const thumbStyle = ref({
   transform: 'translateX(0px)',
   width: '0px',
@@ -75,16 +78,22 @@ const scrollViewStyle = {
   height: `${STATUS_CAPSULE.height}rpx`,
 };
 
-const innerStyle = {
+const itemPadX = computed(() =>
+  props.equal ? STATUS_CAPSULE.itemPaddingX : STATUS_CAPSULE.scrollItemPaddingX,
+);
+
+const innerStyle = computed(() => ({
   gap: `${STATUS_CAPSULE.itemGap}rpx`,
   height: `${STATUS_CAPSULE.height}rpx`,
   padding: `${STATUS_CAPSULE.innerPadding}rpx`,
-};
+  ...(innerWidthPx.value ? { width: `${innerWidthPx.value}px` } : {}),
+}));
 
-const itemStyle = {
+const itemStyle = computed(() => ({
   height: `${STATUS_CAPSULE.itemHeight}rpx`,
-  padding: `0 ${STATUS_CAPSULE.itemPaddingX}rpx`,
-};
+  padding: `0 ${itemPadX.value}rpx`,
+  ...(itemMinWidthPx.value ? { minWidth: `${itemMinWidthPx.value}px` } : {}),
+}));
 
 const thumbMergedStyle = computed(() => ({
   transform: thumbStyle.value.transform,
@@ -150,6 +159,60 @@ const getTabContentLeft = (items: ItemRect[], index: number) => {
   return left;
 };
 
+const contentWidthFromItems = (items: ItemRect[]) => {
+  const pad = rpx2px(STATUS_CAPSULE.innerPadding) * 2;
+  const gaps = rpx2px(STATUS_CAPSULE.itemGap) * Math.max(0, items.length - 1);
+  const itemsWidth = items.reduce((sum, item) => sum + item.width, 0);
+  return pad + gaps + itemsWidth;
+};
+
+/** 右侧露出半截下一项，间距更松，并提示可侧滑 */
+const ensurePeek = async () => {
+  if (props.equal || props.tabs.length < 2) {
+    innerWidthPx.value = null;
+    itemMinWidthPx.value = null;
+    return;
+  }
+
+  itemMinWidthPx.value = null;
+  innerWidthPx.value = null;
+  await nextTick();
+
+  const layout = await measureScrollLayout();
+  if (!layout) return;
+
+  const pad = rpx2px(STATUS_CAPSULE.innerPadding);
+  const gap = rpx2px(STATUS_CAPSULE.itemGap);
+  const peekPx = rpx2px(STATUS_CAPSULE.peekNext);
+  const naturalWidth = contentWidthFromItems(layout.items);
+  const needWidth = layout.viewportWidth + peekPx;
+
+  // 6 项时：前 4 项完整，「保修中」约露出两个字；宽屏不强制拉大
+  const peekIndex = Math.min(4, props.tabs.length - 2);
+  const peekFraction = STATUS_CAPSULE.peekItemFraction;
+  if (peekIndex >= 1 && props.tabs.length >= 5) {
+    const targetWidth =
+      (layout.viewportWidth - pad - peekIndex * gap) /
+      (peekIndex + peekFraction);
+    const maxNatural = Math.max(...layout.items.map((item) => item.width));
+    if (targetWidth > maxNatural && targetWidth <= maxNatural * 1.4) {
+      itemMinWidthPx.value = Math.ceil(targetWidth);
+      await nextTick();
+    }
+  } else if (naturalWidth < needWidth) {
+    const padBoth = pad * 2;
+    const gaps = gap * Math.max(0, layout.items.length - 1);
+    itemMinWidthPx.value = Math.ceil(
+      (needWidth - padBoth - gaps) / layout.items.length,
+    );
+    await nextTick();
+  }
+
+  const nextLayout = await measureScrollLayout();
+  if (!nextLayout) return;
+  innerWidthPx.value = Math.ceil(contentWidthFromItems(nextLayout.items));
+};
+
 const updateThumb = async () => {
   const layout = await measureScrollLayout();
   if (!layout) return;
@@ -208,12 +271,23 @@ watch(
   () => props.tabs.map((t) => t.id).join(','),
   async () => {
     await nextTick();
+    await ensurePeek();
+    await updateThumb();
+  },
+);
+
+watch(
+  () => props.equal,
+  async () => {
+    await nextTick();
+    await ensurePeek();
     await updateThumb();
   },
 );
 
 onMounted(async () => {
   await nextTick();
+  await ensurePeek();
   await updateThumb();
 });
 </script>
@@ -236,12 +310,13 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   box-sizing: border-box;
-  min-width: 100%;
+  min-width: max-content;
 }
 
 .status-scroll-inner.is-equal {
   display: flex;
   width: 100%;
+  min-width: 100%;
 }
 
 .status-thumb {

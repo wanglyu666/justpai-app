@@ -5,6 +5,15 @@ export const STATUS_CAPSULE = {
   itemGap: 8,
   itemHeight: 72,
   itemPaddingX: 28,
+  /** 非等分横滑内边距：第 5 项约露出两个字，提示可侧滑 */
+  scrollItemPaddingX: 24,
+  /**
+   * 非等分时，右侧裁在第 5 项（如「保修中」）上，露出约两个字，提示可侧滑。
+   * 项少时作为最小溢出。
+   */
+  peekNext: 96,
+  /** 第 5 项露出的宽度比例（含内边距；0.7 大约露出「保修」） */
+  peekItemFraction: 0.7,
   fontSize: 28,
   fontWeight: 600,
   activeFontWeight: 700,

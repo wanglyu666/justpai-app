@@ -6,7 +6,7 @@
     </view>
 
     <view class="card-layout">
-      <view class="card card-top">
+      <view class="card card-top" @click="openEngineeringList">
         <view class="card-top-media">
           <image
             class="card-top-img"
@@ -68,6 +68,10 @@
     </view>
     </view>
 
+    <SlideOverPanel :show="engineeringListVisible">
+      <EngineeringProjectListContent @back="closeEngineeringList" />
+    </SlideOverPanel>
+
     <SlideOverPanel :show="maintenanceListVisible">
       <MaintenanceListContent @back="closeMaintenanceList" />
     </SlideOverPanel>
@@ -109,6 +113,7 @@ import MaintenanceFormContent, {
 } from '@/components/MaintenanceFormContent.vue';
 import MaintenanceSuccessContent from '@/components/MaintenanceSuccessContent.vue';
 import MaintenanceProjectListContent from '@/components/MaintenanceProjectListContent.vue';
+import EngineeringProjectListContent from '@/components/EngineeringProjectListContent.vue';
 import { useMaintenanceItems } from '@/composables/useMaintenanceItems';
 import type { MaintenanceProjectStatus } from '@/composables/useMaintenanceProjects';
 import { useSlideOver } from '@/composables/useSlideOver';
@@ -121,6 +126,12 @@ const {
   visible: maintenanceListVisible,
   open: openMaintenanceList,
   close: closeMaintenanceList,
+} = useSlideOver();
+
+const {
+  visible: engineeringListVisible,
+  open: openEngineeringList,
+  close: closeEngineeringList,
 } = useSlideOver();
 
 const {

@@ -34,8 +34,6 @@
           v-for="item in filteredAppointments"
           :key="item.id"
           class="appointment-card"
-          :class="{ 'is-static': item.status === 'pending_acceptance' }"
-          @click="onCardClick(item)"
         >
           <view class="card-heading">
             <text class="appointment-name">{{ item.projectName }}</text>
@@ -72,73 +70,6 @@
       </view>
     </view>
 
-    <BottomSheetPanel
-      :show="detailVisible"
-      :z-index="2400"
-      @closed="resetDetail"
-    >
-      <view class="detail-page">
-        <view class="detail-header">
-          <view class="icon-btn" @click="closeDetail">
-            <image
-              src="/static/icons/chevron-left.svg"
-              mode="aspectFit"
-              class="header-icon-img"
-            />
-          </view>
-        </view>
-
-        <view class="detail-content" v-if="selectedAppointment">
-          <text class="detail-title">预约详情</text>
-
-          <view class="detail-card">
-            <view class="detail-row">
-              <view class="detail-field detail-field-full">
-                <text class="detail-label">项目名称</text>
-                <text class="detail-value">{{ selectedAppointment.projectName }}</text>
-              </view>
-            </view>
-
-            <view class="detail-row">
-              <view class="detail-field">
-                <text class="detail-label">预约时间</text>
-                <text class="detail-value">{{ selectedAppointment.scheduledAt }}</text>
-              </view>
-              <view class="detail-field">
-                <text class="detail-label">状态</text>
-                <text class="detail-value">{{ statusLabel(selectedAppointment.status) }}</text>
-              </view>
-            </view>
-
-            <view class="detail-row">
-              <view class="detail-field detail-field-full">
-                <text class="detail-label">倒计时</text>
-                <text class="detail-value">{{ selectedAppointment.countdown }}</text>
-              </view>
-            </view>
-
-            <view class="detail-row">
-              <view class="detail-field">
-                <text class="detail-label">联系人</text>
-                <text class="detail-value">{{ selectedAppointment.contact }}</text>
-              </view>
-              <view class="detail-field">
-                <text class="detail-label">联系电话</text>
-                <text class="detail-value">{{ selectedAppointment.phone }}</text>
-              </view>
-            </view>
-
-            <view class="detail-row">
-              <view class="detail-field detail-field-full">
-                <text class="detail-label">上门地址</text>
-                <text class="detail-value">{{ selectedAppointment.address }}</text>
-              </view>
-            </view>
-          </view>
-        </view>
-      </view>
-    </BottomSheetPanel>
-
     <SlideOverPanel
       :show="acceptanceVisible"
       :z-index="2500"
@@ -173,7 +104,6 @@
 
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
-import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import AppointmentAcceptanceContent from '@/components/AppointmentAcceptanceContent.vue';
@@ -200,15 +130,7 @@ const emit = defineEmits<{
 }>();
 
 const keyword = ref('');
-const selectedAppointment = ref<AppointmentItem | null>(null);
 const { appointments } = useAppointments(toRef(props, 'projectId'));
-const {
-  visible: detailVisible,
-  open: openDetailPanel,
-  close: closeDetail,
-} = useSlideOver();
-usePageBackWhen(detailVisible, closeDetail);
-
 const {
   visible: acceptanceVisible,
   open: openAcceptancePanel,
@@ -254,20 +176,6 @@ const filteredAppointments = computed(() => {
 });
 
 const handleBack = usePageBack(() => emit('back'));
-
-const onCardClick = (item: AppointmentItem) => {
-  if (item.status === 'pending_acceptance') return;
-  openDetail(item);
-};
-
-const openDetail = (item: AppointmentItem) => {
-  selectedAppointment.value = item;
-  openDetailPanel();
-};
-
-const resetDetail = () => {
-  selectedAppointment.value = null;
-};
 
 const resetAcceptance = () => {
   acceptanceAppointment.value = null;
@@ -520,74 +428,5 @@ const handleAcceptanceConfirm = () => {
 .empty-tip-text {
   font-size: 28rpx;
   color: #9ca3af;
-}
-
-.detail-page {
-  min-height: 100%;
-  padding-bottom: 80rpx;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-}
-
-.detail-header {
-  padding: 0 48rpx;
-}
-
-.detail-content {
-  padding: 48rpx 48rpx 0;
-  flex: 1;
-}
-
-.detail-title {
-  display: block;
-  font-size: 56rpx;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 40rpx;
-}
-
-.detail-card {
-  background-color: #ffffff;
-  border-radius: 48rpx;
-  padding: 56rpx 44rpx;
-  min-height: 840rpx;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 44rpx;
-  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
-}
-
-.detail-row {
-  display: flex;
-  gap: 36rpx;
-}
-
-.detail-field {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.detail-field-full {
-  flex: 1 1 100%;
-}
-
-.detail-label {
-  font-size: 28rpx;
-  color: #9ca3af;
-  line-height: 1.2;
-}
-
-.detail-value {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #111827;
-  line-height: 1.35;
-  word-break: break-all;
 }
 </style>

@@ -41,12 +41,15 @@ export const STATUS_BADGE_TONE_BY_KEY: Record<string, StatusBadgeTone> = {
   in_progress: 'progress',
   in_maintenance: 'progress',
   service: 'progress',
+  in_warranty: 'progress',
 
   closed: 'done',
   completed: 'done',
   signed: 'done',
   paid: 'done',
   reviewed: 'done',
+  settled: 'done',
+  out_of_warranty: 'done',
 
   cancelled: 'failed',
   urgent: 'failed',
