@@ -7,12 +7,12 @@
         class="success-icon"
       />
       <text class="success-title">已完成提交</text>
-      <text class="success-desc">您的意见反馈已提交，我们将尽快处理</text>
+      <text class="success-desc">{{ desc }}</text>
     </view>
 
     <view class="action-wrap">
       <view class="back-btn" @click="handleBack">
-        <text class="back-btn-text">返回意见反馈</text>
+        <text class="back-btn-text">{{ backText }}</text>
       </view>
     </view>
   </view>
@@ -20,6 +20,18 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+
+withDefaults(
+  defineProps<{
+    desc?: string;
+    backText?: string;
+  }>(),
+  {
+    desc: '您的意见反馈已提交，我们将尽快处理',
+    backText: '返回意见反馈',
+  },
+);
+
 const emit = defineEmits<{
   back: [];
 }>();

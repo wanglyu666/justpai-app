@@ -142,7 +142,9 @@
               :key="entry.id"
               :icon="entry.icon"
               :label="entry.label"
+              :show-add="entry.id === 'defect'"
               @click="handleActionClick(entry.id)"
+              @add="onDefectAdd"
             />
           </view>
         </view>
@@ -175,6 +177,40 @@
     <SlideOverPanel :show="standardVisible" :z-index="2300">
       <ConstructionStandardContent @back="closeStandard" />
     </SlideOverPanel>
+
+    <SlideOverPanel :show="reportVisible" :z-index="2300">
+      <ConstructionReportContent @back="closeReport" />
+    </SlideOverPanel>
+
+    <SlideOverPanel :show="defectVisible" :z-index="2300">
+      <DefectReportListContent
+        v-if="selectedItem"
+        :project-id="selectedItem.id"
+        @back="closeDefect"
+      />
+    </SlideOverPanel>
+
+    <SlideOverPanel
+      :show="defectCreateVisible"
+      :z-index="2300"
+      content-safe-top
+      @closed="resetDefectCreate"
+    >
+      <SuccessPageTransition :show-success="defectCreateStep === 'success'">
+        <DefectReportFormContent
+          ref="defectFormRef"
+          @back="closeDefectCreate"
+          @submit="handleDefectCreateSubmit"
+        />
+        <template #success>
+          <FeedbackSuccessContent
+            desc="您的缺陷汇报已提交，我们将尽快处理"
+            back-text="返回项目"
+            @back="closeDefectCreate"
+          />
+        </template>
+      </SuccessPageTransition>
+    </SlideOverPanel>
   </view>
 </template>
 
@@ -189,6 +225,10 @@ import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import OrderReviewContent from '@/components/OrderReviewContent.vue';
 import OrderReviewSuccessContent from '@/components/OrderReviewSuccessContent.vue';
 import ConstructionStandardContent from '@/components/ConstructionStandardContent.vue';
+import ConstructionReportContent from '@/components/ConstructionReportContent.vue';
+import DefectReportListContent from '@/components/DefectReportListContent.vue';
+import DefectReportFormContent from '@/components/DefectReportFormContent.vue';
+import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import {
   ENGINEERING_PROJECT_STATUS_LABEL,
   ENGINEERING_PROJECT_STATUS_TABS,
@@ -197,6 +237,7 @@ import {
   type EngineeringProjectStatus,
 } from '@/composables/useEngineeringProjects';
 import { useOrderReviews } from '@/composables/useOrderReviews';
+import { useDefectReports } from '@/composables/useDefectReports';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
@@ -205,9 +246,12 @@ const emit = defineEmits<{
 }>();
 
 const { projects } = useEngineeringProjects();
+const { addDefect } = useDefectReports();
 const keyword = ref('');
 const activeStatus = ref<EngineeringProjectStatus>('pending_start');
 const selectedItem = ref<EngineeringProjectItem | null>(null);
+const defectCreateStep = ref<'form' | 'success'>('form');
+const defectFormRef = ref<InstanceType<typeof DefectReportFormContent> | null>(null);
 const {
   visible: detailVisible,
   open: openDetailPanel,
@@ -227,6 +271,24 @@ const {
   visible: standardVisible,
   open: openStandardPanel,
   close: closeStandard,
+} = useSlideOver();
+
+const {
+  visible: reportVisible,
+  open: openReportPanel,
+  close: closeReport,
+} = useSlideOver();
+
+const {
+  visible: defectVisible,
+  open: openDefectPanel,
+  close: closeDefect,
+} = useSlideOver();
+
+const {
+  visible: defectCreateVisible,
+  open: openDefectCreatePanel,
+  close: closeDefectCreate,
 } = useSlideOver();
 
 const projectReviewId = (projectId: number) => `engineering-${projectId}`;
@@ -297,16 +359,55 @@ const resetDetail = () => {
   selectedItem.value = null;
   closeReview();
   closeStandard();
+  closeReport();
+  closeDefect();
+  closeDefectCreate();
 };
 
 const handleActionClick = (id: (typeof actionEntries)[number]['id']) => {
   if (id === 'review') openReview();
   if (id === 'standard') openStandard();
+  if (id === 'report') openReport();
+  if (id === 'defect') openDefect();
 };
 
 const openStandard = () => {
   if (!selectedItem.value) return;
   openStandardPanel();
+};
+
+const openReport = () => {
+  if (!selectedItem.value) return;
+  openReportPanel();
+};
+
+const openDefect = () => {
+  if (!selectedItem.value) return;
+  openDefectPanel();
+};
+
+const onDefectAdd = () => {
+  if (!selectedItem.value) return;
+  defectCreateStep.value = 'form';
+  openDefectCreatePanel();
+};
+
+const resetDefectCreate = () => {
+  defectCreateStep.value = 'form';
+  defectFormRef.value?.resetForm();
+};
+
+const handleDefectCreateSubmit = (payload: {
+  content: string;
+  attachments: string[];
+}) => {
+  if (!selectedItem.value) return;
+  addDefect({
+    projectId: selectedItem.value.id,
+    content: payload.content,
+    attachments: payload.attachments,
+  });
+  defectCreateStep.value = 'success';
 };
 
 const openReview = () => {
