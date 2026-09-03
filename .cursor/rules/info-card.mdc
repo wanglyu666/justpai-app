@@ -1,0 +1,15 @@
+---
+description: 信息卡片字号使用 src/config/infoCard.ts，不要在组件里写死
+globs: src/components/**/*.vue,src/config/infoCard.ts
+alwaysApply: false
+---
+
+# 信息卡片字号
+
+新建或改信息卡片（白底圆角卡里的标题 / 灰色标签 / 加粗数值）时：
+
+1. 从 `@/config/infoCard.ts` 引入 `infoCardTitleStyle`、`infoCardLabelStyle`、`infoCardValueStyle`、`infoCardFieldStyle`
+2. 绑到对应节点的 `:style`，不要在 scoped CSS 里再写 `font-size`
+3. 需要改字号时只改 `src/config/infoCard.ts`
+
+当前规范（375 稿，2rpx = 1px）：标题 36rpx / 标签 26rpx / 数值 32rpx。尚未接入该文件的旧页面不要顺手改。

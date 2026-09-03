@@ -1,7 +1,7 @@
 <template>
   <SheetPageLayout
-    title="新增缺陷"
-    desc="填写缺陷信息后提交"
+    :title="title"
+    :desc="desc"
     @back="handleBack"
   >
     <view class="section-card">
@@ -17,7 +17,7 @@
         <textarea
           v-model="content"
           class="field-textarea"
-          placeholder="请描述缺陷位置、现象与影响，便于尽快处理"
+          :placeholder="placeholder"
           placeholder-class="input-placeholder"
           :maxlength="500"
         />
@@ -78,6 +78,19 @@ type MediaFile = {
 };
 
 const MAX_MEDIA = 4;
+
+const { title, desc, placeholder } = withDefaults(
+  defineProps<{
+    title?: string;
+    desc?: string;
+    placeholder?: string;
+  }>(),
+  {
+    title: '新增缺陷',
+    desc: '填写缺陷信息后提交',
+    placeholder: '请描述缺陷位置、现象与影响，便于尽快处理',
+  },
+);
 
 const emit = defineEmits<{
   back: [];

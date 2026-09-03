@@ -1,5 +1,5 @@
 <template>
-  <view v-if="isRendered" class="edit-sheet-root">
+  <view v-if="isRendered" class="edit-sheet-root" :style="rootStyle">
     <view class="edit-sheet-mask" :class="{ closing: isClosing }" @click="handleClose" />
     <view class="edit-sheet-panel" :class="{ closing: isClosing }">
       <view class="edit-sheet-header">
@@ -23,12 +23,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
-const props = defineProps<{
-  show: boolean;
-  title: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    show: boolean;
+    title: string;
+    zIndex?: number;
+  }>(),
+  {
+    zIndex: 2400,
+  },
+);
+
+const rootStyle = computed(() => ({
+  zIndex: props.zIndex,
+}));
 
 const emit = defineEmits<{
   close: [];

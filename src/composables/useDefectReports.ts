@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-export type DefectReportStatus = 'pending_reply' | 'in_progress' | 'closed';
+export type DefectReportStatus = 'pending_reply' | 'in_progress' | 'closed' | 'rejected';
 
 export type DefectReportItem = {
   id: number;
@@ -19,6 +19,7 @@ export const DEFECT_REPORT_STATUS_LABEL: Record<DefectReportStatus, string> = {
   pending_reply: '待处理',
   in_progress: '处理中',
   closed: '已关闭',
+  rejected: '不通过',
 };
 
 const defectItems = ref<DefectReportItem[]>([
@@ -57,6 +58,18 @@ const defectItems = ref<DefectReportItem[]>([
     actualAt: '2026-08-21',
     defectPhotos: ['门套实测.jpg'],
     fixPhotos: ['整改后-门套.jpg'],
+  },
+  {
+    id: 5,
+    projectId: 1,
+    name: '吊顶接缝开裂',
+    time: '2026-08-10 11:15',
+    status: 'rejected',
+    content: '客厅吊顶接缝处出现开裂，复查后材料与工艺均不符合验收要求。',
+    plannedAt: '2026-08-16',
+    actualAt: '',
+    defectPhotos: ['吊顶开裂.jpg'],
+    fixPhotos: [],
   },
   {
     id: 4,

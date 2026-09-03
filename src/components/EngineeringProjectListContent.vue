@@ -182,6 +182,10 @@
       <ConstructionReportContent @back="closeReport" />
     </SlideOverPanel>
 
+    <SlideOverPanel :show="acceptanceVisible" :z-index="2300">
+      <ProcessAcceptanceContent @back="closeAcceptance" />
+    </SlideOverPanel>
+
     <SlideOverPanel :show="defectVisible" :z-index="2300">
       <DefectReportListContent
         v-if="selectedItem"
@@ -226,6 +230,7 @@ import OrderReviewContent from '@/components/OrderReviewContent.vue';
 import OrderReviewSuccessContent from '@/components/OrderReviewSuccessContent.vue';
 import ConstructionStandardContent from '@/components/ConstructionStandardContent.vue';
 import ConstructionReportContent from '@/components/ConstructionReportContent.vue';
+import ProcessAcceptanceContent from '@/components/ProcessAcceptanceContent.vue';
 import DefectReportListContent from '@/components/DefectReportListContent.vue';
 import DefectReportFormContent from '@/components/DefectReportFormContent.vue';
 import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
@@ -277,6 +282,12 @@ const {
   visible: reportVisible,
   open: openReportPanel,
   close: closeReport,
+} = useSlideOver();
+
+const {
+  visible: acceptanceVisible,
+  open: openAcceptancePanel,
+  close: closeAcceptance,
 } = useSlideOver();
 
 const {
@@ -360,6 +371,7 @@ const resetDetail = () => {
   closeReview();
   closeStandard();
   closeReport();
+  closeAcceptance();
   closeDefect();
   closeDefectCreate();
 };
@@ -368,6 +380,7 @@ const handleActionClick = (id: (typeof actionEntries)[number]['id']) => {
   if (id === 'review') openReview();
   if (id === 'standard') openStandard();
   if (id === 'report') openReport();
+  if (id === 'acceptance') openAcceptance();
   if (id === 'defect') openDefect();
 };
 
@@ -379,6 +392,11 @@ const openStandard = () => {
 const openReport = () => {
   if (!selectedItem.value) return;
   openReportPanel();
+};
+
+const openAcceptance = () => {
+  if (!selectedItem.value) return;
+  openAcceptancePanel();
 };
 
 const openDefect = () => {

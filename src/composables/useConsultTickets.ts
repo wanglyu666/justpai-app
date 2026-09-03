@@ -217,8 +217,16 @@ export function useConsultTickets() {
     ];
   };
 
+  const closeConsultTicket = (id: number) => {
+    tickets.value = tickets.value.map((item) =>
+      item.id === id ? { ...item, status: 'closed' as ConsultStatus } : item,
+    );
+    return tickets.value.find((item) => item.id === id) ?? null;
+  };
+
   return {
     tickets,
     addConsultTicket,
+    closeConsultTicket,
   };
 }

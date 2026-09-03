@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索缺陷"
+          placeholder="搜索整改"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,8 +23,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">缺陷汇报</text>
-          <text class="page-desc">查看全部缺陷汇报</text>
+          <text class="page-title">缺陷整改</text>
+          <text class="page-desc">查看全部缺陷整改</text>
         </view>
         <view class="add-btn" @click="onAdd">
           <text class="add-btn-text">新增</text>
@@ -50,14 +50,14 @@
         </view>
 
         <view v-if="filteredItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关缺陷汇报</text>
+          <text class="empty-tip-text">暂无相关缺陷整改</text>
         </view>
       </view>
     </view>
 
     <BottomSheetPanel
       :show="detailVisible"
-      :z-index="2400"
+      :z-index="2500"
       @closed="resetDetail"
     >
       <view class="detail-page">
@@ -73,7 +73,7 @@
 
         <view class="detail-content" v-if="selectedItem">
           <view class="detail-title-row">
-            <text class="detail-title">缺陷详情</text>
+            <text class="detail-title">整改详情</text>
             <view class="end-btn" @click="openDeleteModal">
               <text class="end-btn-text">删除记录</text>
             </view>
@@ -152,20 +152,22 @@
 
     <BottomSheetPanel
       :show="formVisible"
-      :z-index="2500"
+      :z-index="2600"
       content-safe-top
       @closed="resetFormFlow"
     >
       <SuccessPageTransition :show-success="formStep === 'success'">
         <DefectReportFormContent
           ref="formRef"
+          title="新增整改"
+          desc="填写整改信息后提交"
           @back="closeForm"
           @submit="handleFormSubmit"
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="您的缺陷汇报已提交，我们将尽快处理"
-            back-text="返回缺陷汇报"
+            desc="您的缺陷整改已提交，我们将尽快处理"
+            back-text="返回缺陷整改"
             @back="closeForm"
           />
         </template>
@@ -198,16 +200,16 @@ import {
   infoCardValueStyle,
 } from '@/config/infoCard';
 import {
-  DEFECT_REPORT_STATUS_LABEL,
-  useDefectReports,
-  type DefectReportItem,
-  type DefectReportStatus,
-} from '@/composables/useDefectReports';
+  DEFECT_RECTIFICATION_STATUS_LABEL,
+  useDefectRectifications,
+  type DefectRectificationItem,
+  type DefectRectificationStatus,
+} from '@/composables/useDefectRectifications';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
 const props = defineProps<{
-  projectId: number;
+  acceptanceItemId: string;
 }>();
 
 const emit = defineEmits<{
@@ -215,11 +217,11 @@ const emit = defineEmits<{
 }>();
 
 const keyword = ref('');
-const selectedItem = ref<DefectReportItem | null>(null);
+const selectedItem = ref<DefectRectificationItem | null>(null);
 const formRef = ref<InstanceType<typeof DefectReportFormContent> | null>(null);
 const formStep = ref<'form' | 'success'>('form');
 const deleteModalVisible = ref(false);
-const { items, addDefect, removeDefect } = useDefectReports();
+const { items, addRectification, removeRectification } = useDefectRectifications();
 
 const {
   visible: detailVisible,
@@ -233,15 +235,15 @@ const {
 } = useSlideOver();
 usePageBackWhen(detailVisible, closeDetail);
 
-const projectItems = computed(() =>
-  items.value.filter((item) => item.projectId === props.projectId),
+const acceptanceItems = computed(() =>
+  items.value.filter((item) => item.acceptanceItemId === props.acceptanceItemId),
 );
 
 const filteredItems = computed(() => {
   const q = keyword.value.trim().toLowerCase();
-  if (!q) return projectItems.value;
-  return projectItems.value.filter((item) => {
-    const statusText = DEFECT_REPORT_STATUS_LABEL[item.status];
+  if (!q) return acceptanceItems.value;
+  return acceptanceItems.value.filter((item) => {
+    const statusText = DEFECT_RECTIFICATION_STATUS_LABEL[item.status];
     return (
       item.name.toLowerCase().includes(q) ||
       item.time.toLowerCase().includes(q) ||
@@ -253,12 +255,12 @@ const filteredItems = computed(() => {
   });
 });
 
-const statusLabel = (status: DefectReportStatus) =>
-  DEFECT_REPORT_STATUS_LABEL[status];
+const statusLabel = (status: DefectRectificationStatus) =>
+  DEFECT_RECTIFICATION_STATUS_LABEL[status];
 
 const displayTime = (value: string) => value || '—';
 
-const openDetail = (item: DefectReportItem) => {
+const openDetail = (item: DefectRectificationItem) => {
   selectedItem.value = {
     ...item,
     defectPhotos: [...item.defectPhotos],
@@ -284,7 +286,7 @@ const confirmDelete = () => {
   const id = selectedItem.value?.id;
   deleteModalVisible.value = false;
   if (id == null) return;
-  removeDefect(id);
+  removeRectification(id);
   closeDetail();
 };
 
@@ -308,8 +310,8 @@ const handleFormSubmit = (payload: {
   content: string;
   attachments: string[];
 }) => {
-  addDefect({
-    projectId: props.projectId,
+  addRectification({
+    acceptanceItemId: props.acceptanceItemId,
     content: payload.content,
     attachments: payload.attachments,
   });

@@ -52,6 +52,7 @@ export const STATUS_BADGE_TONE_BY_KEY: Record<string, StatusBadgeTone> = {
   out_of_warranty: 'done',
 
   cancelled: 'failed',
+  rejected: 'failed',
   urgent: 'failed',
   order_suspended: 'done',
   appointment_abnormal: 'failed',

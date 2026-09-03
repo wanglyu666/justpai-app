@@ -204,6 +204,14 @@
         </template>
       </SuccessPageTransition>
     </BottomSheetPanel>
+
+    <FrostedConfirmModal
+      :show="endModalVisible"
+      title="确定结束该咨询吗？"
+      message="结束后将无法继续询价"
+      @cancel="closeEndModal"
+      @confirm="confirmEndConsult"
+    />
   </view>
 </template>
 
@@ -224,6 +232,7 @@ import ConsultTicketFormContent, {
   type ConsultTicketFormPayload,
 } from '@/components/ConsultTicketFormContent.vue';
 import ConsultTicketSuccessContent from '@/components/ConsultTicketSuccessContent.vue';
+import FrostedConfirmModal from '@/components/FrostedConfirmModal.vue';
 import {
   useConsultTickets,
   type ConsultStatus,
@@ -236,13 +245,14 @@ const emit = defineEmits<{
   back: [];
 }>();
 
-const { tickets, addConsultTicket } = useConsultTickets();
+const { tickets, addConsultTicket, closeConsultTicket } = useConsultTickets();
 
 const keyword = ref('');
 const activeStatus = ref<ConsultStatus>('pending_reply');
 const selectedTicket = ref<ConsultTicket | null>(null);
 const formRef = ref<InstanceType<typeof ConsultTicketFormContent> | null>(null);
 const formStep = ref<'form' | 'success'>('form');
+const endModalVisible = ref(false);
 const {
   visible: detailVisible,
   open: openDetailPanel,
@@ -333,6 +343,7 @@ const openDetail = (item: ConsultTicket) => {
 
 const resetDetail = () => {
   selectedTicket.value = null;
+  endModalVisible.value = false;
 };
 
 const handleBack = usePageBack(() => emit('back'));
@@ -404,7 +415,20 @@ const handleShortChatSubmit = (payload: {
 };
 
 const onEndConsult = () => {
-  // TODO: end consultation
+  endModalVisible.value = true;
+};
+
+const closeEndModal = () => {
+  endModalVisible.value = false;
+};
+usePageBackWhen(endModalVisible, closeEndModal);
+
+const confirmEndConsult = () => {
+  const id = selectedTicket.value?.id;
+  endModalVisible.value = false;
+  if (id == null) return;
+  const updated = closeConsultTicket(id);
+  if (updated) selectedTicket.value = updated;
 };
 </script>
 
