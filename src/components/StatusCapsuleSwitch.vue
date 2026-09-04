@@ -187,7 +187,7 @@ const ensurePeek = async () => {
   const naturalWidth = contentWidthFromItems(layout.items);
   const needWidth = layout.viewportWidth + peekPx;
 
-  // 6 项时：前 4 项完整，「保修中」约露出两个字；宽屏不强制拉大
+  // 5 项：前 3 项完整、第 4 项露出一半；6 项：前 4 项完整、第 5 项露出一半
   const peekIndex = Math.min(4, props.tabs.length - 2);
   const peekFraction = STATUS_CAPSULE.peekItemFraction;
   if (peekIndex >= 1 && props.tabs.length >= 5) {
@@ -195,7 +195,7 @@ const ensurePeek = async () => {
       (layout.viewportWidth - pad - peekIndex * gap) /
       (peekIndex + peekFraction);
     const maxNatural = Math.max(...layout.items.map((item) => item.width));
-    if (targetWidth > maxNatural && targetWidth <= maxNatural * 1.4) {
+    if (targetWidth > maxNatural) {
       itemMinWidthPx.value = Math.ceil(targetWidth);
       await nextTick();
     }
@@ -332,6 +332,7 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .status-item.is-equal {

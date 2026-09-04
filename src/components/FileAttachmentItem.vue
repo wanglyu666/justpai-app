@@ -1,19 +1,41 @@
 <template>
-  <view class="file-item" @click="emit('click')">
-    <view class="file-ext" :class="`ext-${kind}`">
-      <text class="file-ext-text">{{ ext }}</text>
+  <view class="file-item-wrap">
+    <view
+      class="file-item"
+      :class="{ 'is-previewable': canPreview }"
+      @click="handleClick"
+    >
+      <view class="file-ext" :class="`ext-${kind}`">
+        <text class="file-ext-text">{{ ext }}</text>
+      </view>
+      <text class="file-name">{{ displayName }}</text>
     </view>
-    <text class="file-name">{{ displayName }}</text>
+
+    <AttachmentImagePreview
+      v-if="preview"
+      :show="previewVisible"
+      :src="previewSrc"
+      @close="closePreview"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import AttachmentImagePreview from '@/components/AttachmentImagePreview.vue';
+import { useAttachmentPreview } from '@/composables/useAttachmentPreview';
 import { fileDisplayName, fileExt, fileKind } from '@/utils/fileDisplay';
 
-const props = defineProps<{
-  name: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    name: string;
+    /** 单独使用时点击图片可预览；放在附件卡片里时由卡片统一处理 */
+    preview?: boolean;
+  }>(),
+  {
+    preview: true,
+  },
+);
 
 const emit = defineEmits<{
   click: [];
@@ -22,9 +44,26 @@ const emit = defineEmits<{
 const displayName = computed(() => fileDisplayName(props.name));
 const ext = computed(() => fileExt(props.name));
 const kind = computed(() => fileKind(props.name));
+const canPreview = computed(() => kind.value === 'image');
+
+const {
+  visible: previewVisible,
+  src: previewSrc,
+  open: openPreview,
+  close: closePreview,
+} = useAttachmentPreview();
+
+const handleClick = () => {
+  emit('click');
+  if (props.preview) openPreview(props.name);
+};
 </script>
 
 <style scoped>
+.file-item-wrap {
+  width: 100%;
+}
+
 .file-item {
   width: 100%;
   min-height: 96rpx;
@@ -36,6 +75,10 @@ const kind = computed(() => fileKind(props.name));
   display: flex;
   align-items: center;
   gap: 20rpx;
+}
+
+.file-item.is-previewable:active {
+  opacity: 0.72;
 }
 
 .file-ext {

@@ -182,6 +182,14 @@
       <ConstructionReportContent @back="closeReport" />
     </SlideOverPanel>
 
+    <SlideOverPanel :show="archiveVisible" :z-index="2300">
+      <CompletionArchiveContent @back="closeArchive" />
+    </SlideOverPanel>
+
+    <SlideOverPanel :show="afterSalesVisible" :z-index="2300">
+      <AfterSalesPlanContent @back="closeAfterSales" />
+    </SlideOverPanel>
+
     <SlideOverPanel :show="acceptanceVisible" :z-index="2300">
       <ProcessAcceptanceContent @back="closeAcceptance" />
     </SlideOverPanel>
@@ -230,6 +238,8 @@ import OrderReviewContent from '@/components/OrderReviewContent.vue';
 import OrderReviewSuccessContent from '@/components/OrderReviewSuccessContent.vue';
 import ConstructionStandardContent from '@/components/ConstructionStandardContent.vue';
 import ConstructionReportContent from '@/components/ConstructionReportContent.vue';
+import CompletionArchiveContent from '@/components/CompletionArchiveContent.vue';
+import AfterSalesPlanContent from '@/components/AfterSalesPlanContent.vue';
 import ProcessAcceptanceContent from '@/components/ProcessAcceptanceContent.vue';
 import DefectReportListContent from '@/components/DefectReportListContent.vue';
 import DefectReportFormContent from '@/components/DefectReportFormContent.vue';
@@ -282,6 +292,18 @@ const {
   visible: reportVisible,
   open: openReportPanel,
   close: closeReport,
+} = useSlideOver();
+
+const {
+  visible: archiveVisible,
+  open: openArchivePanel,
+  close: closeArchive,
+} = useSlideOver();
+
+const {
+  visible: afterSalesVisible,
+  open: openAfterSalesPanel,
+  close: closeAfterSales,
 } = useSlideOver();
 
 const {
@@ -371,6 +393,8 @@ const resetDetail = () => {
   closeReview();
   closeStandard();
   closeReport();
+  closeArchive();
+  closeAfterSales();
   closeAcceptance();
   closeDefect();
   closeDefectCreate();
@@ -380,6 +404,8 @@ const handleActionClick = (id: (typeof actionEntries)[number]['id']) => {
   if (id === 'review') openReview();
   if (id === 'standard') openStandard();
   if (id === 'report') openReport();
+  if (id === 'archive') openArchive();
+  if (id === 'after-sales') openAfterSales();
   if (id === 'acceptance') openAcceptance();
   if (id === 'defect') openDefect();
 };
@@ -392,6 +418,16 @@ const openStandard = () => {
 const openReport = () => {
   if (!selectedItem.value) return;
   openReportPanel();
+};
+
+const openArchive = () => {
+  if (!selectedItem.value) return;
+  openArchivePanel();
+};
+
+const openAfterSales = () => {
+  if (!selectedItem.value) return;
+  openAfterSalesPanel();
 };
 
 const openAcceptance = () => {

@@ -109,10 +109,7 @@
             </view>
           </view>
 
-          <FileAttachmentCard
-            :files="selectedItem.attachments"
-            @preview="onPreviewAttachment"
-          />
+          <FileAttachmentCard :files="selectedItem.attachments" />
         </view>
       </view>
     </BottomSheetPanel>
@@ -231,10 +228,6 @@ const handleFormSubmit = (payload: {
     attachments: payload.attachments,
   });
   formStep.value = 'success';
-};
-
-const onPreviewAttachment = (_file: string) => {
-  // TODO: preview attachment
 };
 </script>
 

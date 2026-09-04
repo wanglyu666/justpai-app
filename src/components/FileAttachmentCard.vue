@@ -10,15 +10,24 @@
         v-for="(file, index) in files"
         :key="`${file}-${index}`"
         :name="file"
-        @click="emit('preview', file)"
+        :preview="false"
+        @click="onPreview(file)"
       />
     </view>
     <text v-else class="file-card-empty">{{ emptyText }}</text>
+
+    <AttachmentImagePreview
+      :show="previewVisible"
+      :src="previewSrc"
+      @close="closePreview"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
+import AttachmentImagePreview from '@/components/AttachmentImagePreview.vue';
 import FileAttachmentItem from '@/components/FileAttachmentItem.vue';
+import { useAttachmentPreview } from '@/composables/useAttachmentPreview';
 
 withDefaults(
   defineProps<{
@@ -36,6 +45,18 @@ withDefaults(
 const emit = defineEmits<{
   preview: [file: string];
 }>();
+
+const {
+  visible: previewVisible,
+  src: previewSrc,
+  open: openPreview,
+  close: closePreview,
+} = useAttachmentPreview();
+
+const onPreview = (file: string) => {
+  emit('preview', file);
+  openPreview(file);
+};
 </script>
 
 <style scoped>

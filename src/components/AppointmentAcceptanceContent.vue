@@ -27,7 +27,10 @@
             <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
           </view>
         </view>
-        <view class="meta-row meta-row--radio">
+        <view
+          v-if="!hideAcceptType"
+          class="meta-row meta-row--radio"
+        >
           <text class="meta-label" :style="infoCardLabelStyle">
             <text class="required">*</text>
             验收类型
@@ -106,15 +109,26 @@ import {
 import {
   PROGRESS_ACCEPT_TYPES,
   normalizeProgressAcceptType,
-  type ProcessAcceptanceItem,
   type ProgressAcceptType,
   type SiteContact,
 } from '@/composables/useProcessAcceptance';
 import { usePageBackWhen } from '@/composables/usePageBack';
 
-const props = defineProps<{
-  item: ProcessAcceptanceItem;
-}>();
+const props = withDefaults(
+  defineProps<{
+    item: {
+      name: string;
+      plannedAt?: string;
+      bookedAt?: string;
+      acceptType?: string;
+      contacts?: SiteContact[];
+    };
+    hideAcceptType?: boolean;
+  }>(),
+  {
+    hideAcceptType: false,
+  },
+);
 
 const emit = defineEmits<{
   back: [];
