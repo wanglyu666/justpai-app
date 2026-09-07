@@ -12,6 +12,11 @@
           src="/static/images/work-card/contract-banner.png"
           mode="scaleToFill"
         />
+        <image
+          class="card-banner-img"
+          src="/static/images/letter.png"
+          mode="aspectFit"
+        />
         <text class="card-banner-title">合同档案</text>
         <view class="card-banner-stat">
           <text class="card-banner-stat-label">合同数量</text>
@@ -45,7 +50,7 @@
           <view class="card card-right-item card-approval" @click="openApprovalConfig">
             <view class="card-action-content">
               <image
-                src="/static/icons/settings.svg"
+                src="/static/icons/network.svg"
                 mode="aspectFit"
                 class="card-action-icon card-action-icon-black"
               />
@@ -286,9 +291,9 @@ const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
   height: 520rpx;
   position: relative;
   background-color: transparent;
-  border-radius: 0;
+  border-radius: 0 0 48rpx 48rpx;
   box-shadow: none;
-  overflow: visible;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -304,19 +309,29 @@ const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
   z-index: 0;
 }
 
+.card-banner-img {
+  position: absolute;
+  right: -88rpx;
+  bottom: -64rpx;
+  width: 420rpx;
+  height: 420rpx;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .card-banner-title {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: block;
   font-size: 60rpx;
   font-weight: 800;
-  color: #163300;
+  color: #111827;
   line-height: 1.12;
 }
 
 .card-banner-stat {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   margin-top: auto;
@@ -333,7 +348,7 @@ const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
 .card-banner-stat-value {
   font-size: 176rpx;
   font-weight: 800;
-  color: #163300;
+  color: #111827;
   line-height: 1;
 }
 
@@ -373,7 +388,7 @@ const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
 .card-left-title-line {
   font-size: 60rpx;
   font-weight: 800;
-  color: #163300;
+  color: #111827;
   line-height: 1.12;
 }
 

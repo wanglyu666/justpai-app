@@ -162,7 +162,7 @@ const handleBack = usePageBack(() => emit('back'));
   width: 72rpx;
   height: 72rpx;
   border-radius: 20rpx;
-  background-color: rgba(159, 232, 112, 0.38);
+  background-color: rgba(37, 99, 235, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;

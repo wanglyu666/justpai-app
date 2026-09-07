@@ -344,13 +344,13 @@ const reviewRecord = computed(() =>
 const statusTabs = ENGINEERING_PROJECT_STATUS_TABS;
 
 const actionEntries = [
-  { id: 'report', label: '施工报告', icon: '/static/icons/clipboard-list.svg' },
-  { id: 'defect', label: '缺陷汇报', icon: '/static/icons/triangle-alert.svg' },
-  { id: 'acceptance', label: '过程验收', icon: '/static/icons/clipboard-check.svg' },
+  { id: 'report', label: '施工报告', icon: '/static/icons/file-text-blue.svg' },
+  { id: 'defect', label: '缺陷汇报', icon: '/static/icons/triangle-alert-rose.svg' },
+  { id: 'acceptance', label: '过程验收', icon: '/static/icons/clipboard-check-orange.svg' },
   { id: 'review', label: '项目评价', icon: '/static/icons/star-yellow.svg' },
-  { id: 'after-sales', label: '售后计划', icon: '/static/icons/calendar-clock.svg' },
-  { id: 'archive', label: '竣工资料', icon: '/static/icons/folder-open.svg' },
-  { id: 'standard', label: '施工标准', icon: '/static/icons/book-open.svg' },
+  { id: 'after-sales', label: '售后计划', icon: '/static/icons/headset-pink.svg' },
+  { id: 'archive', label: '竣工资料', icon: '/static/icons/folder-check-indigo.svg' },
+  { id: 'standard', label: '施工标准', icon: '/static/icons/shield-check-green.svg' },
 ] as const;
 
 const statusLabel = (status: EngineeringProjectStatus) =>

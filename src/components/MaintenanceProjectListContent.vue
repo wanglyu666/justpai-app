@@ -88,7 +88,6 @@
             <view class="card-heading">
               <view class="card-heading-block">
                 <text class="card-title">{{ selectedItem.name }}</text>
-                <text class="card-code">{{ selectedItem.code }}</text>
               </view>
               <StatusBadge
                 :status="selectedItem.status"
@@ -96,14 +95,22 @@
               />
             </view>
 
-            <view class="info-row">
-              <view class="info-field">
-                <text class="info-label">项目负责人</text>
-                <text class="info-value">{{ selectedItem.managerName }}</text>
+            <view class="info-grid">
+              <view class="info-row">
+                <view class="info-field">
+                  <text class="info-label">项目负责人</text>
+                  <text class="info-value">{{ selectedItem.managerName }}</text>
+                </view>
+                <view class="info-field">
+                  <text class="info-label">联系方式</text>
+                  <text class="info-value">{{ formatPhone(selectedItem.managerPhone) }}</text>
+                </view>
               </view>
-              <view class="info-field">
-                <text class="info-label">联系方式</text>
-                <text class="info-value">{{ formatPhone(selectedItem.managerPhone) }}</text>
+              <view class="info-row">
+                <view class="info-field">
+                  <text class="info-label">项目编号</text>
+                  <text class="info-value">{{ selectedItem.code }}</text>
+                </view>
               </view>
             </view>
           </view>
@@ -493,6 +500,12 @@ const handleBack = usePageBack(() => emit('back'));
   font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.2;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
 }
 
 .info-row {

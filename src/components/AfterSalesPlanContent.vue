@@ -33,18 +33,16 @@
                 <text class="info-value" :style="infoCardValueStyle">{{ displayText(item.startedAt) }}</text>
               </view>
             </view>
-            <view class="info-row">
+            <view class="info-row info-row-end">
               <view class="info-field" :style="infoCardFieldStyle">
                 <text class="info-label" :style="infoCardLabelStyle">结束时间</text>
                 <text class="info-value" :style="infoCardValueStyle">{{ displayText(item.endedAt) }}</text>
               </view>
-              <view class="info-field" />
-            </view>
-          </view>
-
-          <view v-if="item.canBook" class="card-action-row">
-            <view class="book-btn" @click.stop="openBook(item)">
-              <text class="book-btn-text">预约巡检时间</text>
+              <view class="info-field info-field-action">
+                <view v-if="item.canBook" class="book-btn" @click.stop="openBook(item)">
+                  <text class="book-btn-text">预约巡检时间</text>
+                </view>
+              </view>
             </view>
           </view>
         </view>
@@ -242,6 +240,10 @@ const handleBookSubmit = (payload: {
   gap: 32rpx;
 }
 
+.info-row-end {
+  align-items: center;
+}
+
 .info-field {
   flex: 1;
   min-width: 0;
@@ -249,15 +251,14 @@ const handleBookSubmit = (payload: {
   flex-direction: column;
 }
 
+.info-field-action {
+  align-items: flex-end;
+  justify-content: center;
+}
+
 .info-label,
 .info-value {
   word-break: break-all;
-}
-
-.card-action-row {
-  display: flex;
-  justify-content: flex-end;
-  gap: 16rpx;
 }
 
 .book-btn {

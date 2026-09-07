@@ -37,7 +37,6 @@
     <!-- Promo Banner -->
     <view class="banner-wrap">
       <view class="banner-card">
-        <view class="banner-glass frosted-glass" :style="bannerGlassStyle" />
         <image
           class="banner-image"
           src="/static/images/post2.png"
@@ -183,7 +182,6 @@ import {
   type AnnualRegionId,
 } from '@/data/storeProducts';
 
-const bannerGlassStyle = getFrostedGlassStyle('default');
 const stickyActionsGlassStyle = getFrostedGlassStyle('tabbar');
 const categoryScrollStyle = {
   width: '100%',
@@ -580,14 +578,8 @@ watch([showSubcategories, productListKey], () => {
   border-radius: 48rpx;
   overflow: hidden;
   box-sizing: border-box;
-}
-
-.banner-glass {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 }
 
 .banner-image {
