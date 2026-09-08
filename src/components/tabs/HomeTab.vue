@@ -23,22 +23,7 @@
 
     <!-- Banner Carousel -->
     <view class="section banner-section">
-      <swiper
-        class="banner-swiper"
-        :indicator-dots="true"
-        :autoplay="true"
-        :interval="4000"
-        :duration="500"
-        indicator-color="rgba(22, 51, 0, 0.2)"
-        indicator-active-color="#163300"
-        circular
-      >
-        <swiper-item v-for="(banner, index) in banners" :key="index">
-          <view class="banner-item">
-            <image :src="banner.image" mode="aspectFill" class="banner-image"></image>
-          </view>
-        </swiper-item>
-      </swiper>
+      <BannerCardDeck :items="banners" />
     </view>
 
     <!-- To-Do List -->
@@ -94,7 +79,7 @@
             <text class="news-date">{{ item.date }}</text>
             <text class="news-title">{{ item.title }}</text>
           </view>
-          <view class="news-cover">
+          <view class="news-cover" @click="openNews(item)">
             <image :src="item.image" mode="aspectFill" class="news-cover-img"></image>
           </view>
         </view>
@@ -108,6 +93,13 @@
     <SlideOverPanel :show="messagesVisible">
       <MessagesContent @back="closeMessages" />
     </SlideOverPanel>
+    <SlideOverPanel :show="newsVisible" @closed="resetNews">
+      <NewsDetailContent
+        v-if="selectedNews"
+        :item="selectedNews"
+        @back="closeNews"
+      />
+    </SlideOverPanel>
   </view>
 </template>
 
@@ -116,10 +108,18 @@ import { ref, computed } from 'vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import ProfileContent from '@/components/ProfileContent.vue';
 import MessagesContent from '@/components/MessagesContent.vue';
+import BannerCardDeck from '@/components/BannerCardDeck.vue';
+import NewsDetailContent, { type NewsItem } from '@/components/NewsDetailContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
 const { visible: messagesVisible, open: openMessages, close: closeMessages } = useSlideOver();
+const {
+  visible: newsVisible,
+  open: openNewsPanel,
+  close: closeNews,
+} = useSlideOver();
+const selectedNews = ref<NewsItem | null>(null);
 
 const todos = ref([
   {
@@ -177,24 +177,45 @@ const banners = ref([
   },
 ]);
 
-const newsItems = ref([
+const newsItems = ref<NewsItem[]>([
   {
     id: 1,
     date: '2026-07-25',
+    author: '李志强',
+    category: '企业新闻',
     title: '全新 AI 功能提升效率，体验高达 40% 的工作流加速',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop',
+    content: [
+      '平台已上线新一轮 AI 能力，覆盖日报整理、进度摘要与风险提示等日常场景，帮助团队把重复工作交给系统处理。',
+      '在试点项目中，任务分发到完成确认的平均耗时下降约 40%。项目经理可在工作台直接查看 AI 生成的待办建议，并一键同步给相关负责人。',
+      '后续还将开放自定义提示词与知识库接入。建议先从施工报告与过程验收开始试用，熟悉后再扩展到售后与缺陷处理流程。',
+    ],
   },
   {
     id: 2,
     date: '2026-07-20',
+    author: '刘洋',
+    category: '行业观察',
     title: '2024 全球科技展望，参加即将举行的全球科技大会',
     image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop',
+    content: [
+      '全球科技大会将于本季度举办，议题聚焦智能建造、供应链协同与现场数字化交付。我们已受邀分享工程项目管理实践。',
+      '大会期间将设置产品体验区，现场演示施工报告、过程验收与竣工资料的全流程协同，欢迎合作伙伴预约交流。',
+      '如需参会名额或资料包，请联系客户成功团队。报名截止后我们将统一发送日程与通行指引。',
+    ],
   },
   {
     id: 3,
     date: '2026-07-15',
+    author: '陈思远',
+    category: '产品动态',
     title: '团队协作功能全面升级，多人实时编辑更高效',
     image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop',
+    content: [
+      '协作模块完成本轮升级，支持多人同时查看项目详情、补充现场联系人，并实时同步预约与整改进度。',
+      '冲突内容会以版本记录保留，避免覆盖关键信息。项目负责人和现场人员可在同一页面完成确认，减少来回沟通。',
+      '升级已对全部在建项目生效。若遇到同步延迟，可下拉刷新或联系在线客服协助排查。',
+    ],
   },
 ]);
 
@@ -204,6 +225,15 @@ const goToProfile = () => {
 
 const goToMessages = () => {
   openMessages();
+};
+
+const openNews = (item: NewsItem) => {
+  selectedNews.value = item;
+  openNewsPanel();
+};
+
+const resetNews = () => {
+  selectedNews.value = null;
 };
 </script>
 
@@ -218,7 +248,7 @@ const goToMessages = () => {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
-  padding-bottom: 40rpx;
+  padding-bottom: 150rpx;
 }
 .header {
   padding: 0 48rpx 40rpx;
@@ -283,23 +313,6 @@ const goToMessages = () => {
 }
 .banner-section {
   padding: 0 48rpx;
-}
-.banner-swiper {
-  height: 320rpx;
-  border-radius: 48rpx;
-  overflow: hidden;
-}
-.banner-item {
-  width: 100%;
-  height: 100%;
-  border-radius: 48rpx;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-.banner-image {
-  width: 100%;
-  height: 100%;
-  display: block;
 }
 
 .todo-panel {
