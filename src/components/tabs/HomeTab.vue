@@ -31,10 +31,33 @@
       <view class="todo-panel">
         <view class="todo-panel-header">
           <view class="progress-ring">
-            <view
-              class="progress-ring-dial"
-              :style="{ backgroundImage: progressRingBackground }"
-            />
+            <svg class="progress-ring-dial" viewBox="0 0 104 104">
+              <path
+                v-if="progressRing.lightPath"
+                :d="progressRing.lightPath"
+                fill="none"
+                stroke="#9fe870"
+                stroke-width="16"
+                stroke-linecap="round"
+              />
+              <circle
+                v-if="progressRing.full"
+                cx="52"
+                cy="52"
+                r="44"
+                fill="none"
+                stroke="#163300"
+                stroke-width="16"
+              />
+              <path
+                v-if="progressRing.darkPath"
+                :d="progressRing.darkPath"
+                fill="none"
+                stroke="#163300"
+                stroke-width="16"
+                stroke-linecap="round"
+              />
+            </svg>
             <view class="progress-ring-inner">
               <text class="progress-text">{{ completedCount }}/{{ todos.length }}</text>
             </view>
@@ -100,6 +123,9 @@
         @back="closeNews"
       />
     </SlideOverPanel>
+    <SlideOverPanel :show="todoVisible">
+      <TodoDetailContent :todos="todos" @back="closeTodo" />
+    </SlideOverPanel>
   </view>
 </template>
 
@@ -110,6 +136,7 @@ import ProfileContent from '@/components/ProfileContent.vue';
 import MessagesContent from '@/components/MessagesContent.vue';
 import BannerCardDeck from '@/components/BannerCardDeck.vue';
 import NewsDetailContent, { type NewsItem } from '@/components/NewsDetailContent.vue';
+import TodoDetailContent from '@/components/TodoDetailContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
@@ -119,6 +146,7 @@ const {
   open: openNewsPanel,
   close: closeNews,
 } = useSlideOver();
+const { visible: todoVisible, open: openTodo, close: closeTodo } = useSlideOver();
 const selectedNews = ref<NewsItem | null>(null);
 
 const todos = ref([
@@ -138,28 +166,61 @@ const todos = ref([
   },
 ]);
 
-const PROGRESS_RADIUS = 22;
-const PROGRESS_CIRCUMFERENCE = 2 * Math.PI * PROGRESS_RADIUS;
+const RING_SIZE = 104;
+const RING_STROKE = 16;
+const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
+const RING_CX = RING_SIZE / 2;
+const RING_CY = RING_SIZE / 2;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+const RING_GAP_DEG = (RING_STROKE / RING_CIRCUMFERENCE) * 360;
 
 const completedCount = computed(() => todos.value.filter((todo) => todo.completed).length);
 
-const progressRingBackground = computed(() => {
+const polarOnRing = (deg: number) => {
+  const rad = ((deg - 90) * Math.PI) / 180;
+  return {
+    x: +(RING_CX + RING_RADIUS * Math.cos(rad)).toFixed(3),
+    y: +(RING_CY + RING_RADIUS * Math.sin(rad)).toFixed(3),
+  };
+};
+
+const ringArcPath = (startDeg: number, endDeg: number) => {
+  let sweep = endDeg - startDeg;
+  if (sweep < 0) sweep += 360;
+  const start = polarOnRing(startDeg);
+  const end = polarOnRing(endDeg);
+  const large = sweep > 180 ? 1 : 0;
+  return `M ${start.x} ${start.y} A ${RING_RADIUS} ${RING_RADIUS} 0 ${large} 1 ${end.x} ${end.y}`;
+};
+
+const progressRing = computed(() => {
   const total = todos.value.length || 1;
   const done = completedCount.value;
   let ratio = done / total;
 
   if (done === 0) {
-    ratio = 12 / PROGRESS_CIRCUMFERENCE;
+    ratio = 12 / (2 * Math.PI * 22);
   } else if (done === total) {
     ratio = 1;
   }
 
-  const deg = `${(ratio * 360).toFixed(2)}deg`;
-  return `conic-gradient(from -90deg, #163300 0deg, #163300 ${deg}, #9fe870 ${deg} 360deg)`;
+  if (ratio >= 1) {
+    return { full: true, lightPath: '', darkPath: '' };
+  }
+
+  const progressDeg = ratio * 360;
+  const lightStart = progressDeg + RING_GAP_DEG;
+  const lightEnd = 360 - RING_GAP_DEG;
+
+  return {
+    full: false,
+    lightPath: lightEnd - lightStart > 1 ? ringArcPath(lightStart, lightEnd) : '',
+    darkPath: ringArcPath(0, progressDeg),
+  };
 });
 
 const onTodoAction = () => {
-  // 预留：进入待办详情/完整列表
+  openTodo();
 };
 
 const banners = ref([
@@ -316,7 +377,7 @@ const resetNews = () => {
 }
 
 .todo-panel {
-  background-color: #eef0ea;
+  background-color: #B2C4D7;
   border-radius: 48rpx;
   padding: 36rpx 32rpx;
 }
@@ -330,11 +391,12 @@ const resetNews = () => {
   width: 104rpx;
   height: 104rpx;
   flex-shrink: 0;
+  overflow: visible;
 }
 .progress-ring-dial {
   width: 104rpx;
   height: 104rpx;
-  border-radius: 50%;
+  display: block;
 }
 .progress-ring-inner {
   position: absolute;

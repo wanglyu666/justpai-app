@@ -30,25 +30,25 @@
     <view class="profile-block">
       <view class="avatar-wrap">
         <image
-          src="https://api.dicebear.com/7.x/notionists/svg?seed=Admin&backgroundColor=f8aba6"
+          :src="profile.avatar"
           mode="aspectFill"
           class="avatar-img"
         ></image>
       </view>
-      <text class="user-name">管理员</text>
+      <text class="user-name">{{ profile.name }}</text>
       <view class="user-info">
-        <text class="user-title">系统管理员</text>
+        <text class="user-title">{{ profile.title }}</text>
         <view class="info-row">
           <text class="info-label">联系方式：</text>
-          <text class="info-value">138-0013-8000</text>
+          <text class="info-value">{{ profile.phone }}</text>
         </view>
         <view class="info-row">
           <text class="info-label">邮箱：</text>
-          <text class="info-value">admin@justpai.com</text>
+          <text class="info-value">{{ profile.email }}</text>
         </view>
         <view class="info-row">
           <text class="info-label">部门：</text>
-          <text class="info-value">系统管理部</text>
+          <text class="info-value">{{ profile.department }}</text>
         </view>
       </view>
     </view>
@@ -150,11 +150,20 @@
         </template>
       </StepFadeTransition>
     </BottomSheetPanel>
+
+    <ProfileEditSheet
+      :show="editSheetOpen"
+      :avatar="profile.avatar"
+      :name="profile.name"
+      :email="profile.email"
+      @close="closeEditSheet"
+      @confirm="handleEditConfirm"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import StepFadeTransition from '@/components/StepFadeTransition.vue';
 import PhoneVerifyContent from '@/components/PhoneVerifyContent.vue';
@@ -169,13 +178,29 @@ import InvoiceInfoContent from '@/components/InvoiceInfoContent.vue';
 import AddressInfoContent from '@/components/AddressInfoContent.vue';
 import UploadMaterialsContent from '@/components/UploadMaterialsContent.vue';
 import UploadSuccessContent from '@/components/UploadSuccessContent.vue';
+import ProfileEditSheet, {
+  type ProfileEditPayload,
+} from '@/components/ProfileEditSheet.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
-import { usePageBack } from '@/composables/usePageBack';
+import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
-  edit: [];
 }>();
+
+const DEFAULT_AVATAR =
+  'https://api.dicebear.com/7.x/notionists/svg?seed=Admin&backgroundColor=f8aba6';
+
+const profile = reactive({
+  avatar: DEFAULT_AVATAR,
+  name: '管理员',
+  title: '系统管理员',
+  phone: '138-0013-8000',
+  email: 'admin@justpai.com',
+  department: '系统管理部',
+});
+
+const editSheetOpen = ref(false);
 
 const { visible: passwordFlowVisible, open: openPasswordFlow, close: closePasswordFlow } = useSlideOver();
 const { visible: phoneFlowVisible, open: openPhoneFlow, close: closePhoneFlow } = useSlideOver();
@@ -232,9 +257,26 @@ const menuGroups = ref([
 
 const handleBack = usePageBack(() => emit('back'));
 
-const handleEdit = () => {
-  emit('edit');
+const openEditSheet = () => {
+  editSheetOpen.value = true;
 };
+
+const closeEditSheet = () => {
+  editSheetOpen.value = false;
+};
+
+const handleEdit = () => {
+  openEditSheet();
+};
+
+const handleEditConfirm = (payload: ProfileEditPayload) => {
+  profile.avatar = payload.avatar;
+  profile.name = payload.name;
+  profile.email = payload.email;
+  editSheetOpen.value = false;
+};
+
+usePageBackWhen(editSheetOpen, closeEditSheet);
 
 const handleItemClick = (item: { id: string }) => {
   if (item.id === 'password') {
