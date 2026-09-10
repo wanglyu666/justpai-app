@@ -209,7 +209,9 @@ export function useConsultTickets() {
         quote: payload.needQuote ? '待报价' : '不需要',
         address: payload.address,
         needQuote: payload.needQuote ? '是' : '否',
-        quoteTime: '暂无',
+        quoteTime: payload.needQuote && payload.quoteSubmitTime
+          ? payload.quoteSubmitTime
+          : '暂无',
         attachments: [...payload.attachments],
         inquiryMessages: [],
       },

@@ -113,6 +113,23 @@
             </view>
           </view>
         </view>
+
+        <view
+          v-if="form.needQuote === true"
+          class="meta-row meta-row--clickable"
+          @click="openEditSheet('quoteSubmitTime')"
+        >
+          <text class="meta-label">报价提交时间</text>
+          <view class="meta-value-group">
+            <text
+              class="meta-value"
+              :class="{ 'meta-value--placeholder': !form.quoteSubmitTime }"
+            >
+              {{ quoteSubmitTimeDisplay }}
+            </text>
+            <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
+          </view>
+        </view>
       </view>
     </view>
 
@@ -187,10 +204,18 @@
   <CheckoutEditSheet
     :show="activeSheet !== null"
     :title="sheetTitle"
+    :expanded="activeSheet === 'quoteSubmitTime'"
     @close="closeEditSheet"
     @confirm="confirmEditSheet"
   >
-    <template v-if="activeSheet === 'surveyDate' || activeSheet === 'serviceStartDate'">
+    <template v-if="activeSheet === 'quoteSubmitTime'">
+      <view class="datetime-picker-stack">
+        <DateWheelPicker v-model="draftDate" />
+        <TimeWheelPicker v-model="draftTime" />
+      </view>
+    </template>
+
+    <template v-else-if="activeSheet === 'surveyDate' || activeSheet === 'serviceStartDate'">
       <DateWheelPicker v-model="draftDate" />
     </template>
 
@@ -237,10 +262,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import SheetPageLayout from '@/components/SheetPageLayout.vue';
 import CheckoutEditSheet from '@/components/CheckoutEditSheet.vue';
 import DateWheelPicker from '@/components/DateWheelPicker.vue';
+import TimeWheelPicker from '@/components/TimeWheelPicker.vue';
 import { fileExt } from '@/utils/fileDisplay';
 
 type EditField =
@@ -249,7 +275,8 @@ type EditField =
   | 'phone'
   | 'surveyDate'
   | 'serviceStartDate'
-  | 'duration';
+  | 'duration'
+  | 'quoteSubmitTime';
 
 type MediaFile = {
   path: string;
@@ -265,6 +292,7 @@ export type ConsultTicketFormPayload = {
   serviceStartDate: string;
   duration: number;
   needQuote: boolean;
+  quoteSubmitTime: string;
   demand: string;
   attachments: string[];
 };
@@ -284,6 +312,7 @@ const form = reactive({
   serviceStartDate: '',
   duration: 0,
   needQuote: null as boolean | null,
+  quoteSubmitTime: '',
   demand: '',
 });
 
@@ -291,6 +320,7 @@ const mediaFiles = ref<MediaFile[]>([]);
 const activeSheet = ref<EditField | null>(null);
 const draftText = ref('');
 const draftDate = ref('');
+const draftTime = ref('');
 const draftDuration = ref(0);
 
 const sheetTitles: Record<EditField, string> = {
@@ -300,6 +330,7 @@ const sheetTitles: Record<EditField, string> = {
   surveyDate: '期望探勘时间',
   serviceStartDate: '期望服务开始时间',
   duration: '期望工期',
+  quoteSubmitTime: '报价提交时间',
 };
 
 const sheetTitle = computed(() =>
@@ -323,11 +354,39 @@ const formatDateDisplay = (value: string) => {
   return value.replace(/-/g, '/');
 };
 
+const formatDateTimeDisplay = (value: string) => {
+  if (!value) return 'yyyy/mm/dd hh:mm';
+  return value.replace(/-/g, '/');
+};
+
+const parseDateTimeValue = (value: string) => {
+  const matched = value.match(/^(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2}))?/);
+  return {
+    date: matched?.[1] ?? '',
+    time: matched?.[2] ?? '',
+  };
+};
+
+const formatTimeValue = (date: Date) => {
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
 const addressDisplay = computed(() => form.address.trim() || '请输入服务地址');
 const contactDisplay = computed(() => form.contact.trim() || '请输入联系人');
 const phoneDisplay = computed(() => form.phone.trim() || '请输入联系电话');
 const surveyDateDisplay = computed(() => formatDateDisplay(form.surveyDate));
 const serviceStartDateDisplay = computed(() => formatDateDisplay(form.serviceStartDate));
+const quoteSubmitTimeDisplay = computed(() => formatDateTimeDisplay(form.quoteSubmitTime));
+
+watch(
+  () => form.needQuote,
+  (value) => {
+    if (value !== true) {
+      form.quoteSubmitTime = '';
+    }
+  },
+);
 
 const isSubmitEnabled = computed(
   () =>
@@ -346,6 +405,7 @@ const openEditSheet = (field: EditField) => {
   activeSheet.value = field;
   draftText.value = '';
   draftDate.value = formatDateValue(new Date());
+  draftTime.value = formatTimeValue(new Date());
   draftDuration.value = form.duration;
 
   if (field === 'address') draftText.value = form.address;
@@ -356,6 +416,11 @@ const openEditSheet = (field: EditField) => {
   }
   if (field === 'serviceStartDate') {
     draftDate.value = form.serviceStartDate || formatDateValue(new Date());
+  }
+  if (field === 'quoteSubmitTime') {
+    const parsed = parseDateTimeValue(form.quoteSubmitTime);
+    draftDate.value = parsed.date || formatDateValue(new Date());
+    draftTime.value = parsed.time || formatTimeValue(new Date());
   }
 };
 
@@ -381,6 +446,8 @@ const confirmEditSheet = () => {
     form.surveyDate = draftDate.value;
   } else if (field === 'serviceStartDate') {
     form.serviceStartDate = draftDate.value;
+  } else if (field === 'quoteSubmitTime') {
+    form.quoteSubmitTime = `${draftDate.value} ${draftTime.value}`;
   } else if (field === 'duration') {
     form.duration = draftDuration.value;
   }
@@ -455,6 +522,7 @@ const handleSubmit = () => {
     serviceStartDate: form.serviceStartDate,
     duration: form.duration,
     needQuote: form.needQuote,
+    quoteSubmitTime: form.needQuote ? form.quoteSubmitTime : '',
     demand: form.demand.trim(),
     attachments: mediaFiles.value.map((file) => file.name),
   });
@@ -468,6 +536,7 @@ const resetForm = () => {
   form.serviceStartDate = '';
   form.duration = 0;
   form.needQuote = null;
+  form.quoteSubmitTime = '';
   form.demand = '';
   mediaFiles.value = [];
   activeSheet.value = null;
@@ -860,6 +929,12 @@ defineExpose({ resetForm });
   bottom: 20rpx;
   font-size: 22rpx;
   color: #9ca3af;
+}
+
+.datetime-picker-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
 }
 
 .duration-stepper {

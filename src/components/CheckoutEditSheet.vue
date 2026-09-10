@@ -1,7 +1,10 @@
 <template>
   <view v-if="isRendered" class="edit-sheet-root" :style="rootStyle">
     <view class="edit-sheet-mask" :class="{ closing: isClosing }" @click="handleClose" />
-    <view class="edit-sheet-panel" :class="{ closing: isClosing }">
+    <view
+      class="edit-sheet-panel"
+      :class="{ closing: isClosing, expanded }"
+    >
       <view class="edit-sheet-header">
         <text class="edit-sheet-title">{{ title }}</text>
         <view class="edit-sheet-close" @click="handleClose">
@@ -30,9 +33,11 @@ const props = withDefaults(
     show: boolean;
     title: string;
     zIndex?: number;
+    expanded?: boolean;
   }>(),
   {
     zIndex: 2400,
+    expanded: false,
   },
 );
 
@@ -128,6 +133,11 @@ const handleConfirm = () => {
   flex-direction: column;
   box-sizing: border-box;
   animation: edit-sheet-slide-up 320ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.edit-sheet-panel.expanded {
+  max-height: 78vh;
+  min-height: 62vh;
 }
 
 .edit-sheet-panel.closing {

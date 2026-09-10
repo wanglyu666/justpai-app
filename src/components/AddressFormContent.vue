@@ -26,6 +26,18 @@
         </view>
       </view>
 
+      <view class="map-card" @click.stop="openMapPicker">
+        <MapScene
+          compact
+          :label="selectedLocationName"
+          :shift-x="selectedShift.x"
+          :shift-y="selectedShift.y"
+        />
+        <view v-if="!selectedLocationName" class="map-card-mask">
+          <text class="map-card-hint">点击地图选择位置</text>
+        </view>
+      </view>
+
       <view class="form-row form-row-3">
         <view class="field-group">
           <text class="field-label">省</text>
@@ -76,11 +88,26 @@
         </view>
       </view>
     </view>
+
+    <SlideOverPanel :show="mapPickerVisible" :z-index="2500" content-safe-top>
+      <MapLocationPickerContent
+        :city="form.city"
+        :selected-name="selectedLocationName"
+        @back="closeMapPicker"
+        @select="handleMapSelect"
+      />
+    </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, watch } from 'vue';
+import { reactive, computed, ref, watch } from 'vue';
+import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import MapScene from '@/components/MapScene.vue';
+import MapLocationPickerContent from '@/components/MapLocationPickerContent.vue';
+import { useSlideOver } from '@/composables/useSlideOver';
+import { usePageBackWhen } from '@/composables/usePageBack';
+import { findPoiByName, type MapPoi } from '@/composables/useMapLocations';
 
 export type AddressFormValues = {
   contact: string;
@@ -106,11 +133,32 @@ const emit = defineEmits<{
 }>();
 
 const form = reactive<AddressFormValues>({ ...props.initialValues });
+const {
+  visible: mapPickerVisible,
+  open: openMapPicker,
+  close: closeMapPicker,
+} = useSlideOver();
+usePageBackWhen(mapPickerVisible, closeMapPicker);
+
+const selectedLocationName = ref(props.initialValues.detail.trim());
+const selectedShift = ref({ x: 0, y: 0 });
+
+const syncSelectedPoi = (name: string, city?: string) => {
+  const poi = findPoiByName(name, city);
+  selectedLocationName.value = poi?.name || name;
+  selectedShift.value = {
+    x: poi?.shiftX ?? 0,
+    y: poi?.shiftY ?? 0,
+  };
+};
+
+syncSelectedPoi(props.initialValues.detail, props.initialValues.city);
 
 watch(
   () => props.initialValues,
   (values) => {
     Object.assign(form, values);
+    syncSelectedPoi(values.detail, values.city);
   },
   { deep: true },
 );
@@ -144,6 +192,15 @@ const isConfirmEnabled = computed(() => {
 const handleConfirm = () => {
   if (!isConfirmEnabled.value) return;
   emit('confirm', { ...form });
+};
+
+const handleMapSelect = (poi: MapPoi) => {
+  form.province = poi.province;
+  form.city = poi.city;
+  form.district = poi.district;
+  form.detail = poi.name;
+  syncSelectedPoi(poi.name, poi.city);
+  closeMapPicker();
 };
 </script>
 
@@ -182,6 +239,33 @@ const handleConfirm = () => {
 .form-row-3 .field-group {
   flex: 1;
   min-width: 0;
+}
+
+.map-card {
+  position: relative;
+  width: 100%;
+  height: 280rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  background-color: #ececec;
+  box-sizing: border-box;
+}
+
+.map-card-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 48rpx 24rpx 20rpx;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.92) 62%);
+  z-index: 3;
+}
+
+.map-card-hint {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #4b5563;
+  line-height: 1.3;
 }
 
 .field-group-full {

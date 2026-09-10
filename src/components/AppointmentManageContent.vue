@@ -56,10 +56,17 @@
             />
             <view
               v-if="canConfirmAppointment(item.status)"
-              class="confirm-btn"
+              class="action-btn"
               @click.stop="onConfirm(item)"
             >
-              <text class="confirm-btn-text">确认</text>
+              <text class="action-btn-text">确认</text>
+            </view>
+            <view
+              v-else-if="canViewAcceptance(item)"
+              class="action-btn action-btn-muted"
+              @click.stop="onViewAcceptance(item)"
+            >
+              <text class="action-btn-text">查看验收</text>
             </view>
           </view>
         </view>
@@ -73,14 +80,25 @@
     <SlideOverPanel
       :show="acceptanceVisible"
       :z-index="2500"
+      content-safe-top
       @closed="resetAcceptance"
     >
-      <AppointmentAcceptanceContent
-        v-if="acceptanceAppointment"
-        :files="acceptanceAppointment.attachments ?? []"
-        @back="closeAcceptance"
-        @confirm="handleAcceptanceConfirm"
-      />
+      <SuccessPageTransition :show-success="acceptanceStep === 'success'">
+        <AppointmentCustomerAcceptanceContent
+          v-if="acceptanceAppointment"
+          :files="acceptanceAppointment.attachments ?? []"
+          :accepted="acceptanceAccepted"
+          @back="closeAcceptance"
+          @confirm="handleAcceptanceConfirm"
+        />
+        <template #success>
+          <FeedbackSuccessContent
+            desc="验收已确认"
+            back-text="返回预约管理"
+            @back="closeAcceptance"
+          />
+        </template>
+      </SuccessPageTransition>
     </SlideOverPanel>
 
     <AppointmentTimeConfirmSheet
@@ -106,9 +124,11 @@
 import { computed, ref, toRef } from 'vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
-import AppointmentAcceptanceContent from '@/components/AppointmentAcceptanceContent.vue';
+import AppointmentCustomerAcceptanceContent from '@/components/AppointmentCustomerAcceptanceContent.vue';
 import AppointmentTimeConfirmSheet from '@/components/AppointmentTimeConfirmSheet.vue';
 import AppointmentChangeConfirmSheet from '@/components/AppointmentChangeConfirmSheet.vue';
+import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import {
   APPOINTMENT_STATUS_LABEL,
   canConfirmAppointment,
@@ -138,6 +158,9 @@ const {
 } = useSlideOver();
 
 const acceptanceAppointment = ref<AppointmentItem | null>(null);
+const acceptanceStep = ref<'form' | 'success'>('form');
+const acceptanceAccepted = ref(false);
+usePageBackWhen(acceptanceVisible, closeAcceptance);
 
 const {
   visible: timeConfirmVisible,
@@ -175,15 +198,22 @@ const filteredAppointments = computed(() => {
   });
 });
 
+const canViewAcceptance = (item: AppointmentItem) =>
+  item.status === 'completed' && (item.attachments?.length ?? 0) > 0;
+
 const handleBack = usePageBack(() => emit('back'));
 
 const resetAcceptance = () => {
   acceptanceAppointment.value = null;
+  acceptanceStep.value = 'form';
+  acceptanceAccepted.value = false;
 };
 
 const onConfirm = (item: AppointmentItem) => {
   if (item.status === 'pending_acceptance') {
     acceptanceAppointment.value = item;
+    acceptanceStep.value = 'form';
+    acceptanceAccepted.value = false;
     openAcceptancePanel();
     return;
   }
@@ -198,6 +228,13 @@ const onConfirm = (item: AppointmentItem) => {
     changeConfirmStep.value = 'form';
     openChangeConfirmPanel();
   }
+};
+
+const onViewAcceptance = (item: AppointmentItem) => {
+  acceptanceAppointment.value = item;
+  acceptanceStep.value = 'form';
+  acceptanceAccepted.value = true;
+  openAcceptancePanel();
 };
 
 const handleChangeConfirm = () => {
@@ -235,7 +272,8 @@ const onTimeConfirmClosed = () => {
 const handleAcceptanceConfirm = () => {
   if (!acceptanceAppointment.value) return;
   confirmAppointmentAcceptance(acceptanceAppointment.value.id);
-  closeAcceptance();
+  acceptanceAccepted.value = true;
+  acceptanceStep.value = 'success';
 };
 </script>
 
@@ -400,22 +438,31 @@ const handleAcceptanceConfirm = () => {
   gap: 16rpx;
 }
 
-.confirm-btn {
-  height: 64rpx;
-  padding: 0 40rpx;
-  border-radius: 16rpx;
+.action-btn {
+  height: 72rpx;
+  padding: 0 36rpx;
+  border-radius: 1998rpx;
   background-color: #9fe870;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   box-sizing: border-box;
 }
 
-.confirm-btn-text {
-  font-size: 26rpx;
+.action-btn-muted {
+  background-color: #e5e7eb;
+}
+
+.action-btn-text {
+  font-size: 28rpx;
   font-weight: 700;
   color: #163300;
   line-height: 1;
+}
+
+.action-btn-muted .action-btn-text {
+  color: #4b5563;
 }
 
 .empty-tip {

@@ -39,7 +39,7 @@
       <view class="banner-card">
         <image
           class="banner-image"
-          src="/static/images/post2.png"
+          src="/static/images/post2.png?v=2"
           mode="aspectFit"
         />
       </view>

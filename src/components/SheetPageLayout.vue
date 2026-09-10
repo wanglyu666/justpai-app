@@ -17,8 +17,10 @@
 
     <view class="sheet-page__body">
       <slot name="title">
-        <text v-if="title" class="sheet-page__title">{{ title }}</text>
-        <text v-if="desc" class="sheet-page__desc">{{ desc }}</text>
+        <view v-if="title || desc" class="sheet-page__heading">
+          <text v-if="title" class="sheet-page__title">{{ title }}</text>
+          <text v-if="desc" class="sheet-page__desc">{{ desc }}</text>
+        </view>
       </slot>
       <slot />
     </view>
