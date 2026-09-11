@@ -26,7 +26,12 @@
       />
 
       <view class="report-list">
-        <view v-for="item in visibleItems" :key="item.id" class="report-card">
+        <view
+          v-for="item in visibleItems"
+          :key="item.id"
+          class="report-card report-card--clickable"
+          @click="openDetail(item)"
+        >
           <view class="card-head">
             <view class="info-icon-wrap">
               <image :src="categoryIcon" mode="aspectFit" class="info-icon" />
@@ -52,7 +57,7 @@
                 <text class="meta-text">负责人：{{ item.owner }}</text>
               </view>
             </view>
-            <view class="download-btn">
+            <view class="download-btn" @click.stop>
               <image
                 src="/static/icons/download-gray.svg"
                 mode="aspectFit"
@@ -63,18 +68,42 @@
         </view>
       </view>
     </view>
+
+    <SlideOverPanel :show="detailVisible" :z-index="2400" @closed="resetDetail">
+      <ConstructionReportDetailContent
+        v-if="selectedItem?.category === 'daily'"
+        :item="selectedItem"
+        @back="closeDetail"
+      />
+      <ConstructionWeeklyReportDetailContent
+        v-else-if="selectedItem?.category === 'weekly'"
+        :item="selectedItem"
+        @back="closeDetail"
+      />
+      <ConstructionEhsReportDetailContent
+        v-else-if="selectedItem?.category === 'ehs'"
+        :item="selectedItem"
+        @back="closeDetail"
+      />
+    </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
+import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import ConstructionReportDetailContent from '@/components/ConstructionReportDetailContent.vue';
+import ConstructionWeeklyReportDetailContent from '@/components/ConstructionWeeklyReportDetailContent.vue';
+import ConstructionEhsReportDetailContent from '@/components/ConstructionEhsReportDetailContent.vue';
 import {
   CONSTRUCTION_REPORT_ICONS,
   useConstructionReports,
   type ConstructionReportCategory,
+  type ConstructionReportItem,
 } from '@/composables/useConstructionReports';
 import { usePageBack } from '@/composables/usePageBack';
+import { useSlideOver } from '@/composables/useSlideOver';
 
 const emit = defineEmits<{
   back: [];
@@ -82,11 +111,26 @@ const emit = defineEmits<{
 
 const { tabs, getByCategory } = useConstructionReports();
 const activeCategory = ref<ConstructionReportCategory>('daily');
+const selectedItem = ref<ConstructionReportItem | null>(null);
+const {
+  visible: detailVisible,
+  open: openDetailPanel,
+  close: closeDetail,
+} = useSlideOver();
 
 const visibleItems = computed(() => getByCategory(activeCategory.value));
 const categoryIcon = computed(
   () => CONSTRUCTION_REPORT_ICONS[activeCategory.value],
 );
+
+const openDetail = (item: ConstructionReportItem) => {
+  selectedItem.value = item;
+  openDetailPanel();
+};
+
+const resetDetail = () => {
+  selectedItem.value = null;
+};
 
 const handleBack = usePageBack(() => emit('back'));
 </script>
@@ -175,6 +219,10 @@ const handleBack = usePageBack(() => emit('back'));
   flex-direction: column;
   gap: 28rpx;
   box-shadow: 0 4rpx 24rpx rgba(15, 23, 42, 0.04);
+}
+
+.report-card--clickable:active {
+  opacity: 0.86;
 }
 
 .card-head {
