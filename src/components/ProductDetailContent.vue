@@ -2,8 +2,7 @@
   <view class="product-detail">
     <view class="hero-section">
       <view
-        class="icon-btn detail-header-btn detail-header-btn-left frosted-glass"
-        :style="headerGlassStyle"
+        class="icon-btn detail-header-btn detail-header-btn-left"
         hover-class="icon-btn-hover"
         :hover-stay-time="80"
         @click.stop="handleBack"
@@ -11,8 +10,7 @@
         <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
       </view>
       <view
-        class="icon-btn detail-header-btn detail-header-btn-right frosted-glass"
-        :style="headerGlassStyle"
+        class="icon-btn detail-header-btn detail-header-btn-right"
         hover-class="icon-btn-hover"
         :hover-stay-time="80"
         @click.stop="openConsultFlow"
@@ -33,7 +31,7 @@
           </view>
         </swiper-item>
       </swiper>
-      <view class="hero-meta-bar">
+      <view class="hero-meta-bar frosted-glass" :style="headerGlassStyle">
         <view class="hero-meta-side hero-meta-side-left">
           <view class="hero-rating-block">
             <view class="hero-rating-row">
@@ -43,7 +41,6 @@
             <text class="hero-rating-label">推荐指数</text>
           </view>
         </view>
-        <view class="hero-meta-divider" />
         <view class="hero-meta-side hero-meta-side-right">
           <text class="hero-meta-price">¥ {{ product.price }}</text>
         </view>
@@ -61,74 +58,56 @@
     <view class="info-section">
       <text class="product-title">{{ product.name }}</text>
 
-      <view class="detail-tabs">
-        <view class="tab-bar">
-          <view
-            v-for="tab in tabs"
-            :key="tab.id"
-            :id="`tab-item-${tab.id}`"
-            class="tab-item"
-            :class="{ active: activeTab === tab.id }"
-            @click="switchTab(tab.id)"
-          >
-            <text class="tab-label">{{ tab.label }}</text>
-          </view>
-          <view class="tab-indicator-slider" :style="indicatorStyle" />
+      <view class="info-block">
+        <view class="info-heading-wrap">
+          <text class="info-heading">商品参数</text>
+          <view class="info-heading-bar" />
         </view>
+        <view class="param-list">
+          <view v-for="group in paramGroups" :key="group.key" class="param-row">
+            <text class="param-label">{{ group.label }}</text>
+            <view class="param-options">
+              <view
+                v-for="option in group.options"
+                :key="option"
+                class="param-chip"
+                :class="{ active: selectedParams[group.key] === option }"
+                @click="selectParam(group.key, option)"
+              >
+                <text class="param-chip-text">{{ option }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
 
-        <view class="tab-panel">
-          <view class="tab-panel-body-wrap" :style="tabPanelStyle">
-            <FadeTransition mode="out-in" @after-enter="measureTabPanelHeight">
-              <view v-if="activeTab === 'params'" key="params" class="param-list tab-panel-body">
-                <view v-for="group in paramGroups" :key="group.key" class="param-row">
-                  <text class="param-label">{{ group.label }}</text>
-                  <scroll-view
-                    scroll-x
-                    class="param-options-scroll"
-                    :style="paramScrollStyle"
-                    :show-scrollbar="false"
-                  >
-                    <view class="param-options">
-                      <view
-                        v-for="option in group.options"
-                        :key="option"
-                        class="param-chip"
-                        :class="{ active: selectedParams[group.key] === option }"
-                        @click="selectParam(group.key, option)"
-                      >
-                        <text class="param-chip-text">{{ option }}</text>
-                      </view>
-                    </view>
-                  </scroll-view>
-                </view>
-              </view>
-              <view v-else key="detail" class="detail-list tab-panel-body">
-                <view v-for="item in detailItems" :key="item.label" class="detail-row">
-                  <text class="detail-label">{{ item.label }}</text>
-                  <text class="detail-value">{{ item.value }}</text>
-                </view>
-              </view>
-            </FadeTransition>
+      <view class="info-block">
+        <view class="info-heading-wrap">
+          <text class="info-heading">详细信息</text>
+          <view class="info-heading-bar" />
+        </view>
+        <view class="detail-list">
+          <view v-for="item in detailItems" :key="item.label" class="detail-row">
+            <text class="detail-label">{{ item.label }}</text>
+            <text class="detail-value">{{ item.value }}</text>
           </view>
         </view>
       </view>
     </view>
 
     <view class="detail-footer">
-      <view class="action-bar frosted-glass frosted-glass--tabbar" :style="footerGlassStyle">
+      <view class="action-bar">
         <view class="qty-counter">
           <view class="qty-btn" @click="decreaseQty">
             <text class="qty-btn-text">−</text>
           </view>
-          <FlipQty :value="quantity" size="md" />
+          <FlipQty :value="quantity" size="lg" />
           <view class="qty-btn" @click="increaseQty">
             <text class="qty-btn-text">+</text>
           </view>
         </view>
-        <view class="action-buttons">
-          <view class="cart-btn" @click="openCartSuccessModal">
-            <text class="cart-btn-text">加入购物车</text>
-          </view>
+        <view class="cart-btn" @click="openCartSuccessModal">
+          <text class="cart-btn-text">加入购物车</text>
         </view>
       </view>
     </view>
@@ -163,10 +142,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, getCurrentInstance, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
-import { SLIDE_OVER_EASING } from '@/utils/slideOverTransition';
-import FadeTransition from '@/components/FadeTransition.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import ConsultFormContent from '@/components/ConsultFormContent.vue';
 import ConsultSuccessContent from '@/components/ConsultSuccessContent.vue';
@@ -177,14 +154,7 @@ import { useSlideOver } from '@/composables/useSlideOver';
 import { useCart } from '@/composables/useCart';
 import { usePageBack } from '@/composables/usePageBack';
 
-const TAB_PANEL_HEIGHT_DURATION_MS = 320;
-
 const headerGlassStyle = getFrostedGlassStyle('default');
-const footerGlassStyle = getFrostedGlassStyle('tabbar');
-const paramScrollStyle = {
-  height: '72rpx',
-  width: '100%',
-};
 
 const { visible: consultFlowVisible, open: openConsultFlow, close: closeConsultFlow } = useSlideOver();
 const { addToCart } = useCart();
@@ -254,108 +224,28 @@ const props = defineProps<{
   product: ProductDetail;
 }>();
 
-const tabs = [
-  { id: 'params', label: '商品参数' },
-  { id: 'detail', label: '详细信息' },
-] as const;
-
-type TabId = (typeof tabs)[number]['id'];
 type ParamKey = 'brand' | 'model' | 'spec' | 'color';
-
-const activeTab = ref<TabId>('params');
-const instance = getCurrentInstance();
-
-const indicatorStyle = ref({
-  transform: 'translateX(0px)',
-  width: '0px',
-});
-
-const panelHeight = ref(0);
-
-const tabPanelStyle = computed(() => {
-  const style: Record<string, string> = {
-    overflow: 'hidden',
-  };
-
-  if (panelHeight.value > 0) {
-    style.height = `${panelHeight.value}px`;
-    style.transition = `height ${TAB_PANEL_HEIGHT_DURATION_MS}ms ${SLIDE_OVER_EASING}`;
-  }
-
-  return style;
-});
-
-const measureTabPanelHeight = () => {
-  if (!instance) return;
-
-  nextTick(() => {
-    uni.createSelectorQuery()
-      .in(instance)
-      .select('.tab-panel-body')
-      .boundingClientRect()
-      .exec((res) => {
-        const rect = res?.[0] as { height?: number } | null;
-        if (rect?.height !== undefined) {
-          panelHeight.value = rect.height;
-        }
-      });
-  });
-};
-
-const updateTabIndicator = () => {
-  if (!instance) return;
-
-  nextTick(() => {
-    uni.createSelectorQuery()
-      .in(instance)
-      .select(`#tab-item-${activeTab.value}`)
-      .boundingClientRect()
-      .select('.tab-bar')
-      .boundingClientRect()
-      .exec((res) => {
-        const tabRect = res?.[0] as { left?: number; width?: number } | null;
-        const barRect = res?.[1] as { left?: number } | null;
-        if (!tabRect?.width || barRect?.left === undefined || tabRect.left === undefined) return;
-
-        indicatorStyle.value = {
-          transform: `translateX(${tabRect.left - barRect.left}px)`,
-          width: `${tabRect.width}px`,
-        };
-      });
-  });
-};
-
-const switchTab = (id: TabId) => {
-  if (activeTab.value === id) return;
-  activeTab.value = id;
-  updateTabIndicator();
-};
-
-onMounted(() => {
-  updateTabIndicator();
-  measureTabPanelHeight();
-});
 
 const paramGroups = computed(() => [
   {
     key: 'brand' as ParamKey,
     label: '品牌',
-    options: [props.product.brand, 'H&M', 'Uniqlo', 'P&B'],
+    options: [props.product.brand, 'H&M', 'Uniqlo', 'P&B', 'Gap', 'Nike', 'Adidas', 'COS', 'Mango'],
   },
   {
     key: 'model' as ParamKey,
     label: '型号',
-    options: ['标准款', '修身款', '宽松款'],
+    options: ['标准款', '修身款', '宽松款', '短款', '长款', '加厚款', '薄款'],
   },
   {
     key: 'spec' as ParamKey,
     label: '规格',
-    options: ['XS', 'S', 'M', 'L', 'XL'],
+    options: ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
   },
   {
     key: 'color' as ParamKey,
     label: '颜色',
-    options: ['黑色', '驼色', '灰色', '藏青'],
+    options: ['黑色', '驼色', '灰色', '藏青', '白色', '米色', '棕色', '酒红', '卡其'],
   },
 ]);
 
@@ -418,7 +308,7 @@ const handleBack = usePageBack(() => emit('back'));
 <style scoped>
 .product-detail {
   min-height: 100%;
-  padding-bottom: 240rpx;
+  padding-bottom: 280rpx;
   box-sizing: border-box;
 }
 
@@ -426,6 +316,7 @@ const handleBack = usePageBack(() => emit('back'));
   position: absolute;
   top: 72rpx;
   z-index: 2;
+  background-color: #ffffff;
 }
 
 .detail-header-btn-left {
@@ -518,39 +409,31 @@ const handleBack = usePageBack(() => emit('back'));
   z-index: 4;
   min-height: 132rpx;
   border-radius: 1998rpx;
-  background-color: #9fe870;
   display: flex;
-  align-items: center;
-  padding: 20rpx 28rpx;
+  align-items: stretch;
+  gap: 12rpx;
+  padding: 12rpx;
   box-sizing: border-box;
-  box-shadow: 0 8rpx 32rpx rgba(22, 51, 0, 0.12);
 }
 
-.hero-meta-side-left {
-  flex: 0 0 38%;
+.hero-meta-side {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 0;
+  background-color: #ffffff;
+  border-radius: 1998rpx;
+  padding: 16rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.hero-meta-side-left {
+  flex: 0 0 38%;
 }
 
 .hero-meta-side-right {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-width: 264rpx;
-  padding: 0 12rpx;
-  box-sizing: border-box;
-}
-
-.hero-meta-divider {
-  width: 2rpx;
-  height: 64rpx;
-  background-color: rgba(22, 51, 0, 0.18);
-  flex-shrink: 0;
-  margin-left: -12rpx;
-  margin-right: 8rpx;
 }
 
 .hero-rating-block {
@@ -569,28 +452,28 @@ const handleBack = usePageBack(() => emit('back'));
 .hero-rating-label {
   font-size: 22rpx;
   font-weight: 600;
-  color: rgba(22, 51, 0, 0.55);
+  color: #111827;
   line-height: 1;
   white-space: nowrap;
 }
 
 .hero-star {
   font-size: 36rpx;
-  color: #fbbf24;
+  color: #111827;
   line-height: 1;
 }
 
 .hero-rating-value {
   font-size: 36rpx;
   font-weight: 800;
-  color: #163300;
+  color: #111827;
   line-height: 1;
 }
 
 .hero-meta-price {
   font-size: 40rpx;
   font-weight: 800;
-  color: #163300;
+  color: #111827;
   line-height: 1.15;
   text-align: center;
   white-space: nowrap;
@@ -612,72 +495,41 @@ const handleBack = usePageBack(() => emit('back'));
   margin-bottom: 8rpx;
 }
 
-.detail-tabs {
-  margin-top: 32rpx;
+.info-block {
+  margin-top: 40rpx;
 }
 
-.tab-bar {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  gap: 56rpx;
-  border-bottom: 2rpx solid #e5e7eb;
+.info-heading-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
 }
 
-.tab-item {
-  position: relative;
-  padding-bottom: 24rpx;
-  flex-shrink: 0;
-}
-
-.tab-label {
+.info-heading {
   font-size: 32rpx;
-  font-weight: 500;
-  color: #9ca3af;
-  line-height: 1.3;
-  transition: color 200ms ease, font-weight 200ms ease;
-}
-
-.tab-item.active .tab-label {
   font-weight: 800;
   color: #111827;
+  line-height: 1.3;
 }
 
-.tab-indicator-slider {
-  position: absolute;
-  left: 0;
-  bottom: 0;
+.info-heading-bar {
   height: 6rpx;
   border-radius: 4rpx;
   background-color: #9fe870;
-  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1), width 320ms cubic-bezier(0.32, 0.72, 0, 1);
-  will-change: transform, width;
-}
-
-.tab-panel {
-  padding-top: 32rpx;
-}
-
-.tab-panel-body-wrap {
-  overflow: hidden;
-  will-change: height;
 }
 
 .param-list {
   display: flex;
   flex-direction: column;
+  gap: 36rpx;
 }
 
 .param-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 32rpx;
-  padding: 16rpx 0;
-  border-bottom: 2rpx solid #f3f4f6;
-}
-
-.param-row:last-child {
-  border-bottom: none;
 }
 
 .param-label {
@@ -687,18 +539,17 @@ const handleBack = usePageBack(() => emit('back'));
   font-weight: 800;
   color: #111827;
   line-height: 1.3;
-}
-
-.param-options-scroll {
-  flex: 1;
-  width: 0;
-  white-space: nowrap;
+  padding-top: 20rpx;
 }
 
 .param-options {
-  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 20rpx;
+  column-gap: 16rpx;
+  row-gap: 12rpx;
 }
 
 .param-chip {
@@ -714,8 +565,9 @@ const handleBack = usePageBack(() => emit('back'));
 }
 
 .param-chip.active {
-  border-color: #B0D4C5;
-  background-color: #B0D4C5;
+  border-width: 4rpx;
+  border-color: #111827;
+  background-color: #ffffff;
 }
 
 .param-chip-text {
@@ -727,7 +579,7 @@ const handleBack = usePageBack(() => emit('back'));
 }
 
 .param-chip.active .param-chip-text {
-  color: #ffffff;
+  color: #111827;
   font-weight: 700;
 }
 
@@ -759,9 +611,9 @@ const handleBack = usePageBack(() => emit('back'));
 
 .detail-footer {
   position: fixed;
-  left: 48rpx;
-  right: 48rpx;
-  bottom: calc(48rpx + env(safe-area-inset-bottom, 0px));
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 10;
   box-sizing: border-box;
 }
@@ -770,22 +622,24 @@ const handleBack = usePageBack(() => emit('back'));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24rpx;
-  border-radius: 64rpx;
-  padding: 16rpx 20rpx 16rpx 28rpx;
-  min-height: 120rpx;
+  gap: 32rpx;
+  background-color: #ffffff;
+  border-radius: 80rpx 80rpx 0 0;
+  padding: 32rpx 40rpx calc(24rpx + env(safe-area-inset-bottom, 0px));
+  min-height: 176rpx;
   box-sizing: border-box;
+  box-shadow: 0 -16rpx 48rpx rgba(15, 23, 42, 0.1);
 }
 
 .qty-counter {
   display: flex;
   align-items: center;
-  gap: 20rpx;
+  gap: 12rpx;
   flex-shrink: 0;
 }
 
 .qty-btn {
-  width: 64rpx;
+  width: 56rpx;
   height: 64rpx;
   display: flex;
   align-items: center;
@@ -793,25 +647,16 @@ const handleBack = usePageBack(() => emit('back'));
 }
 
 .qty-btn-text {
-  font-size: 44rpx;
+  font-size: 40rpx;
   line-height: 1;
-  color: #9ca3af;
+  color: #111827;
   font-weight: 400;
-}
-
-.action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  flex: 1;
-  justify-content: flex-end;
-  min-width: 0;
 }
 
 .cart-btn {
   height: 88rpx;
-  padding: 0 32rpx;
-  border-radius: 44rpx;
+  padding: 0 48rpx;
+  border-radius: 999rpx;
   background-color: #111827;
   display: flex;
   align-items: center;
@@ -821,7 +666,7 @@ const handleBack = usePageBack(() => emit('back'));
 
 .cart-btn-text {
   font-size: 28rpx;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff;
   white-space: nowrap;
 }

@@ -62,6 +62,78 @@
         </view>
       </view>
 
+      <view v-else-if="activeSection === 'hazards'" class="section-list">
+        <view class="section-card">
+          <text class="section-title">隐患排查</text>
+          <view v-if="detail.hazards.length" class="nested-list">
+            <view
+              v-for="(hazard, index) in detail.hazards"
+              :key="index"
+              class="nested-card"
+            >
+              <view class="nested-head">
+                <text class="nested-label">位置</text>
+                <text class="nested-location">{{ hazard.location }}</text>
+              </view>
+              <view class="nested-pair">
+                <view class="nested-field">
+                  <text class="nested-label">隐患描述</text>
+                  <textarea
+                    class="field-textarea"
+                    :value="hazard.description"
+                    disabled
+                    auto-height
+                  />
+                </view>
+                <view class="nested-field">
+                  <text class="nested-label">整改措施</text>
+                  <textarea
+                    class="field-textarea"
+                    :value="hazard.measure"
+                    disabled
+                    auto-height
+                  />
+                </view>
+              </view>
+              <view class="nested-pair">
+                <view class="nested-field">
+                  <text class="nested-label">隐患照片</text>
+                  <view v-if="hazard.hazardPhotos.length" class="attach-list">
+                    <FileAttachmentItem
+                      v-for="(file, fileIndex) in hazard.hazardPhotos"
+                      :key="`hazard-${index}-${fileIndex}`"
+                      :name="file"
+                    />
+                  </view>
+                  <text v-else class="attach-empty">暂无隐患照片</text>
+                </view>
+                <view class="nested-field">
+                  <text class="nested-label">整改完成照片</text>
+                  <view v-if="hazard.rectifyPhotos.length" class="attach-list">
+                    <FileAttachmentItem
+                      v-for="(file, fileIndex) in hazard.rectifyPhotos"
+                      :key="`rectify-${index}-${fileIndex}`"
+                      :name="file"
+                    />
+                  </view>
+                  <text v-else class="attach-empty">暂无整改完成照片</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <text v-else class="attach-empty">暂无隐患记录</text>
+        </view>
+        <view class="section-card">
+          <text class="section-title">其他重要事项</text>
+          <textarea
+            class="field-textarea"
+            :value="detail.otherImportantItems"
+            disabled
+            auto-height
+          />
+        </view>
+      </view>
+
       <view v-else-if="textCards.length" class="section-list">
         <view
           v-for="card in textCards"
@@ -92,6 +164,7 @@
 import { computed, ref, watch } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
+import FileAttachmentItem from '@/components/FileAttachmentItem.vue';
 import {
   EHS_REPORT_TABS,
   useConstructionReports,
@@ -117,12 +190,9 @@ const detail = computed(() => getEhsDetail(props.item.id));
 const textCards = computed(() => {
   const data = detail.value;
   if (activeSection.value === 'nextPlan') {
-    return [{ title: '下周工作计划', value: data.nextPlan }];
-  }
-  if (activeSection.value === 'hazards') {
     return [
-      { title: '隐患排查', value: data.hazardInspection },
-      { title: '其他事项', value: data.otherItems },
+      { title: '工作内容及控制措施', value: data.workControlMeasures },
+      { title: '教育与培训计划', value: data.nextTrainingPlan },
     ];
   }
   return [];
@@ -288,5 +358,75 @@ const handleBack = usePageBack(() => emit('back'));
   font-weight: 600;
   color: #9ca3af;
   line-height: 1;
+}
+
+.nested-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.nested-card {
+  background-color: #f8faf9;
+  border: 2rpx solid #eef0ea;
+  border-radius: 28rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.nested-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+}
+
+.nested-location {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.45;
+}
+
+.nested-pair {
+  display: flex;
+  gap: 16rpx;
+}
+
+.nested-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.nested-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+.nested-card .field-textarea {
+  min-height: 72rpx;
+  padding: 16rpx 20rpx;
+  background-color: #ffffff;
+}
+
+.attach-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.attach-empty {
+  font-size: 26rpx;
+  color: #9ca3af;
+  line-height: 1.4;
 }
 </style>

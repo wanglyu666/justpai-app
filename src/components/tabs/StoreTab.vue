@@ -618,7 +618,7 @@ watch([showSubcategories, productListKey], () => {
 }
 
 .category-chip.active {
-  background-color: #b0d4c5;
+  background-color: #111827;
 }
 
 .category-text {
@@ -699,8 +699,8 @@ watch([showSubcategories, productListKey], () => {
 }
 
 .subcategory-chip.active {
-  background-color: #b0d4c5;
-  box-shadow: inset 0 0 0 2rpx rgba(176, 212, 197, 0.85);
+  background-color: #111827;
+  box-shadow: none;
 }
 
 .subcategory-text {

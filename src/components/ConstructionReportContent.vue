@@ -57,7 +57,11 @@
                 <text class="meta-text">负责人：{{ item.owner }}</text>
               </view>
             </view>
-            <view class="download-btn" @click.stop>
+            <view
+              v-if="item.category === 'daily'"
+              class="download-btn"
+              @click.stop
+            >
               <image
                 src="/static/icons/download-gray.svg"
                 mode="aspectFit"

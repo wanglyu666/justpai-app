@@ -77,14 +77,23 @@ export type EhsReportSection =
   | 'hazards'
   | 'trainingPhotos';
 
+export type EhsHazardItem = {
+  location: string;
+  description: string;
+  measure: string;
+  hazardPhotos: string[];
+  rectifyPhotos: string[];
+};
+
 export type EhsReportDetail = {
   specialOperations: string;
   safetyEducationCount: number;
   trainingSummaryCount: number;
   educationTraining: string;
-  nextPlan: string;
-  hazardInspection: string;
-  otherItems: string;
+  workControlMeasures: string;
+  nextTrainingPlan: string;
+  hazards: EhsHazardItem[];
+  otherImportantItems: string;
   trainingPhotos: string[];
 };
 
@@ -366,9 +375,18 @@ const EHS_DETAILS: Record<string, EhsReportDetail> = {
     safetyEducationCount: 4,
     trainingSummaryCount: 6,
     educationTraining: '组织扬尘防治、污水排放及夜间施工降噪专项培训，班组全员覆盖。',
-    nextPlan: '开展雨季排水专项检查，复核沉淀池清淤及冲洗用水循环情况。',
-    hazardInspection: '材料堆场裸土覆盖不严 1 处，已当场覆盖并复查合格。',
-    otherItems: '环境监测周报已报送项目部，夜间噪声监测点位待增补。',
+    workControlMeasures: '开展雨季排水专项检查，复核沉淀池清淤及冲洗用水循环，加强裸土覆盖与夜间降噪管控。',
+    nextTrainingPlan: '组织雨季防汛及污水排放专项培训，班组全员覆盖。',
+    hazards: [
+      {
+        location: 'A 区材料堆场北侧',
+        description: '裸土覆盖不严，扬尘风险较高。',
+        measure: '当场覆盖密目网并加装压条，安排每日巡查。',
+        hazardPhotos: ['堆场裸土隐患.jpg'],
+        rectifyPhotos: ['堆场覆盖整改.jpg'],
+      },
+    ],
+    otherImportantItems: '环境监测周报已报送项目部，夜间噪声监测点位待增补。',
     trainingPhotos: ['环境巡查交底.jpg', '降尘措施培训.jpg'],
   },
   'ehs-2': {
@@ -376,9 +394,18 @@ const EHS_DETAILS: Record<string, EhsReportDetail> = {
     safetyEducationCount: 3,
     trainingSummaryCount: 5,
     educationTraining: '开展职业健康告知、防暑降温及一线体检注意事项培训。',
-    nextPlan: '安排新进场人员职业健康告知，补充防暑药品与休息点。',
-    hazardInspection: '两处作业面饮水点不足，已增设保温桶并明确责任人。',
-    otherItems: '职业健康台账已更新，防暑专项交底签到待补 3 人。',
+    workControlMeasures: '安排新进场人员职业健康告知，补充防暑药品与休息点，落实高温作业轮换。',
+    nextTrainingPlan: '开展防暑降温及职业健康告知培训，覆盖新进场人员。',
+    hazards: [
+      {
+        location: 'B 区西侧作业面',
+        description: '饮水点不足，高温作业防护不到位。',
+        measure: '增设保温桶并明确责任人，落实轮换休息。',
+        hazardPhotos: ['作业面饮水点.jpg'],
+        rectifyPhotos: ['保温桶增设完成.jpg'],
+      },
+    ],
+    otherImportantItems: '职业健康台账已更新，防暑专项交底签到待补 3 人。',
     trainingPhotos: ['职业健康交底.jpg', '高温防护培训.jpg'],
   },
   'ehs-3': {
@@ -386,9 +413,25 @@ const EHS_DETAILS: Record<string, EhsReportDetail> = {
     safetyEducationCount: 5,
     trainingSummaryCount: 7,
     educationTraining: '组织临边防护、洞口作业及临时用电专项教育，隐患整改班组复训。',
-    nextPlan: '组织高处作业专项检查，夜间复核基坑照明与临边防护。',
-    hazardInspection: '配电箱漏保失效 1 处、临边栏杆缺失 1 处，均已整改并复测。',
-    otherItems: '隐患台账已同步监理，下周安排复查抽查。',
+    workControlMeasures: '组织高处作业专项检查，夜间复核基坑照明与临边防护，闭合遗留隐患。',
+    nextTrainingPlan: '开展高处作业与临时用电复训，重点覆盖隐患整改班组。',
+    hazards: [
+      {
+        location: 'C 区临时配电箱',
+        description: '漏保失效，存在触电风险。',
+        measure: '更换漏保并复测合格，张贴检查标识。',
+        hazardPhotos: ['配电箱漏保.jpg'],
+        rectifyPhotos: ['漏保更换完成.jpg'],
+      },
+      {
+        location: '基坑东侧临边',
+        description: '临边栏杆缺失一段，防护不闭合。',
+        measure: '补设栏杆并验收，夜间加强照明巡查。',
+        hazardPhotos: ['临边栏杆缺失.jpg'],
+        rectifyPhotos: ['临边防护整改.jpg'],
+      },
+    ],
+    otherImportantItems: '隐患台账已同步监理，下周安排复查抽查。',
     trainingPhotos: ['隐患排查交底.jpg', '整改复查现场.jpg'],
   },
   'ehs-4': {
@@ -396,9 +439,25 @@ const EHS_DETAILS: Record<string, EhsReportDetail> = {
     safetyEducationCount: 2,
     trainingSummaryCount: 4,
     educationTraining: '开展灭火实操、疏散集合及应急物资使用培训，参演 28 人。',
-    nextPlan: '针对演练暴露的集合点标识不清问题，组织复训并更新预案。',
-    hazardInspection: '灭火器压力不足 2 具、应急通道堆物 1 处，已更换并清理。',
-    otherItems: '演练评估报告待甲方确认，应急物资清单需补录。',
+    workControlMeasures: '针对演练暴露的集合点标识不清问题更新预案，补齐应急物资并复核疏散通道。',
+    nextTrainingPlan: '组织消防复训，明确集合点标识与灭火器使用。',
+    hazards: [
+      {
+        location: '办公区消防箱',
+        description: '灭火器压力不足 2 具。',
+        measure: '更换合格灭火器，更新检查卡。',
+        hazardPhotos: ['灭火器压力不足.jpg'],
+        rectifyPhotos: ['灭火器更换完成.jpg'],
+      },
+      {
+        location: '1 号应急通道',
+        description: '通道堆放材料，疏散受阻。',
+        measure: '当场清理并设置禁堆标识。',
+        hazardPhotos: ['应急通道堆物.jpg'],
+        rectifyPhotos: ['通道清理完成.jpg'],
+      },
+    ],
+    otherImportantItems: '演练评估报告待甲方确认，应急物资清单需补录。',
     trainingPhotos: ['应急演练现场.jpg', '灭火实操培训.jpg'],
   },
   'ehs-5': {
@@ -406,9 +465,18 @@ const EHS_DETAILS: Record<string, EhsReportDetail> = {
     safetyEducationCount: 3,
     trainingSummaryCount: 4,
     educationTraining: '组织安全带、安全帽及护目镜正确佩戴培训，木工班现场复训。',
-    nextPlan: '组织新批次防护用品验收，开展正确佩戴复训。',
-    hazardInspection: '木工班 2 人未规范佩戴护目镜，已现场纠正并记录。',
-    otherItems: '防护用品库存预警已报送物资部，破损安全帽待集中回收。',
+    workControlMeasures: '组织新批次防护用品验收，破损安全帽集中回收，落实佩戴巡查。',
+    nextTrainingPlan: '开展安全带、安全帽及护目镜正确佩戴复训。',
+    hazards: [
+      {
+        location: '木工班作业面',
+        description: '2 人未规范佩戴护目镜。',
+        measure: '现场纠正并记录，组织佩戴复训。',
+        hazardPhotos: ['护目镜未佩戴.jpg'],
+        rectifyPhotos: ['佩戴整改复查.jpg'],
+      },
+    ],
+    otherImportantItems: '防护用品库存预警已报送物资部，破损安全帽待集中回收。',
     trainingPhotos: ['劳保发放现场.jpg', '防护用品佩戴培训.jpg'],
   },
   'ehs-6': {
@@ -416,9 +484,10 @@ const EHS_DETAILS: Record<string, EhsReportDetail> = {
     safetyEducationCount: 2,
     trainingSummaryCount: 3,
     educationTraining: '组织事故案例学习与班前喊话强化培训，覆盖各作业班组。',
-    nextPlan: '开展事故案例学习，强化班前喊话与危险作业许可。',
-    hazardInspection: '未发现新增重大隐患，既有整改项已复查闭合。',
-    otherItems: '未遂事件报告已归档，案例学习签到表待下周收齐。',
+    workControlMeasures: '强化班前喊话与危险作业许可，跟踪未遂事件整改闭环。',
+    nextTrainingPlan: '开展事故案例学习，覆盖各作业班组。',
+    hazards: [],
+    otherImportantItems: '未遂事件报告已归档，案例学习签到表待下周收齐。',
     trainingPhotos: ['案例学习现场.jpg', '班前安全讲话.jpg'],
   },
 };
@@ -428,9 +497,10 @@ const DEFAULT_EHS_DETAIL: EhsReportDetail = {
   safetyEducationCount: 0,
   trainingSummaryCount: 0,
   educationTraining: '本周暂无教育培训。',
-  nextPlan: '按方案组织下周检查、交底与培训。',
-  hazardInspection: '本周暂无新增重大隐患。',
-  otherItems: '暂无其他事项。',
+  workControlMeasures: '按方案组织下周检查与现场管控。',
+  nextTrainingPlan: '按计划组织下周教育与培训。',
+  hazards: [],
+  otherImportantItems: '暂无其他重要事项。',
   trainingPhotos: [],
 };
 

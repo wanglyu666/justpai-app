@@ -35,6 +35,7 @@ type DigitState = {
 const SIZE_CONFIG = {
   sm: { cellHeight: 28, cellWidth: 18, fontSize: 28, minWidth: 44 },
   md: { cellHeight: 36, cellWidth: 22, fontSize: 36, minWidth: 48 },
+  lg: { cellHeight: 64, cellWidth: 40, fontSize: 64, minWidth: 80 },
 } as const;
 
 const props = withDefaults(
