@@ -3,12 +3,17 @@
   <view class="container page-safe-top">
     <!-- Header -->
     <view class="header">
-      <view class="avatar-btn" @click="goToProfile">
-        <image
-          src="https://api.dicebear.com/7.x/notionists/svg?seed=Admin&backgroundColor=f8aba6"
-          mode="aspectFill"
-          class="avatar-img"
-        ></image>
+      <view class="header-left">
+        <view class="avatar-btn" @click="goToProfile">
+          <image
+            src="https://api.dicebear.com/7.x/notionists/svg?seed=Admin&backgroundColor=f8aba6"
+            mode="aspectFill"
+            class="avatar-img"
+          ></image>
+        </view>
+        <view class="login-test-btn" @click="openWelcome">
+          <text class="login-test-text">登录测试</text>
+        </view>
       </view>
       <view class="header-actions">
         <view class="action-item" @click="goToMessages">
@@ -126,6 +131,9 @@
     <SlideOverPanel :show="todoVisible">
       <TodoDetailContent :todos="todos" @back="closeTodo" />
     </SlideOverPanel>
+    <SlideOverPanel :show="welcomeVisible">
+      <AuthWelcomeContent @back="closeWelcome" />
+    </SlideOverPanel>
   </view>
 </template>
 
@@ -137,6 +145,7 @@ import MessagesContent from '@/components/MessagesContent.vue';
 import BannerCardDeck from '@/components/BannerCardDeck.vue';
 import NewsDetailContent, { type NewsItem } from '@/components/NewsDetailContent.vue';
 import TodoDetailContent from '@/components/TodoDetailContent.vue';
+import AuthWelcomeContent from '@/components/AuthWelcomeContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
@@ -147,6 +156,7 @@ const {
   close: closeNews,
 } = useSlideOver();
 const { visible: todoVisible, open: openTodo, close: closeTodo } = useSlideOver();
+const { visible: welcomeVisible, open: openWelcome, close: closeWelcome } = useSlideOver();
 const selectedNews = ref<NewsItem | null>(null);
 
 const todos = ref([
@@ -317,6 +327,12 @@ const resetNews = () => {
   justify-content: space-between;
   align-items: center;
 }
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
 .avatar-btn {
   width: 88rpx;
   height: 88rpx;
@@ -332,6 +348,23 @@ const resetNews = () => {
   height: 100%;
   border-radius: 50%;
   display: block;
+}
+
+.login-test-btn {
+  height: 64rpx;
+  padding: 0 24rpx;
+  border-radius: 1998rpx;
+  background-color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-test-text {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
 }
 .icon-btn {
   width: 88rpx;
