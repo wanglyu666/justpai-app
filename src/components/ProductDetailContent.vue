@@ -1,21 +1,23 @@
 <template>
   <view class="product-detail">
     <view class="hero-section">
-      <view
-        class="icon-btn detail-header-btn detail-header-btn-left"
-        hover-class="icon-btn-hover"
-        :hover-stay-time="80"
-        @click.stop="handleBack"
-      >
-        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
-      </view>
-      <view
-        class="icon-btn detail-header-btn detail-header-btn-right"
-        hover-class="icon-btn-hover"
-        :hover-stay-time="80"
-        @click.stop="openConsultFlow"
-      >
-        <image src="/static/icons/message-circle.svg" mode="aspectFit" class="header-icon" />
+      <view class="detail-header">
+        <view
+          class="icon-btn"
+          hover-class="icon-btn-hover"
+          :hover-stay-time="80"
+          @click.stop="handleBack"
+        >
+          <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+        </view>
+        <view
+          class="icon-btn"
+          hover-class="icon-btn-hover"
+          :hover-stay-time="80"
+          @click.stop="openConsultFlow"
+        >
+          <image src="/static/icons/message-circle.svg" mode="aspectFit" class="header-icon" />
+        </view>
       </view>
 
       <swiper
@@ -312,29 +314,33 @@ const handleBack = usePageBack(() => emit('back'));
   box-sizing: border-box;
 }
 
-.detail-header-btn {
+.detail-header {
   position: absolute;
-  top: 72rpx;
+  /* 与全局返回按钮对齐：page-safe-top + 左右 48rpx；扣掉 edge-to-edge 面板已有顶距 */
+  top: calc(var(--page-safe-top) - 16rpx - env(safe-area-inset-top, 0px));
+  left: 0;
+  right: 0;
   z-index: 2;
-  background-color: #ffffff;
-}
-
-.detail-header-btn-left {
-  left: 40rpx;
-}
-
-.detail-header-btn-right {
-  right: 40rpx;
+  padding: 0 48rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  pointer-events: none;
 }
 
 .icon-btn {
   width: 88rpx;
   height: 88rpx;
   border-radius: 44rpx;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  pointer-events: auto;
 }
 
 .icon-btn-hover {

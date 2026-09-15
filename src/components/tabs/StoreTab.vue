@@ -1,10 +1,19 @@
 <template>
   <view class="tab-root">
-  <view class="container page-safe-top">
+  <view class="container page-safe-top" :class="{ 'is-searching': searchMode }" @scroll="scheduleStickyActionsUpdate">
     <!-- Header -->
     <view class="header">
-      <text class="page-title">商店</text>
-      <view class="header-actions">
+      <view
+        class="search-back"
+        :class="{ visible: searchMode }"
+        hover-class="search-back-hover"
+        :hover-stay-time="80"
+        @click="closeSearch"
+      >
+        <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
+      </view>
+      <text class="page-title store-fade" :class="{ hidden: searchMode }">商店</text>
+      <view class="header-actions store-fade" :class="{ hidden: searchMode }">
         <view class="action-item cart-action" @click="openCart">
           <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="action-icon" />
           <view v-if="cartCount > 0" class="cart-badge">
@@ -19,14 +28,19 @@
     </view>
 
     <!-- Search -->
-    <view class="search-row">
-      <view class="search-bar">
+    <view class="search-row" :class="{ 'is-expanded': searchMode }">
+      <view class="search-bar" @click="openSearch">
         <image src="/static/icons/search.svg" mode="aspectFit" class="search-icon" />
         <input
           class="search-input"
           type="text"
+          v-model="searchQuery"
+          :focus="searchFocus"
+          confirm-type="search"
           placeholder="搜索商品"
           placeholder-class="search-placeholder"
+          @focus="openSearch"
+          @confirm="onSearchConfirm"
         />
       </view>
       <view class="filter-btn" @click="openFilterModal">
@@ -34,6 +48,44 @@
       </view>
     </view>
 
+    <view class="search-panel" :class="{ visible: searchMode }">
+      <view v-if="showSearchHistory" class="search-history">
+        <text class="search-panel-heading">历史搜索</text>
+        <view
+          v-for="item in searchHistory"
+          :key="item"
+          class="search-history-row"
+          hover-class="search-row-hover"
+          :hover-stay-time="80"
+          @click="applyHistory(item)"
+        >
+          <image src="/static/icons/search.svg" mode="aspectFit" class="search-history-icon" />
+          <text class="search-history-text">{{ item }}</text>
+        </view>
+      </view>
+
+      <view v-else-if="hasSearchQuery" class="search-results">
+        <view
+          v-for="product in searchResults"
+          :key="product.id"
+          class="search-result-row"
+          hover-class="search-row-hover"
+          :hover-stay-time="80"
+          @click="openFromSearch(product)"
+        >
+          <image :src="product.image" mode="aspectFill" class="search-result-image" />
+          <view class="search-result-info">
+            <text class="search-result-name">{{ product.name }}</text>
+            <text class="search-result-price">¥ {{ product.price }}</text>
+          </view>
+        </view>
+        <view v-if="searchResults.length === 0" class="search-empty">
+          <text class="search-empty-text">未找到相关商品</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="store-body store-fade" :class="{ hidden: searchMode }">
     <!-- Promo Banner -->
     <view class="banner-wrap">
       <view class="banner-card">
@@ -107,21 +159,17 @@
             <view class="product-image-wrap">
               <image :src="product.image" mode="aspectFill" class="product-image" />
             </view>
-            <view class="product-meta">
-              <text class="product-price">¥ {{ product.price }}</text>
-              <view class="wishlist-btn" @click.stop>
-                <image src="/static/icons/heart-outline.svg" mode="aspectFit" class="heart-icon" />
-              </view>
-            </view>
             <text class="product-name">{{ product.name }}</text>
+            <text class="product-price">¥ {{ product.price }}</text>
           </view>
         </view>
       </view>
     </FadeTransition>
+    </view>
 
     <view
-      class="sticky-header-actions frosted-glass frosted-glass--tabbar"
-      :class="{ visible: stickyActionsVisible }"
+      class="sticky-header-actions frosted-glass frosted-glass--tabbar store-fade"
+      :class="{ visible: stickyActionsVisible && !searchMode, hidden: searchMode }"
       :style="stickyActionsGlassStyle"
     >
       <view class="sticky-action-item cart-action" @click="openCart">
@@ -173,10 +221,14 @@ import FadeTransition from '@/components/FadeTransition.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { useMainTab } from '@/composables/useMainTab';
 import { useCart } from '@/composables/useCart';
+import { usePageBackWhen } from '@/composables/usePageBack';
+import { useStoreSearchHistory } from '@/composables/useStoreSearchHistory';
+import { storeSearchActive } from '@/composables/useStoreSearchMode';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
 import { rpx2px } from '@/utils/rpx';
 import {
   storeProducts,
+  annualProducts,
   annualRegions,
   getAnnualProductsByRegion,
   type AnnualRegionId,
@@ -198,6 +250,10 @@ let stickyScrollFrame = 0;
 
 const updateStickyActionsVisibility = () => {
   if (!instance) return;
+  if (searchMode.value) {
+    stickyActionsVisible.value = false;
+    return;
+  }
 
   uni.createSelectorQuery()
     .in(instance)
@@ -226,6 +282,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  storeSearchActive.value = false;
   if (stickyScrollFrame) {
     cancelAnimationFrame(stickyScrollFrame);
     stickyScrollFrame = 0;
@@ -243,11 +300,68 @@ const { visible: ordersVisible, open: openOrders, close: closeOrders } = useSlid
 const { visible: filterVisible, open: openFilterModal, close: closeFilterModal } = useSlideOver();
 const { activeTabPath } = useMainTab();
 const { totalQuantity } = useCart();
+const { history: searchHistory, remember: rememberSearch } = useStoreSearchHistory();
+
+const searchMode = ref(false);
+const searchFocus = ref(false);
+const searchQuery = ref('');
+
+const hasSearchQuery = computed(() => searchQuery.value.trim().length > 0);
+const showSearchHistory = computed(
+  () => searchMode.value && !hasSearchQuery.value && searchHistory.value.length > 0,
+);
+
+const searchableProducts = computed(() => [...storeProducts, ...annualProducts]);
+
+const searchResults = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase();
+  if (!query) return [];
+  return searchableProducts.value.filter((product) => {
+    return (
+      product.name.toLowerCase().includes(query) ||
+      product.brand.toLowerCase().includes(query) ||
+      product.description.toLowerCase().includes(query)
+    );
+  });
+});
+
+const openSearch = () => {
+  if (searchMode.value) {
+    searchFocus.value = true;
+    return;
+  }
+  searchMode.value = true;
+  storeSearchActive.value = true;
+  stickyActionsVisible.value = false;
+  nextTick(() => {
+    searchFocus.value = true;
+  });
+};
+
+const closeSearch = () => {
+  if (!searchMode.value) return;
+  searchMode.value = false;
+  storeSearchActive.value = false;
+  searchFocus.value = false;
+  searchQuery.value = '';
+};
+
+const applyHistory = (keyword: string) => {
+  searchQuery.value = keyword;
+  searchFocus.value = true;
+};
+
+const onSearchConfirm = () => {
+  rememberSearch(searchQuery.value);
+};
+
+usePageBackWhen(searchMode, closeSearch);
 
 // 筛选弹层 Teleport 到 body，离开商店 Tab 时必须关掉，避免盖在其他 Tab 上
 watch(activeTabPath, (path) => {
-  if (path !== 'pages/store/index' && filterVisible.value) {
-    closeFilterModal();
+  if (path !== 'pages/store/index') {
+    if (filterVisible.value) closeFilterModal();
+    if (searchMode.value) closeSearch();
   }
 });
 const selectedProduct = ref<ProductDetail | null>(null);
@@ -294,6 +408,11 @@ const openProductDetail = (product: ProductDetail) => {
 
 const closeProductDetail = () => {
   closeDetail();
+};
+
+const openFromSearch = (product: ProductDetail) => {
+  rememberSearch(searchQuery.value || product.name);
+  openProductDetail(product);
 };
 
 const activeCategory = ref('all');
@@ -401,10 +520,61 @@ watch([showSubcategories, productListKey], () => {
 }
 
 .header {
+  position: relative;
   padding: 0 48rpx 40rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 88rpx;
+  box-sizing: content-box;
+}
+
+.search-back {
+  position: absolute;
+  left: 48rpx;
+  top: 0;
+  z-index: 2;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-back.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.search-back-hover {
+  opacity: 0.85;
+}
+
+.header-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.store-fade {
+  transition: opacity 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.store-fade.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.store-body.hidden {
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 .page-title {
@@ -519,10 +689,16 @@ watch([showSubcategories, productListKey], () => {
   align-items: center;
   gap: 24rpx;
   margin-bottom: 48rpx;
+  transition: gap 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.search-row.is-expanded {
+  gap: 0;
 }
 
 .search-bar {
   flex: 1;
+  min-width: 0;
   height: 104rpx;
   background-color: #ffffff;
   border-radius: 1998rpx;
@@ -560,6 +736,120 @@ watch([showSubcategories, productListKey], () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+  transition:
+    width 320ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.search-row.is-expanded .filter-btn {
+  width: 0;
+  opacity: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.search-panel {
+  padding: 0;
+  box-sizing: border-box;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0ms linear 160ms;
+}
+
+.search-panel.visible {
+  padding: 0 48rpx 80rpx;
+  max-height: none;
+  overflow: visible;
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition:
+    opacity 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0ms linear 0ms;
+}
+
+.search-panel-heading {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #6b7280;
+  margin-bottom: 8rpx;
+}
+
+.search-history-row,
+.search-result-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 24rpx 8rpx;
+}
+
+.search-row-hover {
+  opacity: 0.72;
+}
+
+.search-history-icon {
+  width: 36rpx;
+  height: 36rpx;
+  flex-shrink: 0;
+  opacity: 0.45;
+}
+
+.search-history-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.search-result-image {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 20rpx;
+  background-color: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.search-result-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.search-result-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-result-price {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.search-empty {
+  padding: 80rpx 0;
+  display: flex;
+  justify-content: center;
+}
+
+.search-empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
 }
 
 .filter-icon {
@@ -767,40 +1057,22 @@ watch([showSubcategories, productListKey], () => {
   display: block;
 }
 
-.product-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.product-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.35;
   margin-bottom: 8rpx;
 }
 
 .product-price {
+  display: block;
   font-size: 32rpx;
   font-weight: 800;
   color: #111827;
-}
-
-.wishlist-btn {
-  width: 56rpx;
-  height: 56rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.heart-icon {
-  width: 36rpx;
-  height: 36rpx;
-}
-
-.product-name {
-  display: block;
-  font-size: 26rpx;
-  font-weight: 500;
-  color: #6b7280;
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 </style>

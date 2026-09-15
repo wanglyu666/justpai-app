@@ -2,7 +2,7 @@
   <view class="tabbar-root">
     <view
       class="tabbar-wrapper"
-      :class="{ 'is-covered': hasSecondaryPage }"
+      :class="{ 'is-covered': hasSecondaryPage, 'is-faded': storeSearchActive }"
       :style="{ zIndex: TAB_BAR_Z_INDEX }"
     >
       <view class="tabbar frosted-glass frosted-glass--tabbar" :style="tabbarGlassStyle">
@@ -41,6 +41,7 @@ import {
   switchTabWithFade,
 } from '@/utils/pageFadeTransition';
 import { hasSecondaryPage } from '@/composables/useSecondaryPage';
+import { storeSearchActive } from '@/composables/useStoreSearchMode';
 import {
   getIndicatorOffsetX,
   setSharedTabIndicatorIndex,
@@ -175,6 +176,9 @@ onMounted(() => {
   bottom: 48rpx;
   left: 48rpx;
   right: 48rpx;
+  transition:
+    opacity 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0ms linear 0ms;
 }
 
 .tabbar-wrapper.is-covered {
@@ -184,6 +188,15 @@ onMounted(() => {
 .tabbar-wrapper.is-covered .tabbar {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+
+.tabbar-wrapper.is-faded {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0ms linear 160ms;
 }
 
 .tabbar {
