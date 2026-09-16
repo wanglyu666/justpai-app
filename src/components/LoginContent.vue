@@ -1,5 +1,10 @@
 <template>
-  <view class="login-page">
+  <AuthSuccessLayer
+    :faded="successFaded"
+    :hello-visible="successHelloVisible"
+    :welcome-visible="successWelcomeVisible"
+  >
+    <view class="login-page">
     <view class="page-header">
       <view class="icon-btn" @click="handleBack">
         <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
@@ -33,29 +38,36 @@
         </view>
       </view>
 
-      <view class="field-group">
-        <text class="field-label">请输入密码</text>
-        <view class="input-pill">
-          <input
-            class="field-input"
-            :password="!showPassword"
-            v-model="password"
-            placeholder="请输入密码"
-            placeholder-class="field-placeholder"
-          />
-          <view class="eye-btn" @click.stop="showPassword = !showPassword">
-            <image
-              :src="showPassword ? '/static/icons/eye-off.svg' : '/static/icons/eye.svg'"
-              mode="aspectFit"
-              class="eye-icon"
+      <view class="password-slot" :class="{ collapsed: codeMode }">
+        <view class="field-group">
+          <text class="field-label">请输入密码</text>
+          <view class="input-pill">
+            <input
+              class="field-input"
+              :password="!showPassword"
+              v-model="password"
+              placeholder="请输入密码"
+              placeholder-class="field-placeholder"
             />
+            <view class="eye-btn" @click.stop="showPassword = !showPassword">
+              <image
+                :src="showPassword ? '/static/icons/eye-off.svg' : '/static/icons/eye.svg'"
+                mode="aspectFit"
+                class="eye-icon"
+              />
+            </view>
           </view>
+          <text v-if="passwordError" class="auth-error">{{ passwordError }}</text>
+          <text class="forgot-link" @click="onForgotPassword">忘记密码？</text>
         </view>
-        <text class="forgot-link" @click="onForgotPassword">忘记密码？</text>
       </view>
 
-      <view class="login-btn" @click="onLogin">
-        <text class="login-btn-text">登录</text>
+      <view
+        class="login-btn"
+        :class="{ 'is-disabled': !canSubmit }"
+        @click="onPrimary"
+      >
+        <text class="login-btn-text">{{ codeMode ? '下一步' : '登录' }}</text>
       </view>
 
       <view class="signup-row">
@@ -65,37 +77,62 @@
 
       <text class="divider-or">或</text>
 
-      <view class="social-btn" @click="onSocial('Google')">
-        <image src="/static/icons/google.svg" mode="aspectFit" class="social-icon" />
-        <text class="social-text">通过 Google 继续</text>
+      <view class="social-btn" @click="onToggleCodeMode">
+        <image
+          :key="codeMode ? 'password' : 'code'"
+          :src="codeMode ? '/static/icons/eye.svg' : '/static/icons/message-circle.svg'"
+          mode="aspectFit"
+          class="social-icon"
+          :class="{ 'social-icon-password': codeMode }"
+        />
+        <text class="social-text">{{ codeMode ? '通过 密码 继续' : '通过 验证码 继续' }}</text>
       </view>
 
-      <view class="social-btn" @click="onSocial('Apple')">
-        <image src="/static/icons/apple.svg" mode="aspectFit" class="social-icon" />
-        <text class="social-text">通过 Apple 继续</text>
+      <view class="social-btn" @click="onSocial('微信')">
+        <image src="/static/icons/wechatgreen.svg" mode="aspectFit" class="social-icon social-icon-wechat" />
+        <text class="social-text">通过 微信 继续</text>
       </view>
 
       <text class="divider-or">或</text>
 
       <text class="guest-link" @click="onGuest">游客登录</text>
     </view>
-  </view>
+    </view>
+  </AuthSuccessLayer>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import AuthSuccessLayer from '@/components/AuthSuccessLayer.vue';
+import { useAuthSuccessSequence } from '@/composables/useAuthSuccessSequence';
 import { usePageBack } from '@/composables/usePageBack';
 
 const emit = defineEmits<{
   back: [];
   done: [];
+  otp: [phone: string];
 }>();
 
+const {
+  faded: successFaded,
+  helloVisible: successHelloVisible,
+  welcomeVisible: successWelcomeVisible,
+  play: playSuccess,
+} = useAuthSuccessSequence();
 const phone = ref('');
 const password = ref('');
 const showPassword = ref(false);
+const codeMode = ref(false);
+const passwordError = ref('');
+const submitting = ref(false);
 
 const isPhoneValid = computed(() => /^1\d{10}$/.test(phone.value.trim()));
+const canSubmit = computed(() => {
+  if (submitting.value) return false;
+  if (!isPhoneValid.value) return false;
+  if (!codeMode.value && !password.value.trim()) return false;
+  return true;
+});
 
 const handleBack = usePageBack(() => emit('back'));
 
@@ -103,16 +140,19 @@ const toast = (title: string) => {
   uni.showToast({ title, icon: 'none' });
 };
 
-const onLogin = () => {
-  if (!isPhoneValid.value) {
-    toast('请输入正确的手机号');
+const onPrimary = async () => {
+  if (!canSubmit.value) return;
+  if (codeMode.value) {
+    emit('otp', phone.value.trim());
     return;
   }
-  if (!password.value.trim()) {
-    toast('请输入密码');
+  if (password.value !== '2222') {
+    passwordError.value = '密码不正确，请重新输入';
     return;
   }
-  uni.showToast({ title: '登录成功', icon: 'success' });
+  submitting.value = true;
+  passwordError.value = '';
+  await playSuccess();
   emit('done');
 };
 
@@ -124,6 +164,11 @@ const onSignUp = () => {
   toast('注册功能开发中');
 };
 
+const onToggleCodeMode = () => {
+  passwordError.value = '';
+  codeMode.value = !codeMode.value;
+};
+
 const onSocial = (name: string) => {
   toast(`${name} 登录开发中`);
 };
@@ -131,6 +176,10 @@ const onSocial = (name: string) => {
 const onGuest = () => {
   emit('done');
 };
+
+watch(password, () => {
+  passwordError.value = '';
+});
 </script>
 
 <style scoped>
@@ -185,6 +234,23 @@ const onGuest = () => {
 
 .field-group {
   margin-bottom: 36rpx;
+}
+
+.password-slot {
+  overflow: hidden;
+  max-height: 320rpx;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    max-height 320ms ease,
+    opacity 240ms ease,
+    transform 320ms ease;
+}
+
+.password-slot.collapsed {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-16rpx);
 }
 
 .field-label {
@@ -278,6 +344,20 @@ const onGuest = () => {
   align-items: center;
   justify-content: center;
   margin-top: 12rpx;
+  transition: opacity 200ms ease;
+}
+
+.login-btn.is-disabled {
+  opacity: 0.28;
+}
+
+.auth-error {
+  display: block;
+  text-align: center;
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #dc2626;
 }
 
 .login-btn-text {
@@ -329,6 +409,15 @@ const onGuest = () => {
 .social-icon {
   width: 40rpx;
   height: 40rpx;
+}
+
+.social-icon-password {
+  filter: brightness(0);
+}
+
+.social-icon-wechat {
+  width: 48rpx;
+  height: 48rpx;
 }
 
 .social-text {

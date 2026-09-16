@@ -131,14 +131,22 @@
     <SlideOverPanel :show="todoVisible">
       <TodoDetailContent :todos="todos" @back="closeTodo" />
     </SlideOverPanel>
-    <SlideOverPanel :show="welcomeVisible">
-      <AuthWelcomeContent @back="closeWelcome" />
+    <SlideOverPanel :show="welcomeVisible" :exit-left="authExitLeft">
+      <AuthWelcomeContent
+        :exit-left="authExitLeft"
+        @back="closeWelcome"
+        @otp="openOtpPage"
+        @success="finishAuthSuccess"
+      />
+    </SlideOverPanel>
+    <SlideOverPanel :show="otpVisible" :z-index="2200" :exit-left="authExitLeft">
+      <LoginOtpContent :phone="otpPhone" @back="closeOtp" @done="finishAuthSuccess" />
     </SlideOverPanel>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import ProfileContent from '@/components/ProfileContent.vue';
 import MessagesContent from '@/components/MessagesContent.vue';
@@ -146,6 +154,7 @@ import BannerCardDeck from '@/components/BannerCardDeck.vue';
 import NewsDetailContent, { type NewsItem } from '@/components/NewsDetailContent.vue';
 import TodoDetailContent from '@/components/TodoDetailContent.vue';
 import AuthWelcomeContent from '@/components/AuthWelcomeContent.vue';
+import LoginOtpContent from '@/components/LoginOtpContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
@@ -157,6 +166,9 @@ const {
 } = useSlideOver();
 const { visible: todoVisible, open: openTodo, close: closeTodo } = useSlideOver();
 const { visible: welcomeVisible, open: openWelcome, close: closeWelcome } = useSlideOver();
+const { visible: otpVisible, open: openOtp, close: closeOtp } = useSlideOver();
+const otpPhone = ref('');
+const authExitLeft = ref(false);
 const selectedNews = ref<NewsItem | null>(null);
 
 const todos = ref([
@@ -306,6 +318,21 @@ const openNews = (item: NewsItem) => {
 const resetNews = () => {
   selectedNews.value = null;
 };
+
+const openOtpPage = (phone: string) => {
+  otpPhone.value = phone;
+  openOtp();
+};
+
+const finishAuthSuccess = () => {
+  authExitLeft.value = true;
+  closeOtp();
+  closeWelcome();
+};
+
+watch(welcomeVisible, (open) => {
+  if (open) authExitLeft.value = false;
+});
 </script>
 
 <style scoped>

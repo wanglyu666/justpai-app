@@ -1,8 +1,9 @@
 <template>
   <view
+    ref="panelRef"
     v-if="rendered"
     class="slide-over-panel"
-    :class="{ 'is-entered': entered }"
+    :class="{ 'is-entered': entered, 'is-exit-left': !entered && exitToLeft }"
     :style="panelStyle"
   >
     <view
@@ -30,11 +31,13 @@ const props = withDefaults(
     zIndex?: number;
     edgeToEdge?: boolean;
     contentSafeTop?: boolean;
+    exitLeft?: boolean;
   }>(),
   {
     zIndex: SECONDARY_PAGE_Z_INDEX,
     edgeToEdge: false,
     contentSafeTop: false,
+    exitLeft: false,
   },
 );
 
@@ -54,9 +57,17 @@ const emit = defineEmits<{
 /** 不用 Vue Transition：App 端 leave 常卡住导致关不掉；改用 class + 超时兜底 */
 const rendered = ref(props.show);
 const entered = ref(props.show);
+const exitToLeft = ref(false);
+const panelRef = ref<{ $el?: HTMLElement } | HTMLElement | null>(null);
 registerSecondaryPage(rendered);
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
 let showSeq = 0;
+
+const forceReflow = () => {
+  const raw = panelRef.value as { $el?: HTMLElement } | HTMLElement | null;
+  const el = raw && typeof raw === 'object' && '$el' in raw ? raw.$el : raw;
+  if (el) void el.offsetWidth;
+};
 
 const clearCloseTimer = () => {
   if (closeTimer) {
@@ -80,15 +91,18 @@ watch(
     clearCloseTimer();
 
     if (show) {
+      exitToLeft.value = false;
       rendered.value = true;
       entered.value = false;
       await nextTick();
-      await waitFrames(1);
+      await waitFrames(2);
       if (seq !== showSeq) return;
+      forceReflow();
       entered.value = true;
       return;
     }
 
+    exitToLeft.value = props.exitLeft;
     entered.value = false;
     // App 上 transitionend 不可靠，超时后强制卸载
     closeTimer = setTimeout(finishClose, SLIDE_OVER_DURATION_MS + 80);
@@ -123,6 +137,10 @@ defineExpose({
 
 .slide-over-panel.is-entered {
   transform: translateX(0);
+}
+
+.slide-over-panel.is-exit-left {
+  transform: translateX(-100%);
 }
 
 /* 滚动放在内层，外层固定铺底色，弹性越界时仍显示面板背景而不露出底层 */

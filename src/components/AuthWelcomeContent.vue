@@ -43,8 +43,12 @@
       </view>
     </view>
 
-    <SlideOverPanel :show="loginVisible" :z-index="NESTED_PAGE_Z_INDEX">
-      <LoginContent @back="closeLogin" @done="finishAuth" />
+    <SlideOverPanel :show="loginVisible" :z-index="NESTED_PAGE_Z_INDEX" :exit-left="exitLeft">
+      <LoginContent
+        @back="closeLogin"
+        @done="finishAuth"
+        @otp="onOpenOtp"
+      />
     </SlideOverPanel>
   </view>
 </template>
@@ -57,8 +61,14 @@ import { usePageBack } from '@/composables/usePageBack';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { NESTED_PAGE_Z_INDEX } from '@/utils/pageFadeTransition';
 
+defineProps<{
+  exitLeft?: boolean;
+}>();
+
 const emit = defineEmits<{
   back: [];
+  otp: [phone: string];
+  success: [];
 }>();
 
 const { visible: loginVisible, open: openLogin, close: closeLogin } = useSlideOver();
@@ -79,8 +89,11 @@ const onSwiperChange = (event: { detail: { current: number } }) => {
 };
 
 const finishAuth = () => {
-  closeLogin();
-  emit('back');
+  emit('success');
+};
+
+const onOpenOtp = (phone: string) => {
+  emit('otp', phone);
 };
 </script>
 
