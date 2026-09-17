@@ -14,6 +14,7 @@ onLaunch(() => {
 <style>
 @import '@/styles/frostedGlass.css';
 @import '@/styles/sheetPageLayout.css';
+@import '@/styles/reportChapterNav.css';
 
 /* Global styles */
 page,

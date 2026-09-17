@@ -91,7 +91,7 @@ export function useFeedbackItems() {
     feedbackItems.value = [
       {
         id: nextId,
-        name: payload.projectName,
+        name: payload.projectName || '未选择项目',
         time: formatNow(),
         status: 'pending_reply',
         content: payload.content,

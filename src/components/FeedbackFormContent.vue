@@ -9,7 +9,6 @@
       <text class="section-title">项目选择</text>
       <view class="field-group" @click.stop>
         <text class="field-label">
-          <text class="required">*</text>
           所属项目
         </text>
         <view class="dropdown-wrap">
@@ -162,9 +161,7 @@ const selectedProject = computed(
   () => projects.find((item) => item.id === selectedProjectId.value) ?? null,
 );
 
-const isSubmitEnabled = computed(
-  () => !!selectedProject.value && content.value.trim().length > 0,
-);
+const isSubmitEnabled = computed(() => content.value.trim().length > 0);
 
 const closeProjectDropdown = () => {
   projectOpen.value = false;
@@ -232,10 +229,10 @@ const handleBack = () => {
 };
 
 const handleSubmit = () => {
-  if (!isSubmitEnabled.value || !selectedProject.value) return;
+  if (!isSubmitEnabled.value) return;
   emit('submit', {
-    projectId: selectedProject.value.id,
-    projectName: selectedProject.value.name,
+    projectId: selectedProject.value?.id ?? '',
+    projectName: selectedProject.value?.name ?? '',
     content: content.value.trim(),
     attachments: mediaFiles.value.map((file) => file.name),
   });

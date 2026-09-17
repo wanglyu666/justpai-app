@@ -18,159 +18,170 @@
         </view>
       </view>
 
-      <StatusCapsuleSwitch
-        class="status-capsule-wrap"
-        v-model="activeSection"
-        :tabs="sectionTabs"
-      />
+      <view
+        v-for="chapter in chapters"
+        :key="chapter.id"
+        class="report-chapter"
+      >
+        <text :id="chapterDomId(chapter.id)" class="report-chapter-heading">{{ chapter.label }}</text>
 
-      <view v-if="activeSection === 'summary'" class="section-list">
-        <view class="section-card">
-          <text class="section-title">本周开展的特殊作业</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.specialOperations"
-            disabled
-            auto-height
-          />
-        </view>
-        <view class="section-card stat-card">
-          <view class="stat-row">
-            <text class="stat-label">本周开展的安全教育次数</text>
-            <view class="stat-num">
-              <text class="stat-count">{{ detail.safetyEducationCount }}</text>
-              <text class="stat-unit">次</text>
+        <view v-if="chapter.id === 'summary'" class="section-list">
+          <view class="section-card anchor-size-card">
+            <text class="section-title">本周开展的特殊作业</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.specialOperations"
+              disabled
+              auto-height
+            />
+          </view>
+          <view class="section-card stat-card">
+            <view class="stat-row">
+              <text class="stat-label">本周开展的安全教育次数</text>
+              <view class="stat-num">
+                <text class="stat-count">{{ detail.safetyEducationCount }}</text>
+                <text class="stat-unit">次</text>
+              </view>
+            </view>
+            <view class="stat-divider" />
+            <view class="stat-row">
+              <text class="stat-label">共开展教育与培训总结</text>
+              <view class="stat-num">
+                <text class="stat-count">{{ detail.trainingSummaryCount }}</text>
+                <text class="stat-unit">次</text>
+              </view>
             </view>
           </view>
-          <view class="stat-divider" />
-          <view class="stat-row">
-            <text class="stat-label">共开展教育与培训总结</text>
-            <view class="stat-num">
-              <text class="stat-count">{{ detail.trainingSummaryCount }}</text>
-              <text class="stat-unit">次</text>
-            </view>
+          <view class="section-card">
+            <text class="section-title">本周开展的教育培训</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.educationTraining"
+              disabled
+              auto-height
+            />
           </view>
         </view>
-        <view class="section-card">
-          <text class="section-title">本周开展的教育培训</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.educationTraining"
-            disabled
-            auto-height
-          />
-        </view>
-      </view>
 
-      <view v-else-if="activeSection === 'hazards'" class="section-list">
-        <view class="section-card">
-          <text class="section-title">隐患排查</text>
-          <view v-if="detail.hazards.length" class="nested-list">
-            <view
-              v-for="(hazard, index) in detail.hazards"
-              :key="index"
-              class="nested-card"
-            >
-              <view class="nested-head">
-                <text class="nested-label">位置</text>
-                <text class="nested-location">{{ hazard.location }}</text>
-              </view>
-              <view class="nested-pair">
-                <view class="nested-field">
-                  <text class="nested-label">隐患描述</text>
-                  <textarea
-                    class="field-textarea"
-                    :value="hazard.description"
-                    disabled
-                    auto-height
-                  />
+        <view v-else-if="chapter.id === 'nextPlan'" class="section-list">
+          <view
+            v-for="card in nextPlanCards"
+            :key="card.title"
+            class="section-card"
+          >
+            <text class="section-title">{{ card.title }}</text>
+            <textarea
+              class="field-textarea"
+              :value="card.value"
+              disabled
+              auto-height
+            />
+          </view>
+        </view>
+
+        <view v-else-if="chapter.id === 'hazards'" class="section-list">
+          <view class="section-card">
+            <text class="section-title">隐患排查</text>
+            <view v-if="detail.hazards.length" class="nested-list">
+              <view
+                v-for="(hazard, index) in detail.hazards"
+                :key="index"
+                class="nested-card"
+              >
+                <view class="nested-head">
+                  <text class="nested-label">位置</text>
+                  <text class="nested-location">{{ hazard.location }}</text>
                 </view>
-                <view class="nested-field">
-                  <text class="nested-label">整改措施</text>
-                  <textarea
-                    class="field-textarea"
-                    :value="hazard.measure"
-                    disabled
-                    auto-height
-                  />
-                </view>
-              </view>
-              <view class="nested-pair">
-                <view class="nested-field">
-                  <text class="nested-label">隐患照片</text>
-                  <view v-if="hazard.hazardPhotos.length" class="attach-list">
-                    <FileAttachmentItem
-                      v-for="(file, fileIndex) in hazard.hazardPhotos"
-                      :key="`hazard-${index}-${fileIndex}`"
-                      :name="file"
+                <view class="nested-pair">
+                  <view class="nested-field">
+                    <text class="nested-label">隐患描述</text>
+                    <textarea
+                      class="field-textarea"
+                      :value="hazard.description"
+                      disabled
+                      auto-height
                     />
                   </view>
-                  <text v-else class="attach-empty">暂无隐患照片</text>
-                </view>
-                <view class="nested-field">
-                  <text class="nested-label">整改完成照片</text>
-                  <view v-if="hazard.rectifyPhotos.length" class="attach-list">
-                    <FileAttachmentItem
-                      v-for="(file, fileIndex) in hazard.rectifyPhotos"
-                      :key="`rectify-${index}-${fileIndex}`"
-                      :name="file"
+                  <view class="nested-field">
+                    <text class="nested-label">整改措施</text>
+                    <textarea
+                      class="field-textarea"
+                      :value="hazard.measure"
+                      disabled
+                      auto-height
                     />
                   </view>
-                  <text v-else class="attach-empty">暂无整改完成照片</text>
+                </view>
+                <view class="nested-pair">
+                  <view class="nested-field">
+                    <text class="nested-label">隐患照片</text>
+                    <view v-if="hazard.hazardPhotos.length" class="attach-list">
+                      <FileAttachmentItem
+                        v-for="(file, fileIndex) in hazard.hazardPhotos"
+                        :key="`hazard-${index}-${fileIndex}`"
+                        :name="file"
+                      />
+                    </view>
+                    <text v-else class="attach-empty">暂无隐患照片</text>
+                  </view>
+                  <view class="nested-field">
+                    <text class="nested-label">整改完成照片</text>
+                    <view v-if="hazard.rectifyPhotos.length" class="attach-list">
+                      <FileAttachmentItem
+                        v-for="(file, fileIndex) in hazard.rectifyPhotos"
+                        :key="`rectify-${index}-${fileIndex}`"
+                        :name="file"
+                      />
+                    </view>
+                    <text v-else class="attach-empty">暂无整改完成照片</text>
+                  </view>
                 </view>
               </view>
             </view>
+            <text v-else class="attach-empty">暂无隐患记录</text>
           </view>
-          <text v-else class="attach-empty">暂无隐患记录</text>
+          <view class="section-card">
+            <text class="section-title">其他重要事项</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.otherImportantItems"
+              disabled
+              auto-height
+            />
+          </view>
         </view>
-        <view class="section-card">
-          <text class="section-title">其他重要事项</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.otherImportantItems"
-            disabled
-            auto-height
-          />
-        </view>
-      </view>
 
-      <view v-else-if="textCards.length" class="section-list">
-        <view
-          v-for="card in textCards"
-          :key="card.title"
-          class="section-card"
-        >
-          <text class="section-title">{{ card.title }}</text>
-          <textarea
-            class="field-textarea"
-            :value="card.value"
-            disabled
-            auto-height
-          />
-        </view>
+        <FileAttachmentCard
+          v-else
+          title=""
+          :files="detail.trainingPhotos"
+          empty-text="暂无培训照片"
+        />
       </view>
-
-      <FileAttachmentCard
-        v-else
-        title="培训照片"
-        :files="detail.trainingPhotos"
-        empty-text="暂无培训照片"
-      />
     </view>
+
+    <ReportChapterToc
+      :chapters="chapters"
+      :active-id="activeChapter"
+      :visible="tocVisible"
+      :frosted="tocFrosted"
+      :glass-style="tocGlassStyle"
+      @select="scrollToChapter"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
+import { computed } from 'vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import FileAttachmentItem from '@/components/FileAttachmentItem.vue';
+import ReportChapterToc from '@/components/ReportChapterToc.vue';
 import {
   EHS_REPORT_TABS,
   useConstructionReports,
   type ConstructionReportItem,
-  type EhsReportSection,
 } from '@/composables/useConstructionReports';
+import { useReportChapterNav } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
 
 const props = defineProps<{
@@ -182,28 +193,26 @@ const emit = defineEmits<{
 }>();
 
 const { getEhsDetail } = useConstructionReports();
-const sectionTabs = EHS_REPORT_TABS;
-const activeSection = ref<EhsReportSection>('summary');
+const chapters = EHS_REPORT_TABS;
+const {
+  activeChapter,
+  tocVisible,
+  tocFrosted,
+  tocGlassStyle,
+  chapterDomId,
+  scrollToChapter,
+} = useReportChapterNav({
+  chapters,
+  idPrefix: 'ehs-chapter',
+  resetKey: computed(() => props.item.id),
+});
 
 const detail = computed(() => getEhsDetail(props.item.id));
 
-const textCards = computed(() => {
-  const data = detail.value;
-  if (activeSection.value === 'nextPlan') {
-    return [
-      { title: '工作内容及控制措施', value: data.workControlMeasures },
-      { title: '教育与培训计划', value: data.nextTrainingPlan },
-    ];
-  }
-  return [];
-});
-
-watch(
-  () => props.item.id,
-  () => {
-    activeSection.value = 'summary';
-  },
-);
+const nextPlanCards = computed(() => [
+  { title: '工作内容及控制措施', value: detail.value.workControlMeasures },
+  { title: '教育与培训计划', value: detail.value.nextTrainingPlan },
+]);
 
 const handleBack = usePageBack(() => emit('back'));
 </script>
@@ -248,7 +257,7 @@ const handleBack = usePageBack(() => emit('back'));
   align-items: center;
   justify-content: space-between;
   gap: 24rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 56rpx;
 }
 
 .title-block {
@@ -270,10 +279,6 @@ const handleBack = usePageBack(() => emit('back'));
   font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
-}
-
-.status-capsule-wrap {
-  margin-bottom: 48rpx;
 }
 
 .section-list {

@@ -18,107 +18,118 @@
         </view>
       </view>
 
-      <StatusCapsuleSwitch
-        class="status-capsule-wrap"
-        v-model="activeSection"
-        :tabs="sectionTabs"
-      />
+      <view
+        v-for="chapter in chapters"
+        :key="chapter.id"
+        class="report-chapter"
+      >
+        <text :id="chapterDomId(chapter.id)" class="report-chapter-heading">{{ chapter.label }}</text>
 
-      <view v-if="activeSection === 'content'" class="section-list">
-        <view class="section-card">
-          <text class="section-title">施工区域</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.area"
-            disabled
-            auto-height
-          />
-        </view>
-        <view class="section-card">
-          <text class="section-title">完成进度</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.progress"
-            disabled
-            auto-height
-          />
-        </view>
-        <view class="section-card">
-          <text class="section-title">施工内容</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.content"
-            disabled
-            auto-height
-          />
-        </view>
-      </view>
-
-      <view v-else-if="activeSection === 'trades'" class="section-list">
-        <view class="section-card">
-          <text class="section-title">工种人员</text>
-          <view class="trade-table">
-            <view class="trade-row trade-row--head">
-              <text class="trade-cell">工种</text>
-              <text class="trade-cell trade-cell--count">数量</text>
-            </view>
-            <view
-              v-for="(staff, index) in detail.tradeStaff"
-              :key="`${staff.name}-${index}`"
-              class="trade-row"
-            >
-              <text class="trade-cell">{{ staff.name }}</text>
-              <text class="trade-cell trade-cell--count">{{ staff.count }}</text>
-            </view>
+        <view v-if="chapter.id === 'content'" class="section-list">
+          <view class="section-card">
+            <text class="section-title">施工区域</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.area"
+              disabled
+              auto-height
+            />
+          </view>
+          <view class="section-card">
+            <text class="section-title">完成进度</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.progress"
+              disabled
+              auto-height
+            />
+          </view>
+          <view class="section-card anchor-size-card">
+            <text class="section-title">施工内容</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.content"
+              disabled
+              auto-height
+            />
           </view>
         </view>
-        <view class="section-card">
-          <text class="section-title">进场材料</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.materials"
-            disabled
-            auto-height
-          />
-        </view>
-      </view>
 
-      <view v-else-if="activeSection === 'plan'" class="section-list">
-        <view
-          v-for="card in planCards"
-          :key="card.title"
-          class="section-card"
-        >
-          <text class="section-title">{{ card.title }}</text>
-          <textarea
-            class="field-textarea"
-            :value="card.value"
-            disabled
-            auto-height
-          />
+        <view v-else-if="chapter.id === 'trades'" class="section-list">
+          <view class="section-card">
+            <text class="section-title">工种人员</text>
+            <view class="trade-table">
+              <view class="trade-row trade-row--head">
+                <text class="trade-cell">工种</text>
+                <text class="trade-cell trade-cell--count">数量</text>
+              </view>
+              <view
+                v-for="(staff, index) in detail.tradeStaff"
+                :key="`${staff.name}-${index}`"
+                class="trade-row"
+              >
+                <text class="trade-cell">{{ staff.name }}</text>
+                <text class="trade-cell trade-cell--count">{{ staff.count }}</text>
+              </view>
+            </view>
+          </view>
+          <view class="section-card">
+            <text class="section-title">进场材料</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.materials"
+              disabled
+              auto-height
+            />
+          </view>
         </view>
-      </view>
 
-      <FileAttachmentCard
-        v-else
-        title="施工照片"
-        :files="detail.photos"
-        empty-text="暂无施工照片"
-      />
+        <view v-else-if="chapter.id === 'plan'" class="section-list">
+          <view
+            v-for="card in planCards"
+            :key="card.title"
+            class="section-card"
+          >
+            <text class="section-title">{{ card.title }}</text>
+            <textarea
+              class="field-textarea"
+              :value="card.value"
+              disabled
+              auto-height
+            />
+          </view>
+        </view>
+
+        <FileAttachmentCard
+          v-else
+          title=""
+          :files="detail.photos"
+          empty-text="暂无施工照片"
+        />
+      </view>
     </view>
+
+    <ReportChapterToc
+      :chapters="chapters"
+      :active-id="activeChapter"
+      :visible="tocVisible"
+      :frosted="tocFrosted"
+      :glass-style="tocGlassStyle"
+      @select="scrollToChapter"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
+import { computed } from 'vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
+import ReportChapterToc from '@/components/ReportChapterToc.vue';
 import {
   DAILY_REPORT_TABS,
   useConstructionReports,
   type ConstructionReportItem,
-  type DailyReportSection,
 } from '@/composables/useConstructionReports';
+import { useReportChapterNav } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
 
 const props = defineProps<{
@@ -130,8 +141,19 @@ const emit = defineEmits<{
 }>();
 
 const { getDailyDetail } = useConstructionReports();
-const sectionTabs = DAILY_REPORT_TABS;
-const activeSection = ref<DailyReportSection>('content');
+const chapters = DAILY_REPORT_TABS;
+const {
+  activeChapter,
+  tocVisible,
+  tocFrosted,
+  tocGlassStyle,
+  chapterDomId,
+  scrollToChapter,
+} = useReportChapterNav({
+  chapters,
+  idPrefix: 'daily-chapter',
+  resetKey: computed(() => props.item.id),
+});
 
 const detail = computed(() => getDailyDetail(props.item.id));
 
@@ -141,13 +163,6 @@ const planCards = computed(() => [
   { title: '次日施工区域', value: detail.value.nextDayArea },
   { title: '次日人员安排', value: detail.value.nextDayStaff },
 ]);
-
-watch(
-  () => props.item.id,
-  () => {
-    activeSection.value = 'content';
-  },
-);
 
 const handleBack = usePageBack(() => emit('back'));
 </script>
@@ -192,7 +207,7 @@ const handleBack = usePageBack(() => emit('back'));
   align-items: center;
   justify-content: space-between;
   gap: 24rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 56rpx;
 }
 
 .title-block {
@@ -214,10 +229,6 @@ const handleBack = usePageBack(() => emit('back'));
   font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
-}
-
-.status-capsule-wrap {
-  margin-bottom: 48rpx;
 }
 
 .section-list {

@@ -1,6 +1,6 @@
 <template>
   <view class="file-card">
-    <view class="file-card-head">
+    <view v-if="title" class="file-card-head">
       <view class="file-card-bar" />
       <text class="file-card-title">{{ title }}</text>
     </view>

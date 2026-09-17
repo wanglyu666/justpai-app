@@ -18,102 +18,114 @@
         </view>
       </view>
 
-      <StatusCapsuleSwitch
-        class="status-capsule-wrap"
-        v-model="activeSection"
-        :tabs="sectionTabs"
-      />
+      <view
+        v-for="chapter in chapters"
+        :key="chapter.id"
+        class="report-chapter"
+      >
+        <text :id="chapterDomId(chapter.id)" class="report-chapter-heading">{{ chapter.label }}</text>
 
-      <view v-if="activeSection === 'progress'" class="section-list">
-        <view class="section-card">
-          <view class="progress-block">
-            <view class="progress-head">
-              <text class="progress-label">当前总进度</text>
-              <text class="progress-value">{{ currentProgressPercent }}%</text>
+        <view v-if="chapter.id === 'progress'" class="section-list">
+          <view class="section-card anchor-size-card">
+            <view class="progress-block">
+              <view class="progress-head">
+                <text class="progress-label">当前总进度</text>
+                <text class="progress-value">{{ currentProgressPercent }}%</text>
+              </view>
+              <view class="progress-track">
+                <view
+                  class="progress-fill progress-fill--current"
+                  :style="{ width: currentProgressPercent + '%' }"
+                />
+              </view>
             </view>
-            <view class="progress-track">
-              <view
-                class="progress-fill progress-fill--current"
-                :style="{ width: currentProgressPercent + '%' }"
-              />
+            <view class="progress-block">
+              <view class="progress-head">
+                <text class="progress-label">原计划进度</text>
+                <text class="progress-value">{{ plannedProgressPercent }}%</text>
+              </view>
+              <view class="progress-track">
+                <view
+                  class="progress-fill progress-fill--planned"
+                  :style="{ width: plannedProgressPercent + '%' }"
+                />
+              </view>
             </view>
           </view>
-          <view class="progress-block">
-            <view class="progress-head">
-              <text class="progress-label">原计划进度</text>
-              <text class="progress-value">{{ plannedProgressPercent }}%</text>
-            </view>
-            <view class="progress-track">
-              <view
-                class="progress-fill progress-fill--planned"
-                :style="{ width: plannedProgressPercent + '%' }"
-              />
-            </view>
+          <view class="section-card">
+            <text class="section-title">主要施工内容及劳动力安排</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.laborArrangement"
+              disabled
+              auto-height
+            />
+          </view>
+          <view class="section-card">
+            <text class="section-title">进度偏差分析与应对措施</text>
+            <textarea
+              class="field-textarea"
+              :value="detail.deviationAction"
+              disabled
+              auto-height
+            />
           </view>
         </view>
-        <view class="section-card">
-          <text class="section-title">主要施工内容及劳动力安排</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.laborArrangement"
-            disabled
-            auto-height
-          />
+
+        <view v-else-if="chapterCards[chapter.id]" class="section-list">
+          <view
+            v-for="card in chapterCards[chapter.id]"
+            :key="card.title"
+            class="section-card"
+          >
+            <text class="section-title">{{ card.title }}</text>
+            <textarea
+              class="field-textarea"
+              :value="card.value"
+              disabled
+              auto-height
+            />
+          </view>
         </view>
-        <view class="section-card">
-          <text class="section-title">进度偏差分析与应对措施</text>
-          <textarea
-            class="field-textarea"
-            :value="detail.deviationAction"
-            disabled
-            auto-height
-          />
-        </view>
+
+        <FileAttachmentCard
+          v-else-if="chapter.id === 'photos'"
+          title=""
+          :files="detail.photos"
+          empty-text="暂无现场照片"
+        />
+
+        <FileAttachmentCard
+          v-else
+          title=""
+          :files="detail.acceptance"
+          empty-text="暂无验收记录"
+        />
       </view>
-
-      <view v-else-if="textCards.length" class="section-list">
-        <view
-          v-for="card in textCards"
-          :key="card.title"
-          class="section-card"
-        >
-          <text class="section-title">{{ card.title }}</text>
-          <textarea
-            class="field-textarea"
-            :value="card.value"
-            disabled
-            auto-height
-          />
-        </view>
-      </view>
-
-      <FileAttachmentCard
-        v-else-if="activeSection === 'photos'"
-        title="现场照片"
-        :files="detail.photos"
-        empty-text="暂无现场照片"
-      />
-
-      <FileAttachmentCard
-        v-else
-        title="验收记录"
-        :files="detail.acceptance"
-        empty-text="暂无验收记录"
-      />
     </view>
+
+    <ReportChapterToc
+      :chapters="chapters"
+      :active-id="activeChapter"
+      :visible="tocVisible"
+      :frosted="tocFrosted"
+      :glass-style="tocGlassStyle"
+      @select="scrollToChapter"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
+import { computed } from 'vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
+import ReportChapterToc from '@/components/ReportChapterToc.vue';
 import {
   WEEKLY_REPORT_TABS,
   useConstructionReports,
   type ConstructionReportItem,
   type WeeklyReportSection,
 } from '@/composables/useConstructionReports';
+import { useReportChapterNav } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
 
 const props = defineProps<{
@@ -125,8 +137,19 @@ const emit = defineEmits<{
 }>();
 
 const { getWeeklyDetail } = useConstructionReports();
-const sectionTabs = WEEKLY_REPORT_TABS;
-const activeSection = ref<WeeklyReportSection>('progress');
+const chapters = WEEKLY_REPORT_TABS;
+const {
+  activeChapter,
+  tocVisible,
+  tocFrosted,
+  tocGlassStyle,
+  chapterDomId,
+  scrollToChapter,
+} = useReportChapterNav({
+  chapters,
+  idPrefix: 'weekly-chapter',
+  resetKey: computed(() => props.item.id),
+});
 
 const detail = computed(() => getWeeklyDetail(props.item.id));
 
@@ -140,41 +163,27 @@ const plannedProgressPercent = computed(() =>
   clampPercent(detail.value.plannedProgress),
 );
 
-const textCards = computed(() => {
+const chapterCards = computed(() => {
   const data = detail.value;
-  if (activeSection.value === 'quality') {
-    return [
+  return {
+    quality: [
       { title: '质量检查与验收', value: data.qualityAcceptance },
       { title: '问题整改', value: data.qualityRectification },
-    ];
-  }
-  if (activeSection.value === 'issues') {
-    return [
+    ],
+    issues: [
       { title: '现场问题', value: data.siteIssues },
       { title: '解决方案与进展', value: data.issueSolution },
-    ];
-  }
-  if (activeSection.value === 'nextWeek') {
-    return [
+    ],
+    nextWeek: [
       { title: '计划施工内容', value: data.plannedContent },
       { title: '资源需求', value: data.resourceDemand },
-    ];
-  }
-  if (activeSection.value === 'others') {
-    return [
+    ],
+    others: [
       { title: '需甲方确认事项', value: data.ownerConfirmItems },
       { title: '其他未尽事项', value: data.otherOutstandingItems },
-    ];
-  }
-  return [];
+    ],
+  } as Partial<Record<WeeklyReportSection, { title: string; value: string }[]>>;
 });
-
-watch(
-  () => props.item.id,
-  () => {
-    activeSection.value = 'progress';
-  },
-);
 
 const handleBack = usePageBack(() => emit('back'));
 </script>
@@ -219,7 +228,7 @@ const handleBack = usePageBack(() => emit('back'));
   align-items: center;
   justify-content: space-between;
   gap: 24rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 56rpx;
 }
 
 .title-block {
@@ -241,10 +250,6 @@ const handleBack = usePageBack(() => emit('back'));
   font-size: 28rpx;
   color: #6b7280;
   line-height: 1.5;
-}
-
-.status-capsule-wrap {
-  margin-bottom: 48rpx;
 }
 
 .section-list {
