@@ -135,12 +135,33 @@
       <AuthWelcomeContent
         :exit-left="authExitLeft"
         @back="closeWelcome"
-        @otp="openOtpPage"
+        @otp="openLoginOtpPage"
+        @forgot="openForgotPage"
+        @register="openRegisterPage"
         @success="finishAuthSuccess"
       />
     </SlideOverPanel>
+    <SlideOverPanel :show="registerVisible" :z-index="2120" :exit-left="authExitLeft">
+      <RegisterContent :phone="registerPhone" @back="closeRegister" @otp="openRegisterOtpPage" />
+    </SlideOverPanel>
+    <SlideOverPanel :show="forgotVisible" :z-index="2150" :exit-left="authExitLeft">
+      <ForgotPasswordContent :phone="forgotPhone" @back="closeForgot" @otp="openResetOtpPage" />
+    </SlideOverPanel>
     <SlideOverPanel :show="otpVisible" :z-index="2200" :exit-left="authExitLeft">
-      <LoginOtpContent :phone="otpPhone" @back="closeOtp" @done="finishAuthSuccess" />
+      <LoginOtpContent
+        :phone="otpPhone"
+        :purpose="otpPurpose"
+        @back="closeOtp"
+        @reset="openResetPage"
+        @profile="openRegisterProfilePage"
+        @done="finishAuthSuccess"
+      />
+    </SlideOverPanel>
+    <SlideOverPanel :show="registerProfileVisible" :z-index="2250" :exit-left="authExitLeft">
+      <RegisterProfileContent @back="closeRegisterProfile" @done="finishAuthSuccess" />
+    </SlideOverPanel>
+    <SlideOverPanel :show="resetVisible" :z-index="2300" :exit-left="authExitLeft">
+      <ResetPasswordContent @back="closeReset" @done="finishAuthSuccess" />
     </SlideOverPanel>
   </view>
 </template>
@@ -154,7 +175,11 @@ import BannerCardDeck from '@/components/BannerCardDeck.vue';
 import NewsDetailContent, { type NewsItem } from '@/components/NewsDetailContent.vue';
 import TodoDetailContent from '@/components/TodoDetailContent.vue';
 import AuthWelcomeContent from '@/components/AuthWelcomeContent.vue';
+import RegisterContent from '@/components/RegisterContent.vue';
+import RegisterProfileContent from '@/components/RegisterProfileContent.vue';
+import ForgotPasswordContent from '@/components/ForgotPasswordContent.vue';
 import LoginOtpContent from '@/components/LoginOtpContent.vue';
+import ResetPasswordContent from '@/components/ResetPasswordContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
@@ -166,8 +191,16 @@ const {
 } = useSlideOver();
 const { visible: todoVisible, open: openTodo, close: closeTodo } = useSlideOver();
 const { visible: welcomeVisible, open: openWelcome, close: closeWelcome } = useSlideOver();
+const { visible: registerVisible, open: openRegister, close: closeRegister } = useSlideOver();
+const { visible: registerProfileVisible, open: openRegisterProfile, close: closeRegisterProfile } =
+  useSlideOver();
+const { visible: forgotVisible, open: openForgot, close: closeForgot } = useSlideOver();
 const { visible: otpVisible, open: openOtp, close: closeOtp } = useSlideOver();
+const { visible: resetVisible, open: openReset, close: closeReset } = useSlideOver();
 const otpPhone = ref('');
+const otpPurpose = ref<'login' | 'reset' | 'register'>('login');
+const forgotPhone = ref('');
+const registerPhone = ref('');
 const authExitLeft = ref(false);
 const selectedNews = ref<NewsItem | null>(null);
 
@@ -319,14 +352,49 @@ const resetNews = () => {
   selectedNews.value = null;
 };
 
-const openOtpPage = (phone: string) => {
+const openLoginOtpPage = (phone: string) => {
   otpPhone.value = phone;
+  otpPurpose.value = 'login';
   openOtp();
+};
+
+const openResetOtpPage = (phone: string) => {
+  otpPhone.value = phone;
+  otpPurpose.value = 'reset';
+  openOtp();
+};
+
+const openForgotPage = (phone: string) => {
+  forgotPhone.value = phone;
+  openForgot();
+};
+
+const openRegisterPage = (phone: string) => {
+  registerPhone.value = phone;
+  openRegister();
+};
+
+const openRegisterOtpPage = (phone: string) => {
+  otpPhone.value = phone;
+  otpPurpose.value = 'register';
+  openOtp();
+};
+
+const openRegisterProfilePage = () => {
+  openRegisterProfile();
+};
+
+const openResetPage = () => {
+  openReset();
 };
 
 const finishAuthSuccess = () => {
   authExitLeft.value = true;
+  closeRegisterProfile();
+  closeReset();
   closeOtp();
+  closeForgot();
+  closeRegister();
   closeWelcome();
 };
 

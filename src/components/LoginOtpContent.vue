@@ -75,11 +75,14 @@ import { usePageBack } from '@/composables/usePageBack';
 
 const props = defineProps<{
   phone: string;
+  purpose?: 'login' | 'reset' | 'register';
 }>();
 
 const emit = defineEmits<{
   back: [];
   done: [];
+  reset: [];
+  profile: [];
 }>();
 
 const {
@@ -173,6 +176,16 @@ const onVerify = async () => {
   }
   submitting.value = true;
   otpError.value = '';
+  if (props.purpose === 'reset') {
+    emit('reset');
+    submitting.value = false;
+    return;
+  }
+  if (props.purpose === 'register') {
+    emit('profile');
+    submitting.value = false;
+    return;
+  }
   await playSuccess();
   emit('done');
 };

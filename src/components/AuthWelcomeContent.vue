@@ -35,7 +35,7 @@
     </view>
 
     <view class="welcome-actions">
-      <view class="primary-btn" @click="openLogin">
+      <view class="primary-btn" @click="onOpenRegister">
         <text class="primary-btn-text">注册</text>
       </view>
       <view class="secondary-btn" @click="openLogin">
@@ -48,6 +48,8 @@
         @back="closeLogin"
         @done="finishAuth"
         @otp="onOpenOtp"
+        @forgot="onForgot"
+        @signup="onSignUp"
       />
     </SlideOverPanel>
   </view>
@@ -68,6 +70,8 @@ defineProps<{
 const emit = defineEmits<{
   back: [];
   otp: [phone: string];
+  forgot: [phone: string];
+  register: [phone: string];
   success: [];
 }>();
 
@@ -94,6 +98,18 @@ const finishAuth = () => {
 
 const onOpenOtp = (phone: string) => {
   emit('otp', phone);
+};
+
+const onForgot = (phone: string) => {
+  emit('forgot', phone);
+};
+
+const onSignUp = (phone: string) => {
+  emit('register', phone);
+};
+
+const onOpenRegister = () => {
+  emit('register', '');
 };
 </script>
 

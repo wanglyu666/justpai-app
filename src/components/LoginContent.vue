@@ -44,7 +44,8 @@
           <view class="input-pill">
             <input
               class="field-input"
-              :password="!showPassword"
+              :class="{ 'field-input-masked': !showPassword && Boolean(password) }"
+              type="text"
               v-model="password"
               placeholder="请输入密码"
               placeholder-class="field-placeholder"
@@ -75,7 +76,7 @@
         <text class="signup-link" @click="onSignUp">注册</text>
       </view>
 
-      <text class="divider-or">或</text>
+      <view class="divider-or" />
 
       <view class="social-btn" @click="onToggleCodeMode">
         <image
@@ -93,7 +94,7 @@
         <text class="social-text">通过 微信 继续</text>
       </view>
 
-      <text class="divider-or">或</text>
+      <view class="divider-or" />
 
       <text class="guest-link" @click="onGuest">游客登录</text>
     </view>
@@ -111,6 +112,8 @@ const emit = defineEmits<{
   back: [];
   done: [];
   otp: [phone: string];
+  forgot: [phone: string];
+  signup: [phone: string];
 }>();
 
 const {
@@ -157,11 +160,11 @@ const onPrimary = async () => {
 };
 
 const onForgotPassword = () => {
-  toast('忘记密码功能开发中');
+  emit('forgot', phone.value.trim());
 };
 
 const onSignUp = () => {
-  toast('注册功能开发中');
+  emit('signup', phone.value.trim());
 };
 
 const onToggleCodeMode = () => {
@@ -301,6 +304,20 @@ watch(password, () => {
   color: #111827;
 }
 
+input.field-input-masked:not(:placeholder-shown),
+.field-input-masked :deep(input:not(:placeholder-shown)),
+.field-input-masked :deep(.uni-input-input:not(:placeholder-shown)) {
+  -webkit-text-security: disc;
+  text-security: disc;
+}
+
+.input-pill :deep(input)::-ms-reveal,
+.input-pill :deep(input)::-ms-clear,
+.field-input::-ms-reveal,
+.field-input::-ms-clear {
+  display: none;
+}
+
 .field-placeholder {
   color: #9ca3af;
   font-size: 28rpx;
@@ -387,10 +404,9 @@ watch(password, () => {
 
 .divider-or {
   display: block;
-  text-align: center;
+  height: 26rpx;
   margin: 28rpx 0;
-  font-size: 26rpx;
-  color: #9ca3af;
+  flex-shrink: 0;
 }
 
 .social-btn {
