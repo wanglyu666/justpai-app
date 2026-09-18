@@ -107,7 +107,28 @@
         :title="selectedItem.type"
         :steps="selectedItem.steps"
         @back="closeFlow"
+        @approve="openApprovalTarget"
       />
+    </BottomSheetPanel>
+    <BottomSheetPanel
+      :show="targetVisible"
+      :z-index="2400"
+      @closed="resetTarget"
+    >
+      <view class="approval-target-page">
+        <MaintenanceDetailContent
+          v-if="targetMaintenance"
+          :item="targetMaintenance"
+          @back="closeTarget"
+        />
+      </view>
+      <template #corner>
+        <PageApprovalAction
+          v-if="targetMaintenance"
+          @submit="handleApprovalSubmit"
+          @done="closeTarget"
+        />
+      </template>
     </BottomSheetPanel>
   </view>
 </template>
@@ -118,10 +139,20 @@ import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import ApprovalFlowContent, {
   type ApprovalFlowStep,
 } from '@/components/ApprovalFlowContent.vue';
+import MaintenanceDetailContent from '@/components/MaintenanceDetailContent.vue';
+import PageApprovalAction from '@/components/PageApprovalAction.vue';
+import { useMaintenanceItems } from '@/composables/useMaintenanceItems';
 import { useSlideOver } from '@/composables/useSlideOver';
-import { usePageBack } from '@/composables/usePageBack';
+import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 
 type ApprovalStatus = 'in_progress' | 'done';
+
+type ApprovalTargetPage = 'maintenance';
+
+type ApprovalTarget = {
+  page: ApprovalTargetPage;
+  id: number;
+};
 
 type ApprovalItem = {
   id: number;
@@ -131,6 +162,7 @@ type ApprovalItem = {
   status: ApprovalStatus;
   currentApprover?: string;
   steps: ApprovalFlowStep[];
+  target?: ApprovalTarget;
 };
 
 const emit = defineEmits<{
@@ -139,11 +171,26 @@ const emit = defineEmits<{
 
 const keyword = ref('');
 const selectedItem = ref<ApprovalItem | null>(null);
+const pendingStep = ref<ApprovalFlowStep | null>(null);
+const { items: maintenanceItems } = useMaintenanceItems();
 const {
   visible: flowVisible,
   open: openFlowPanel,
   close: closeFlow,
 } = useSlideOver();
+const {
+  visible: targetVisible,
+  open: openTargetPanel,
+  close: closeTarget,
+} = useSlideOver();
+
+usePageBackWhen(targetVisible, closeTarget);
+
+const targetMaintenance = computed(() => {
+  const target = selectedItem.value?.target;
+  if (!target || target.page !== 'maintenance') return null;
+  return maintenanceItems.value.find((item) => item.id === target.id) ?? null;
+});
 
 const items = ref<ApprovalItem[]>([
   {
@@ -153,6 +200,7 @@ const items = ref<ApprovalItem[]>([
     time: '2026年4月10日',
     status: 'in_progress',
     currentApprover: '王强',
+    target: { page: 'maintenance', id: 1 },
     steps: [
       {
         id: 1,
@@ -220,6 +268,7 @@ const items = ref<ApprovalItem[]>([
     time: '2026年4月8日',
     status: 'in_progress',
     currentApprover: '赵敏',
+    target: { page: 'maintenance', id: 1 },
     steps: [
       {
         id: 1,
@@ -304,6 +353,66 @@ const openFlow = (item: ApprovalItem) => {
 
 const resetFlow = () => {
   selectedItem.value = null;
+  pendingStep.value = null;
+};
+
+const padTime = (value: number) => String(value).padStart(2, '0');
+
+const formatNow = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${padTime(now.getMonth() + 1)}-${padTime(now.getDate())} ${padTime(now.getHours())}:${padTime(now.getMinutes())}:${padTime(now.getSeconds())}`;
+};
+
+const openApprovalTarget = (step: ApprovalFlowStep) => {
+  if (!selectedItem.value?.target) return;
+  if (selectedItem.value.target.page === 'maintenance' && !targetMaintenance.value) return;
+  pendingStep.value = step;
+  openTargetPanel();
+};
+
+const resetTarget = () => {
+  pendingStep.value = null;
+};
+
+const handleApprovalSubmit = (comment: string) => {
+  const item = selectedItem.value;
+  const step = pendingStep.value;
+  if (!item || !step) return;
+
+  const nextSteps = item.steps.map((current) => {
+    if (current.id !== step.id) return current;
+    return {
+      ...current,
+      result: 'approved' as const,
+      comment,
+      time: formatNow(),
+    };
+  });
+
+  const stepIndex = nextSteps.findIndex((current) => current.id === step.id);
+  const following = nextSteps[stepIndex + 1];
+  const promoted =
+    following?.result === 'not_started'
+      ? nextSteps.map((current) =>
+          current.id === following.id
+            ? { ...current, result: 'pending' as const }
+            : current,
+        )
+      : nextSteps;
+
+  const nextPending = promoted.find((current) => current.result === 'pending');
+
+  items.value = items.value.map((row) => {
+    if (row.id !== item.id) return row;
+    return {
+      ...row,
+      steps: promoted,
+      status: nextPending ? 'in_progress' : 'done',
+      currentApprover: nextPending?.name,
+    };
+  });
+
+  selectedItem.value = items.value.find((row) => row.id === item.id) ?? item;
 };
 
 const handleBack = usePageBack(() => emit('back'));
@@ -622,5 +731,9 @@ const handleBack = usePageBack(() => emit('back'));
 .empty-tip-text {
   font-size: 28rpx;
   color: #9ca3af;
+}
+
+.approval-target-page {
+  padding-bottom: 200rpx;
 }
 </style>

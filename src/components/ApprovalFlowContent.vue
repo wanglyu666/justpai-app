@@ -54,6 +54,12 @@
               <text class="comment-label">审批意见</text>
               <text class="comment-text">{{ step.comment }}</text>
             </view>
+
+            <view v-if="step.result === 'pending'" class="pending-action">
+              <view class="go-approve-btn" @click.stop="emit('approve', step)">
+                <text class="go-approve-text">前往审批</text>
+              </view>
+            </view>
           </view>
         </view>
       </view>
@@ -81,6 +87,7 @@ defineProps<{
 
 const emit = defineEmits<{
   back: [];
+  approve: [step: ApprovalFlowStep];
 }>();
 
 const RESULT_LABEL: Record<ApprovalResult, string> = {
@@ -325,5 +332,28 @@ const handleBack = usePageBack(() => emit('back'));
   font-size: 28rpx;
   color: #374151;
   line-height: 1.55;
+}
+
+.pending-action {
+  margin-top: 28rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.go-approve-btn {
+  height: 72rpx;
+  padding: 0 40rpx;
+  border-radius: 1998rpx;
+  background-color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.go-approve-text {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
 }
 </style>

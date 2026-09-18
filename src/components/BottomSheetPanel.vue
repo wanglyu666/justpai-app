@@ -2,10 +2,13 @@
   <view
     v-if="rendered"
     class="bottom-sheet-panel"
-    :class="[{ 'is-entered': entered }, { 'page-safe-top': !contentSafeTop }]"
+    :class="{ 'is-entered': entered }"
     :style="panelStyle"
   >
-    <slot />
+    <view class="bottom-sheet-body" :class="bodyClass">
+      <slot />
+    </view>
+    <slot name="corner" />
   </view>
 </template>
 
@@ -34,6 +37,8 @@ const props = withDefaults(
 const panelStyle = computed(() => ({
   zIndex: props.zIndex,
 }));
+
+const bodyClass = computed(() => (props.contentSafeTop ? '' : 'page-safe-top'));
 
 const emit = defineEmits<{
   closed: [];
@@ -100,11 +105,19 @@ defineExpose({
   height: 100%;
   z-index: 2100;
   background-color: #f4f5f7;
-  overflow-y: auto;
+  overflow: hidden;
   box-sizing: border-box;
   transform: translateY(100%);
   transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform;
+}
+
+.bottom-sheet-body {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  background-color: #f4f5f7;
 }
 
 .bottom-sheet-panel.is-entered {

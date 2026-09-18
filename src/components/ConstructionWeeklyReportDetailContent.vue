@@ -16,6 +16,7 @@
           <text class="page-title">{{ item.title }}</text>
           <text class="page-desc">查看施工现场报告记录</text>
         </view>
+        <ReportFeedbackAction :report-id="item.id" />
       </view>
 
       <view
@@ -119,6 +120,7 @@
 import { computed } from 'vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import ReportChapterToc from '@/components/ReportChapterToc.vue';
+import ReportFeedbackAction from '@/components/ReportFeedbackAction.vue';
 import {
   WEEKLY_REPORT_TABS,
   useConstructionReports,

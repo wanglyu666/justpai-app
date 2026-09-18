@@ -72,83 +72,11 @@
       :z-index="2200"
       @closed="resetDetail"
     >
-      <view class="detail-page">
-        <view class="detail-header">
-          <view class="icon-btn" @click="closeDetail">
-            <image
-              src="/static/icons/chevron-left.svg"
-              mode="aspectFit"
-              class="header-icon-img"
-            />
-          </view>
-        </view>
-
-        <view class="detail-content" v-if="selectedItem">
-          <text class="detail-title">维保详情</text>
-
-          <view class="info-card info-card-no-line">
-            <view class="info-block">
-              <text class="info-label">项目</text>
-              <text class="info-value info-value-lg">{{ selectedItem.projectName }}</text>
-            </view>
-            <view class="info-divider" />
-            <view class="info-block">
-              <text class="info-label">项目组信息</text>
-              <text class="info-value">
-                {{ selectedItem.managerName }}（{{ selectedItem.managerPhone }}）
-              </text>
-            </view>
-            <view class="info-divider" />
-            <view class="info-block">
-              <text class="info-label">维保编号</text>
-              <text class="info-value">{{ selectedItem.code }}</text>
-            </view>
-            <view class="info-divider" />
-            <view class="info-block">
-              <text class="info-label">项目编号</text>
-              <text class="info-value">{{ selectedItem.projectCode }}</text>
-            </view>
-            <view class="info-divider" />
-            <view class="info-block">
-              <text class="info-label">项目地址</text>
-              <text class="info-value">{{ selectedItem.address }}</text>
-            </view>
-          </view>
-
-          <view class="info-card">
-            <view class="meta-row">
-              <view class="meta-col">
-                <text class="info-label">报修类型</text>
-                <StatusBadge
-                  :status="selectedItem.repairType"
-                  :label="typeLabel(selectedItem.repairType)"
-                />
-              </view>
-              <view class="meta-col meta-col-end">
-                <text class="info-label">工单状态</text>
-                <StatusBadge
-                  :status="selectedItem.status"
-                  :label="statusLabel(selectedItem.status)"
-                />
-              </view>
-            </view>
-
-            <view class="info-block">
-              <text class="info-label">上门时间</text>
-              <text class="info-value visit-time">{{ selectedItem.visitTime }}</text>
-            </view>
-
-            <view class="info-divider" />
-
-            <view class="info-block">
-              <text class="info-label">报修原因</text>
-              <text class="info-value info-value-body">{{ selectedItem.reason }}</text>
-            </view>
-          </view>
-
-          <FileAttachmentCard :files="selectedItem.media" />
-        </view>
-      </view>
+      <MaintenanceDetailContent
+        v-if="selectedItem"
+        :item="selectedItem"
+        @back="closeDetail"
+      />
     </BottomSheetPanel>
     <BottomSheetPanel
       :show="formVisible"
@@ -174,8 +102,8 @@
 import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
-import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import MaintenanceDetailContent from '@/components/MaintenanceDetailContent.vue';
 import MaintenanceFormContent, {
   type MaintenanceFormPayload,
 } from '@/components/MaintenanceFormContent.vue';
@@ -462,103 +390,4 @@ const handleFormSubmit = (payload: MaintenanceFormPayload) => {
   color: #9ca3af;
 }
 
-.detail-page {
-  min-height: 100%;
-  padding-bottom: 80rpx;
-  box-sizing: border-box;
-}
-
-.detail-header {
-  padding: 0 48rpx;
-}
-
-.detail-content {
-  padding: 48rpx 48rpx 0;
-  display: flex;
-  flex-direction: column;
-  gap: 28rpx;
-}
-
-.detail-title {
-  display: block;
-  font-size: 56rpx;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 12rpx;
-}
-
-.info-card {
-  background-color: #ffffff;
-  border-radius: 40rpx;
-  padding: 40rpx 36rpx;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
-}
-
-.info-block {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.info-divider {
-  height: 2rpx;
-  background-color: #eef2f7;
-  margin: 12rpx 0;
-}
-
-.info-card-no-line .info-divider {
-  background-color: transparent;
-  margin: 4rpx 0;
-}
-
-.info-label {
-  font-size: 26rpx;
-  color: #9ca3af;
-  line-height: 1.2;
-}
-
-.info-value {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #111827;
-  line-height: 1.45;
-  word-break: break-all;
-}
-
-.info-value-lg {
-  font-size: 36rpx;
-  font-weight: 800;
-  line-height: 1.35;
-}
-
-.info-value-body {
-  font-size: 30rpx;
-  font-weight: 600;
-  line-height: 1.55;
-}
-
-.meta-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24rpx;
-}
-
-.meta-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.meta-col-end {
-  align-items: flex-end;
-}
-
-.visit-time {
-  white-space: nowrap;
-}
 </style>
