@@ -45,16 +45,18 @@
           class="ticket-card"
           @click="openDetail(item)"
         >
-          <text class="ticket-name">{{ item.name }}</text>
+          <text class="ticket-name" :style="infoCardTitleStyle">{{ item.name }}</text>
 
-          <view class="ticket-field">
-            <text class="field-label">咨询时间</text>
-            <text class="field-value">{{ item.time }}</text>
+          <view class="ticket-field" :style="infoCardFieldStyle">
+            <text class="field-label" :style="infoCardLabelStyle">咨询时间</text>
+            <text class="field-value" :style="infoCardValueStyle">{{ item.time }}</text>
           </view>
 
-          <view class="ticket-field">
-            <text class="field-label">需求</text>
-            <text class="field-value field-value-demand">{{ item.demand }}</text>
+          <view class="ticket-field" :style="infoCardFieldStyle">
+            <text class="field-label" :style="infoCardLabelStyle">需求</text>
+            <view class="demand-box">
+              <text class="field-value" :style="infoCardValueStyle">{{ item.demand }}</text>
+            </view>
           </view>
         </view>
 
@@ -125,8 +127,29 @@
             <view class="info-row">
               <view class="info-field info-field-full">
                 <text class="info-label">需求</text>
-                <text class="info-value info-value-body">{{ selectedTicket.demand }}</text>
+                <view class="demand-box">
+                  <text class="info-value info-value-body">{{ selectedTicket.demand }}</text>
+                </view>
               </view>
+            </view>
+          </view>
+
+          <view class="action-bar-row">
+            <view class="action-bar" hover-class="none" @click="onChecklist">
+              <image
+                class="action-bar-icon"
+                src="/static/icons/order-blue.svg"
+                mode="aspectFit"
+              />
+              <text class="action-bar-text">清单</text>
+            </view>
+            <view class="action-bar" hover-class="none" @click="onInquiry">
+              <image
+                class="action-bar-icon"
+                src="/static/icons/message-circle-pink.svg"
+                mode="aspectFit"
+              />
+              <text class="action-bar-text">询价</text>
             </view>
           </view>
 
@@ -145,19 +168,6 @@
           </view>
 
           <FileAttachmentCard :files="selectedTicket.attachments" />
-
-          <view class="action-card-row">
-            <ActionSquareCard
-              icon="/static/icons/order.svg"
-              label="清单"
-              @click="onChecklist"
-            />
-            <ActionSquareCard
-              icon="/static/icons/message-circle.svg"
-              label="询价"
-              @click="onInquiry"
-            />
-          </view>
         </view>
       </view>
     </BottomSheetPanel>
@@ -218,7 +228,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
-import ActionSquareCard from '@/components/ActionSquareCard.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
@@ -240,6 +249,12 @@ import {
 } from '@/composables/useConsultTickets';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import {
+  infoCardFieldStyle,
+  infoCardLabelStyle,
+  infoCardTitleStyle,
+  infoCardValueStyle,
+} from '@/config/infoCard';
 
 const emit = defineEmits<{
   back: [];
@@ -568,36 +583,24 @@ const confirmEndConsult = () => {
   gap: 32rpx;
 }
 
-.ticket-name {
-  font-size: 36rpx;
-  font-weight: 800;
-  color: #111827;
-  line-height: 1.35;
-}
-
 .ticket-field {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
 }
 
-.field-label {
-  font-size: 24rpx;
-  color: #9ca3af;
-  line-height: 1.2;
+.demand-box {
+  width: 100%;
+  padding: 24rpx 28rpx;
+  border-radius: 28rpx;
+  background-color: #f8faf9;
+  border: 2rpx solid #eef0ea;
+  box-sizing: border-box;
 }
 
-.field-value {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #111827;
-  line-height: 1.45;
-}
-
-.field-value-demand {
-  font-weight: 400;
-  color: #374151;
-  line-height: 1.55;
+.demand-box .field-value,
+.demand-box .info-value {
+  display: block;
+  word-break: break-all;
 }
 
 .empty-tip {
@@ -685,9 +688,38 @@ const confirmEndConsult = () => {
   line-height: 1.55;
 }
 
-.action-card-row {
+.action-bar-row {
   display: flex;
   gap: 24rpx;
+}
+
+.action-bar {
+  flex: 1;
+  min-width: 0;
+  height: 112rpx;
+  padding: 0 28rpx;
+  border-radius: 40rpx;
+  background-color: #ffffff;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  box-sizing: border-box;
+}
+
+.action-bar-icon {
+  width: 44rpx;
+  height: 44rpx;
+  flex-shrink: 0;
+}
+
+.action-bar-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
 }
 
 .end-btn {

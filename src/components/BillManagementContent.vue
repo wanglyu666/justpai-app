@@ -38,14 +38,14 @@
           class="bill-card"
           @click="openDetail(item)"
         >
-          <text class="bill-name">{{ item.name }}</text>
+          <text class="bill-name" :style="infoCardTitleStyle">{{ item.name }}</text>
           <view class="bill-meta-row">
-            <view class="bill-meta">
-              <text class="meta-label">账单编号</text>
-              <text class="meta-value">{{ item.no }}</text>
+            <view class="bill-meta" :style="infoCardFieldStyle">
+              <text class="meta-label" :style="infoCardLabelStyle">账单编号</text>
+              <text class="meta-value" :style="infoCardValueStyle">{{ item.no }}</text>
             </view>
-            <view class="bill-meta bill-meta-amount">
-              <text class="meta-label">账单金额</text>
+            <view class="bill-meta bill-meta-amount" :style="infoCardFieldStyle">
+              <text class="meta-label" :style="infoCardLabelStyle">账单金额</text>
               <text class="meta-amount">{{ item.amountText }}</text>
             </view>
           </view>
@@ -210,6 +210,12 @@ import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import {
+  infoCardFieldStyle,
+  infoCardLabelStyle,
+  infoCardTitleStyle,
+  infoCardValueStyle,
+} from '@/config/infoCard';
 
 type BillStatus = 'pending_confirm' | 'pending_pay' | 'paid';
 
@@ -533,10 +539,7 @@ const onConfirm = () => {
 }
 
 .bill-name {
-  font-size: 36rpx;
-  font-weight: 800;
-  color: #163300;
-  line-height: 1.3;
+  min-width: 0;
 }
 
 .bill-meta-row {
@@ -550,7 +553,6 @@ const onConfirm = () => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
 }
 
 .bill-meta-amount {
@@ -559,16 +561,7 @@ const onConfirm = () => {
   text-align: right;
 }
 
-.meta-label {
-  font-size: 24rpx;
-  color: #9ca3af;
-  line-height: 1.2;
-}
-
 .meta-value {
-  font-size: 28rpx;
-  color: #6b7280;
-  line-height: 1.3;
   word-break: break-all;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <view class="project-list-page">
+  <view class="project-list-page" @click="closeMenu">
     <view class="page-header">
       <view class="icon-btn" @click="handleBack">
         <image
@@ -40,11 +40,41 @@
           v-for="item in filteredProjects"
           :key="item.id"
           class="ticket-card"
+          :class="menuOpenId === item.id ? 'is-menu-open' : ''"
           @click="openDetail(item)"
         >
-          <view class="card-heading-block">
-            <text class="card-title">{{ item.name }}</text>
-            <text class="card-code">{{ item.code }}</text>
+          <view class="card-heading">
+            <view class="card-heading-block">
+              <text class="card-title">{{ item.name }}</text>
+              <text class="card-code">{{ item.code }}</text>
+            </view>
+            <view class="card-menu-btn" @click.stop="toggleMenu(item.id)">
+              <image
+                src="/static/icons/caret-down.svg"
+                mode="aspectFit"
+                class="card-menu-icon"
+                :class="menuOpenId === item.id ? 'is-open' : ''"
+              />
+            </view>
+            <view
+              v-if="menuOpenId === item.id"
+              class="card-dropdown"
+              @click.stop
+            >
+              <view
+                v-for="entry in actionEntries"
+                :key="entry.id"
+                class="card-dropdown-item"
+                @click.stop="openMenuAction(item, entry.id)"
+              >
+                <image
+                  :src="entry.icon"
+                  mode="aspectFit"
+                  class="card-dropdown-icon"
+                />
+                <text class="card-dropdown-text">{{ entry.label }}</text>
+              </view>
+            </view>
           </view>
 
           <view class="info-row">
@@ -210,6 +240,7 @@ watch(
   },
 );
 const selectedItem = ref<MaintenanceProjectItem | null>(null);
+const menuOpenId = ref<number | null>(null);
 const {
   visible: detailVisible,
   open: openDetailPanel,
@@ -262,6 +293,11 @@ const STATUS_LABEL: Record<MaintenanceProjectStatus, string> = {
 
 const statusLabel = (status: MaintenanceProjectStatus) => STATUS_LABEL[status];
 
+const actionEntries = [
+  { id: 'appointment', label: '预约管理', icon: '/static/icons/calendar-clock.svg' },
+  { id: 'review', label: '评价', icon: '/static/icons/star-yellow.svg' },
+] as const;
+
 const filteredProjects = computed(() => {
   const q = keyword.value.trim().toLowerCase();
   return projects.value.filter((item) => {
@@ -279,8 +315,33 @@ const filteredProjects = computed(() => {
 });
 
 const openDetail = (item: MaintenanceProjectItem) => {
+  closeMenu();
   selectedItem.value = { ...item, attachments: [...item.attachments] };
   openDetailPanel();
+};
+
+const closeMenu = () => {
+  menuOpenId.value = null;
+};
+
+const toggleMenu = (id: number) => {
+  menuOpenId.value = menuOpenId.value === id ? null : id;
+};
+
+watch(activeStatus, closeMenu);
+
+const openMenuAction = (
+  item: MaintenanceProjectItem,
+  id: (typeof actionEntries)[number]['id'],
+) => {
+  closeMenu();
+  selectedItem.value = { ...item, attachments: [...item.attachments] };
+  handleActionClick(id);
+};
+
+const handleActionClick = (id: (typeof actionEntries)[number]['id']) => {
+  if (id === 'appointment') openAppointment();
+  if (id === 'review') openReview();
 };
 
 const formatPhone = (phone: string) => {
@@ -426,9 +487,11 @@ const handleBack = usePageBack(() => emit('back'));
   display: flex;
   flex-direction: column;
   gap: 28rpx;
+  overflow: visible;
 }
 
 .ticket-card {
+  position: relative;
   width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
@@ -438,6 +501,76 @@ const handleBack = usePageBack(() => emit('back'));
   display: flex;
   flex-direction: column;
   gap: 36rpx;
+  overflow: visible;
+}
+
+.ticket-card.is-menu-open {
+  z-index: 8;
+}
+
+.card-menu-btn {
+  width: 56rpx;
+  height: 56rpx;
+  margin-top: 4rpx;
+  margin-right: -8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-menu-icon {
+  width: 44rpx;
+  height: 44rpx;
+  transition: transform 180ms ease;
+}
+
+.card-menu-icon.is-open {
+  transform: rotate(180deg);
+}
+
+.card-dropdown {
+  position: absolute;
+  top: calc(100% + 8rpx);
+  right: -20rpx;
+  z-index: 30;
+  width: max-content;
+  min-width: 268rpx;
+  padding: 8rpx 0;
+  background-color: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: 0 16rpx 48rpx rgba(15, 23, 42, 0.14);
+  border: 2rpx solid #f3f4f6;
+  box-sizing: border-box;
+}
+
+.card-dropdown-item {
+  min-height: 88rpx;
+  margin: 0 22rpx;
+  padding: 0 6rpx;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  box-sizing: border-box;
+  border-bottom: 2rpx solid #eef2f7;
+}
+
+.card-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.card-dropdown-icon {
+  width: 44rpx;
+  height: 44rpx;
+  flex-shrink: 0;
+}
+
+.card-dropdown-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .empty-tip {
@@ -475,6 +608,7 @@ const handleBack = usePageBack(() => emit('back'));
 }
 
 .card-heading {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;

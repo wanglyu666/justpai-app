@@ -36,16 +36,16 @@
           class="contract-card"
           @click="openDetail(item)"
         >
-          <text class="contract-name">{{ item.name }}</text>
-          <view class="contract-meta-row">
-            <view class="contract-meta">
-              <text class="meta-label">合同编号</text>
-              <text class="meta-value">{{ item.no }}</text>
-            </view>
-            <view class="contract-meta contract-meta-amount">
-              <text class="meta-label">合同金额</text>
+          <view class="card-heading">
+            <text class="contract-name" :style="infoCardTitleStyle">{{ item.name }}</text>
+            <view class="amount-block" :style="infoCardFieldStyle">
+              <text class="meta-label" :style="infoCardLabelStyle">合同金额</text>
               <text class="meta-amount">{{ item.amountText }}</text>
             </view>
+          </view>
+          <view class="contract-meta" :style="infoCardFieldStyle">
+            <text class="meta-label" :style="infoCardLabelStyle">合同编号</text>
+            <text class="meta-value" :style="infoCardValueStyle">{{ item.no }}</text>
           </view>
         </view>
       </view>
@@ -139,6 +139,12 @@ import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import {
+  infoCardFieldStyle,
+  infoCardLabelStyle,
+  infoCardTitleStyle,
+  infoCardValueStyle,
+} from '@/config/infoCard';
 
 type ContractItem = {
   id: number;
@@ -373,7 +379,7 @@ const onPreview = () => {
 .contract-list {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 28rpx;
 }
 
 .contract-card {
@@ -381,51 +387,30 @@ const onPreview = () => {
   box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 40rpx;
-  padding: 36rpx 36rpx;
+  padding: 40rpx 36rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 28rpx;
-}
-
-.contract-name {
-  font-size: 36rpx;
-  font-weight: 800;
-  color: #163300;
-  line-height: 1.3;
-}
-
-.contract-meta-row {
-  display: flex;
-  align-items: flex-start;
   gap: 32rpx;
 }
 
-.contract-meta {
+.card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.contract-name {
   flex: 1;
   min-width: 0;
+}
+
+.amount-block {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
-}
-
-.contract-meta-amount {
-  flex: 0 0 auto;
   align-items: flex-end;
-  text-align: right;
-}
-
-.meta-label {
-  font-size: 24rpx;
-  color: #9ca3af;
-  line-height: 1.2;
-}
-
-.meta-value {
-  font-size: 28rpx;
-  color: #6b7280;
-  line-height: 1.3;
-  word-break: break-all;
 }
 
 .meta-amount {
@@ -433,6 +418,15 @@ const onPreview = () => {
   font-weight: 700;
   color: #111827;
   line-height: 1.3;
+}
+
+.contract-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-value {
+  word-break: break-all;
 }
 
 .detail-page {

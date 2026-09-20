@@ -43,9 +43,9 @@
             <StatusBadge :status="item.status" :label="statusLabel(item.status)" />
           </view>
 
-          <view class="feedback-field">
-            <text class="field-label">反馈时间</text>
-            <text class="field-value">{{ item.time }}</text>
+          <view class="feedback-field" :style="infoCardFieldStyle">
+            <text class="field-label" :style="infoCardLabelStyle">反馈时间</text>
+            <text class="field-value" :style="infoCardValueStyle">{{ item.time }}</text>
           </view>
         </view>
 
@@ -144,6 +144,11 @@ import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import { useFeedbackItems, type FeedbackItem, type FeedbackStatus } from '@/composables/useFeedbackItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import {
+  infoCardFieldStyle,
+  infoCardLabelStyle,
+  infoCardValueStyle,
+} from '@/config/infoCard';
 
 const STATUS_LABEL: Record<FeedbackStatus, string> = {
   pending_reply: '待回复',
@@ -382,20 +387,6 @@ const handleFormSubmit = (payload: {
 .feedback-field {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
-}
-
-.field-label {
-  font-size: 24rpx;
-  color: #9ca3af;
-  line-height: 1.2;
-}
-
-.field-value {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #111827;
-  line-height: 1.45;
 }
 
 .empty-tip {

@@ -39,25 +39,25 @@
           @click="openDetail(item)"
         >
           <view class="item-top">
-            <text class="item-name">{{ item.projectName }}</text>
+            <text class="item-name" :style="infoCardTitleStyle">{{ item.projectName }}</text>
             <StatusBadge :status="item.status" :label="statusLabel(item.status)" />
           </view>
 
-          <view class="item-field">
-            <text class="field-label">维保编号</text>
-            <text class="field-value">{{ item.code }}</text>
+          <view class="item-field" :style="infoCardFieldStyle">
+            <text class="field-label" :style="infoCardLabelStyle">维保编号</text>
+            <text class="field-value" :style="infoCardValueStyle">{{ item.code }}</text>
           </view>
-          <view class="item-field">
-            <text class="field-label">项目地址</text>
-            <text class="field-value">{{ item.address }}</text>
+          <view class="item-field" :style="infoCardFieldStyle">
+            <text class="field-label" :style="infoCardLabelStyle">项目地址</text>
+            <text class="field-value" :style="infoCardValueStyle">{{ item.address }}</text>
           </view>
-          <view class="item-field">
-            <text class="field-label">项目主管姓名</text>
-            <text class="field-value">{{ item.managerName }}</text>
+          <view class="item-field" :style="infoCardFieldStyle">
+            <text class="field-label" :style="infoCardLabelStyle">项目主管姓名</text>
+            <text class="field-value" :style="infoCardValueStyle">{{ item.managerName }}</text>
           </view>
-          <view class="item-field">
-            <text class="field-label">项目主管电话</text>
-            <text class="field-value">{{ item.managerPhone }}</text>
+          <view class="item-field" :style="infoCardFieldStyle">
+            <text class="field-label" :style="infoCardLabelStyle">项目主管电话</text>
+            <text class="field-value" :style="infoCardValueStyle">{{ item.managerPhone }}</text>
           </view>
         </view>
 
@@ -116,6 +116,12 @@ import {
 } from '@/composables/useMaintenanceItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import {
+  infoCardFieldStyle,
+  infoCardLabelStyle,
+  infoCardTitleStyle,
+  infoCardValueStyle,
+} from '@/config/infoCard';
 
 const STATUS_LABEL: Record<MaintenanceStatus, string> = {
   in_maintenance: '维保中',
@@ -353,29 +359,11 @@ const handleFormSubmit = (payload: MaintenanceFormPayload) => {
 .item-name {
   flex: 1;
   min-width: 0;
-  font-size: 36rpx;
-  font-weight: 800;
-  color: #111827;
-  line-height: 1.35;
 }
 
 .item-field {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
-}
-
-.field-label {
-  font-size: 24rpx;
-  color: #9ca3af;
-  line-height: 1.2;
-}
-
-.field-value {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #111827;
-  line-height: 1.45;
 }
 
 .empty-tip {

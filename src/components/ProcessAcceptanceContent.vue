@@ -112,8 +112,8 @@
               <view class="book-btn book-btn-muted" @click.stop="openRectify(item)">
                 <text class="book-btn-text">缺陷整改</text>
               </view>
-              <view class="book-btn" @click.stop="openBook(item)">
-                <text class="book-btn-text">预约时间</text>
+              <view class="book-btn" @click.stop="onPrimaryAction(item)">
+                <text class="book-btn-text">{{ primaryActionLabel(item) }}</text>
               </view>
             </view>
           </view>
@@ -135,6 +135,29 @@
         :acceptance-item-id="rectifyTarget.id"
         @back="closeRectify"
       />
+    </SlideOverPanel>
+
+    <SlideOverPanel
+      :show="inspectVisible"
+      :z-index="2400"
+      content-safe-top
+      @closed="resetInspect"
+    >
+      <SuccessPageTransition :show-success="inspectStep === 'success'">
+        <ProcessAcceptanceInspectContent
+          v-if="inspectTarget"
+          :item="inspectTarget"
+          @back="closeInspect"
+          @submit="handleInspectSubmit"
+        />
+        <template #success>
+          <FeedbackSuccessContent
+            desc="您的验收结果已提交"
+            back-text="返回过程验收"
+            @back="closeInspect"
+          />
+        </template>
+      </SuccessPageTransition>
     </SlideOverPanel>
 
     <SlideOverPanel
@@ -169,6 +192,7 @@ import StatusBadge from '@/components/StatusBadge.vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
 import DefectRectificationListContent from '@/components/DefectRectificationListContent.vue';
 import AppointmentAcceptanceContent from '@/components/AppointmentAcceptanceContent.vue';
+import ProcessAcceptanceInspectContent from '@/components/ProcessAcceptanceInspectContent.vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import {
@@ -188,12 +212,15 @@ const emit = defineEmits<{
   back: [];
 }>();
 
-const { tabs, getByCategory, updateProgressBooking } = useProcessAcceptance();
+const { tabs, getByCategory, updateProgressBooking, updateProgressAcceptance } =
+  useProcessAcceptance();
 const activeCategory = ref<ProcessAcceptanceCategory>('arrival');
 const keyword = ref('');
 const rectifyTarget = ref<ProcessAcceptanceItem | null>(null);
 const bookTarget = ref<ProcessAcceptanceItem | null>(null);
 const bookStep = ref<'form' | 'success'>('form');
+const inspectTarget = ref<ProcessAcceptanceItem | null>(null);
+const inspectStep = ref<'form' | 'success'>('form');
 const {
   visible: rectifyVisible,
   open: openRectifyPanel,
@@ -206,6 +233,12 @@ const {
   close: closeBook,
 } = useSlideOver();
 usePageBackWhen(bookVisible, closeBook);
+const {
+  visible: inspectVisible,
+  open: openInspectPanel,
+  close: closeInspect,
+} = useSlideOver();
+usePageBackWhen(inspectVisible, closeInspect);
 
 const categoryItems = computed(() => getByCategory(activeCategory.value));
 
@@ -271,6 +304,35 @@ const openBook = (item: ProcessAcceptanceItem) => {
 const resetBook = () => {
   bookTarget.value = null;
   bookStep.value = 'form';
+};
+
+const primaryActionLabel = (item: ProcessAcceptanceItem) =>
+  item.acceptStatus === 'pending' ? '验收' : '预约时间';
+
+const openInspect = (item: ProcessAcceptanceItem) => {
+  inspectTarget.value = item;
+  inspectStep.value = 'form';
+  openInspectPanel();
+};
+
+const resetInspect = () => {
+  inspectTarget.value = null;
+  inspectStep.value = 'form';
+};
+
+const onPrimaryAction = (item: ProcessAcceptanceItem) => {
+  if (item.acceptStatus === 'pending') {
+    openInspect(item);
+    return;
+  }
+  openBook(item);
+};
+
+const handleInspectSubmit = (status: ProgressAcceptStatus) => {
+  const id = inspectTarget.value?.id;
+  if (!id) return;
+  updateProgressAcceptance(id, status);
+  inspectStep.value = 'success';
 };
 
 const handleBookSubmit = (payload: {

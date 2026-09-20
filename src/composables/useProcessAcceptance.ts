@@ -31,6 +31,7 @@ export type ProcessAcceptanceItem = {
   bookedAt?: string;
   acceptType?: string;
   acceptStatus?: ProgressAcceptStatus;
+  attachments?: string[];
   contacts?: SiteContact[];
 };
 
@@ -184,6 +185,7 @@ const items = ref<ProcessAcceptanceItem[]>([
     bookedAt: '',
     acceptType: '资料验收',
     acceptStatus: 'pending',
+    attachments: ['水电安装现场.jpg', '管线走向图.pdf'],
   },
   {
     id: 'prg-4',
@@ -193,6 +195,7 @@ const items = ref<ProcessAcceptanceItem[]>([
     bookedAt: '2026-01-16',
     acceptType: '现场验收',
     acceptStatus: 'pending',
+    attachments: ['木作安装照片.jpg'],
   },
   {
     id: 'prg-5',
@@ -211,6 +214,7 @@ const items = ref<ProcessAcceptanceItem[]>([
     bookedAt: '',
     acceptType: '资料验收',
     acceptStatus: 'pending',
+    attachments: ['竣工资料清单.xlsx'],
   },
 ]);
 
@@ -238,11 +242,21 @@ export function useProcessAcceptance() {
     );
   };
 
+  const updateProgressAcceptance = (
+    id: string,
+    acceptStatus: ProgressAcceptStatus,
+  ) => {
+    items.value = items.value.map((item) =>
+      item.id === id ? { ...item, acceptStatus } : item,
+    );
+  };
+
   return {
     tabs: PROCESS_ACCEPTANCE_TABS,
     icons: PROCESS_ACCEPTANCE_ICONS,
     items,
     getByCategory,
     updateProgressBooking,
+    updateProgressAcceptance,
   };
 }
