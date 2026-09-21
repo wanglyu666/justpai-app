@@ -1,4 +1,13 @@
-import { nextTick, onMounted, onUnmounted, ref, watch, type Ref } from 'vue';
+import {
+  getCurrentInstance,
+  nextTick,
+  onUnmounted,
+  ref,
+  shallowRef,
+  unref,
+  watch,
+  type MaybeRef,
+} from 'vue';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
 
 export type ReportChapterTab<T extends string = string> = {
@@ -6,54 +15,36 @@ export type ReportChapterTab<T extends string = string> = {
   label: string;
 };
 
+export function reportChapterDomId(prefix: string, id: string) {
+  return `${prefix}-${id}`;
+}
+
 export function useReportChapterNav<T extends string>(options: {
-  chapters: ReportChapterTab<T>[];
-  idPrefix: string;
-  resetKey: Ref<string>;
+  chapters: MaybeRef<ReportChapterTab<T>[]>;
+  idPrefix: MaybeRef<string>;
+  resetKey: MaybeRef<string>;
+  scrollHost: string;
 }) {
-  const { chapters, idPrefix, resetKey } = options;
-  const activeChapter = ref<T>(chapters[0].id);
+  const instance = getCurrentInstance();
+  const chapterList = () => unref(options.chapters);
+  const prefix = () => unref(options.idPrefix);
+  const activeChapter = shallowRef<T>(chapterList()[0].id);
   const tocVisible = ref(false);
   const tocFrosted = ref(false);
+  const scrollIntoView = ref('');
   const tocGlassStyle = {
     ...getFrostedGlassStyle('tabbar'),
     backgroundColor: 'rgba(255, 255, 255, 0.58)',
   };
 
-  const chapterDomId = (id: T) => `${idPrefix}-${id}`;
-
-  const findScrollParent = (el: HTMLElement | null) => {
-    let node = el?.parentElement ?? null;
-    while (node) {
-      const overflowY = window.getComputedStyle(node).overflowY;
-      if (overflowY === 'auto' || overflowY === 'scroll') return node;
-      node = node.parentElement;
-    }
-    return null;
-  };
-
-  let scrollParent: HTMLElement | null = null;
+  const chapterDomId = (id: T) => reportChapterDomId(prefix(), id);
   let frostTimer: ReturnType<typeof setTimeout> | null = null;
-  let ticking = false;
   let activeLock = false;
   let activeLockTimer: ReturnType<typeof setTimeout> | null = null;
-  let clickLockScrollTop: number | null = null;
-  let contentCardHeight = 180;
-
-  const measureContentCardHeight = () => {
-    const card = document.querySelector('.anchor-size-card');
-    const height = card?.getBoundingClientRect().height ?? 0;
-    if (height > 0) contentCardHeight = height;
-  };
-
-  const getHeadingEl = (id: T) => document.getElementById(chapterDomId(id));
-
-  const getAnchorOffset = () => contentCardHeight;
-
-  const getDetectMarker = () => {
-    if (!scrollParent) return 0;
-    return scrollParent.getBoundingClientRect().top + getAnchorOffset();
-  };
+  let measureTimer: ReturnType<typeof setTimeout> | null = null;
+  let currentScrollTop = 0;
+  let activeMarkerOffset = 180;
+  let chapterOffsets: { id: T; top: number }[] = [];
 
   const clearFrostTimer = () => {
     if (frostTimer) {
@@ -80,94 +71,110 @@ export function useReportChapterNav<T extends string>(options: {
   };
 
   const updateActiveChapter = () => {
-    if (!scrollParent || activeLock) return;
-    if (
-      clickLockScrollTop !== null &&
-      Math.abs(scrollParent.scrollTop - clickLockScrollTop) < 24
-    ) {
-      return;
-    }
-    clickLockScrollTop = null;
-    const marker = getDetectMarker();
-    let current: T = chapters[0].id;
-    chapters.forEach((chapter) => {
-      const el = getHeadingEl(chapter.id);
-      if (!el) return;
-      if (el.getBoundingClientRect().top <= marker + 4) {
-        current = chapter.id;
-      }
+    if (activeLock || !chapterOffsets.length) return;
+    const marker = currentScrollTop + activeMarkerOffset;
+    let current: T = chapterList()[0].id;
+    chapterOffsets.forEach((chapter) => {
+      if (chapter.top <= marker + 4) current = chapter.id;
     });
     activeChapter.value = current;
   };
 
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      ticking = false;
-      if (!scrollParent) return;
-      const shouldShow = scrollParent.scrollTop > 88;
-      const shouldHide = scrollParent.scrollTop < 36;
-      if (shouldShow) setTocShown(true);
-      else if (shouldHide) setTocShown(false);
-      if (tocVisible.value) updateActiveChapter();
+  const handleScroll = (event: unknown) => {
+    const detail = (event as { detail?: { scrollTop?: number } })?.detail;
+    currentScrollTop = Number(detail?.scrollTop ?? 0);
+    if (currentScrollTop > 88) setTocShown(true);
+    else if (currentScrollTop < 36) setTocShown(false);
+    if (tocVisible.value) updateActiveChapter();
+  };
+
+  type Rect = { top?: number; height?: number };
+
+  const measureChapterOffsets = () =>
+    new Promise<boolean>((resolve) => {
+      if (!instance) {
+        resolve(false);
+        return;
+      }
+
+      uni.createSelectorQuery()
+        .in(instance)
+        .select(options.scrollHost)
+        .boundingClientRect()
+        .selectAll('.report-chapter-heading')
+        .boundingClientRect()
+        .select('.anchor-size-card')
+        .boundingClientRect()
+        .exec((result) => {
+          const host = result?.[0] as Rect | null;
+          const anchors = result?.[1] as Rect[] | null;
+          const markerCard = result?.[2] as Rect | null;
+          const hostTop = host?.top;
+          if (typeof hostTop !== 'number' || !anchors?.length) {
+            resolve(false);
+            return;
+          }
+
+          const chapters = chapterList();
+          chapterOffsets = anchors
+            .slice(0, chapters.length)
+            .map((rect, index) => ({
+              id: chapters[index].id,
+              top:
+                currentScrollTop +
+                (typeof rect.top === 'number' ? rect.top - hostTop : 0),
+            }));
+          if (typeof markerCard?.height === 'number' && markerCard.height > 0) {
+            activeMarkerOffset = markerCard.height;
+          }
+          resolve(chapterOffsets.length === chapters.length);
+        });
     });
-  };
 
-  const bindScrollParent = () => {
-    const chapterEl = getHeadingEl(chapters[0].id);
-    scrollParent = findScrollParent(chapterEl);
-    measureContentCardHeight();
-    scrollParent?.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  };
-
-  const unbindScrollParent = () => {
-    scrollParent?.removeEventListener('scroll', onScroll);
-    scrollParent = null;
+  const scheduleMeasurement = (attempt = 0) => {
+    if (measureTimer) clearTimeout(measureTimer);
+    measureTimer = setTimeout(async () => {
+      measureTimer = null;
+      const measured = await measureChapterOffsets();
+      if (!measured && attempt < 5) scheduleMeasurement(attempt + 1);
+    }, attempt === 0 ? 32 : 64);
   };
 
   const scrollToChapter = (id: T | string) => {
-    const next = chapters.find((chapter) => chapter.id === id)?.id;
-    if (!scrollParent || !next) return;
-    measureContentCardHeight();
-    const el = getHeadingEl(next);
-    if (!el) return;
+    const next = chapterList().find((chapter) => chapter.id === id)?.id;
+    if (!next) return;
     activeChapter.value = next;
     activeLock = true;
-    clickLockScrollTop = null;
     if (activeLockTimer) clearTimeout(activeLockTimer);
-    const parentTop = scrollParent.getBoundingClientRect().top;
-    const delta = el.getBoundingClientRect().top - parentTop - getAnchorOffset();
-    const targetTop = Math.max(0, scrollParent.scrollTop + delta);
-    clickLockScrollTop = targetTop;
-    scrollParent.scrollTo({
-      top: targetTop,
-      behavior: 'smooth',
+    scrollIntoView.value = '';
+    nextTick(() => {
+      scrollIntoView.value = chapterDomId(next);
     });
     activeLockTimer = setTimeout(() => {
       activeLock = false;
       activeLockTimer = null;
+      updateActiveChapter();
     }, 720);
   };
 
-  watch(resetKey, async () => {
-    activeChapter.value = chapters[0].id;
-    setTocShown(false);
-    clickLockScrollTop = null;
-    await nextTick();
-    scrollParent?.scrollTo({ top: 0 });
-  });
-
-  onMounted(async () => {
-    await nextTick();
-    bindScrollParent();
-  });
+  watch(
+    () => [unref(options.resetKey), prefix()] as const,
+    async () => {
+      activeChapter.value = chapterList()[0].id;
+      setTocShown(false);
+      currentScrollTop = 0;
+      chapterOffsets = [];
+      scrollIntoView.value = '';
+      await nextTick();
+      scheduleMeasurement();
+    },
+    { flush: 'post' },
+  );
 
   onUnmounted(() => {
-    unbindScrollParent();
     clearFrostTimer();
     if (activeLockTimer) clearTimeout(activeLockTimer);
+    if (measureTimer) clearTimeout(measureTimer);
   });
 
   return {
@@ -175,7 +182,8 @@ export function useReportChapterNav<T extends string>(options: {
     tocVisible,
     tocFrosted,
     tocGlassStyle,
-    chapterDomId,
+    scrollIntoView,
+    handleScroll,
     scrollToChapter,
   };
 }

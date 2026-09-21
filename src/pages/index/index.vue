@@ -11,8 +11,6 @@
       class="tab-panel"
       :class="{ 'is-visible': activeTabPath === 'pages/store/index' }"
       :style="panelStyle(activeTabPath === 'pages/store/index')"
-      @touchmove="onStorePanelScroll"
-      @touchend="onStorePanelScroll"
     >
       <StoreTab ref="storeTabRef" />
     </view>
@@ -56,7 +54,6 @@ import {
 const { activeTabPath, setActiveTabPath, normalizeTabPath } = useMainTab();
 
 type StoreTabExpose = {
-  scheduleStickyActionsUpdate: () => void;
   updateStickyActionsVisibility: () => void;
 };
 
@@ -72,10 +69,6 @@ const panelStyle = (visible: boolean) => {
       ? `opacity ${PAGE_FADE_DURATION_MS}ms ${PAGE_FADE_EASING}, visibility 0ms linear 0ms`
       : `opacity ${PAGE_FADE_DURATION_MS}ms ${PAGE_FADE_EASING}, visibility 0ms linear ${PAGE_FADE_DURATION_MS}ms`,
   };
-};
-
-const onStorePanelScroll = () => {
-  storeTabRef.value?.scheduleStickyActionsUpdate();
 };
 
 onBackPress(() => consumePageBack());

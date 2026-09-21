@@ -104,22 +104,12 @@
         />
       </view>
     </view>
-
-    <ReportChapterToc
-      :chapters="chapters"
-      :active-id="activeChapter"
-      :visible="tocVisible"
-      :frosted="tocFrosted"
-      :glass-style="tocGlassStyle"
-      @select="scrollToChapter"
-    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
-import ReportChapterToc from '@/components/ReportChapterToc.vue';
 import ReportFeedbackAction from '@/components/ReportFeedbackAction.vue';
 import {
   WEEKLY_REPORT_TABS,
@@ -127,7 +117,7 @@ import {
   type ConstructionReportItem,
   type WeeklyReportSection,
 } from '@/composables/useConstructionReports';
-import { useReportChapterNav } from '@/composables/useReportChapterNav';
+import { reportChapterDomId } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
 
 const props = defineProps<{
@@ -140,18 +130,7 @@ const emit = defineEmits<{
 
 const { getWeeklyDetail } = useConstructionReports();
 const chapters = WEEKLY_REPORT_TABS;
-const {
-  activeChapter,
-  tocVisible,
-  tocFrosted,
-  tocGlassStyle,
-  chapterDomId,
-  scrollToChapter,
-} = useReportChapterNav({
-  chapters,
-  idPrefix: 'weekly-chapter',
-  resetKey: computed(() => props.item.id),
-});
+const chapterDomId = (id: string) => reportChapterDomId('weekly-chapter', id);
 
 const detail = computed(() => getWeeklyDetail(props.item.id));
 

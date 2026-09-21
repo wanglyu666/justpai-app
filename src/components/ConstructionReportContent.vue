@@ -73,7 +73,15 @@
       </view>
     </view>
 
-    <SlideOverPanel :show="detailVisible" :z-index="2400" @closed="resetDetail">
+    <SlideOverPanel
+      :show="detailVisible"
+      :z-index="2400"
+      native-scroll
+      host-class="js-report-detail-scroll"
+      :scroll-into-view="chapterScrollIntoView"
+      @scroll="handleChapterScroll"
+      @closed="resetDetail"
+    >
       <ConstructionReportDetailContent
         v-if="selectedItem?.category === 'daily'"
         :item="selectedItem"
@@ -89,6 +97,16 @@
         :item="selectedItem"
         @back="closeDetail"
       />
+      <template #corner>
+        <ReportChapterToc
+          :chapters="tocChapters"
+          :active-id="activeChapter"
+          :visible="tocVisible"
+          :frosted="tocFrosted"
+          :glass-style="tocGlassStyle"
+          @select="scrollToChapter"
+        />
+      </template>
     </SlideOverPanel>
   </view>
 </template>
@@ -97,15 +115,20 @@
 import { computed, ref } from 'vue';
 import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
 import SlideOverPanel from '@/components/SlideOverPanel.vue';
+import ReportChapterToc from '@/components/ReportChapterToc.vue';
 import ConstructionReportDetailContent from '@/components/ConstructionReportDetailContent.vue';
 import ConstructionWeeklyReportDetailContent from '@/components/ConstructionWeeklyReportDetailContent.vue';
 import ConstructionEhsReportDetailContent from '@/components/ConstructionEhsReportDetailContent.vue';
 import {
   CONSTRUCTION_REPORT_ICONS,
+  DAILY_REPORT_TABS,
+  EHS_REPORT_TABS,
+  WEEKLY_REPORT_TABS,
   useConstructionReports,
   type ConstructionReportCategory,
   type ConstructionReportItem,
 } from '@/composables/useConstructionReports';
+import { useReportChapterNav } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
 import { useSlideOver } from '@/composables/useSlideOver';
 
@@ -126,6 +149,35 @@ const visibleItems = computed(() => getByCategory(activeCategory.value));
 const categoryIcon = computed(
   () => CONSTRUCTION_REPORT_ICONS[activeCategory.value],
 );
+
+const tocChapters = computed(() => {
+  const category = selectedItem.value?.category;
+  if (category === 'weekly') return WEEKLY_REPORT_TABS;
+  if (category === 'ehs') return EHS_REPORT_TABS;
+  return DAILY_REPORT_TABS;
+});
+
+const tocPrefix = computed(() => {
+  const category = selectedItem.value?.category;
+  if (category === 'weekly') return 'weekly-chapter';
+  if (category === 'ehs') return 'ehs-chapter';
+  return 'daily-chapter';
+});
+
+const {
+  activeChapter,
+  tocVisible,
+  tocFrosted,
+  tocGlassStyle,
+  scrollIntoView: chapterScrollIntoView,
+  handleScroll: handleChapterScroll,
+  scrollToChapter,
+} = useReportChapterNav({
+  chapters: tocChapters,
+  idPrefix: tocPrefix,
+  resetKey: computed(() => selectedItem.value?.id ?? ''),
+  scrollHost: '.js-report-detail-scroll',
+});
 
 const openDetail = (item: ConstructionReportItem) => {
   selectedItem.value = item;

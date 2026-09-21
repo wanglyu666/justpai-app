@@ -1,6 +1,13 @@
 <template>
   <view class="tab-root">
-  <view class="container page-safe-top" :class="{ 'is-searching': searchMode }" @scroll="scheduleStickyActionsUpdate">
+    <scroll-view
+      scroll-y
+      :show-scrollbar="false"
+      class="container store-scroll"
+      :class="{ 'is-searching': searchMode }"
+      @scroll="handleStoreScroll"
+    >
+    <view class="store-safe-top-spacer" />
     <!-- Header -->
     <view class="header">
       <view
@@ -167,6 +174,10 @@
     </FadeTransition>
     </view>
 
+    <view class="store-bottom-spacer" />
+
+    </scroll-view>
+
     <view
       class="sticky-header-actions frosted-glass frosted-glass--tabbar store-fade"
       :class="{ visible: stickyActionsVisible && !searchMode, hidden: searchMode }"
@@ -182,7 +193,6 @@
       <view class="sticky-action-item" @click="openOrders">
         <image src="/static/icons/order.svg" mode="aspectFit" class="action-icon" />
       </view>
-    </view>
     </view>
 
     <SlideOverPanel :show="detailVisible" edge-to-edge>
@@ -246,33 +256,58 @@ const subcategoryScrollStyle = {
 
 const instance = getCurrentInstance();
 const stickyActionsVisible = ref(false);
-let stickyScrollFrame = 0;
+let storeScrollTop = 0;
+let stickyActionsThreshold: number | null = null;
+let stickyMeasureTimer: ReturnType<typeof setTimeout> | null = null;
 
-const updateStickyActionsVisibility = () => {
-  if (!instance) return;
+const applyStickyActionsVisibility = () => {
   if (searchMode.value) {
     stickyActionsVisible.value = false;
     return;
   }
+  if (stickyActionsThreshold === null) return;
+  stickyActionsVisible.value = storeScrollTop >= stickyActionsThreshold;
+};
+
+const updateStickyActionsVisibility = (attempt = 0) => {
+  if (!instance) return;
+  if (stickyMeasureTimer) {
+    clearTimeout(stickyMeasureTimer);
+    stickyMeasureTimer = null;
+  }
 
   uni.createSelectorQuery()
     .in(instance)
+    .select('.store-scroll')
+    .boundingClientRect()
     .select('#store-section-header')
-    .boundingClientRect((rect) => {
-      const info = Array.isArray(rect) ? rect[0] : rect;
-      if (!info || typeof info.top !== 'number') return;
-      stickyActionsVisible.value = info.top <= rpx2px(112);
-    })
-    .exec();
+    .boundingClientRect()
+    .exec((result) => {
+      const viewport = result?.[0] as { top?: number } | null;
+      const header = result?.[1] as { top?: number } | null;
+      if (
+        typeof viewport?.top !== 'number' ||
+        typeof header?.top !== 'number'
+      ) {
+        if (attempt < 4) {
+          stickyMeasureTimer = setTimeout(
+            () => updateStickyActionsVisibility(attempt + 1),
+            64,
+          );
+        }
+        return;
+      }
+      stickyActionsThreshold =
+        storeScrollTop + header.top - viewport.top - rpx2px(112);
+      applyStickyActionsVisibility();
+    });
 };
 
-const scheduleStickyActionsUpdate = () => {
-  if (stickyScrollFrame) return;
-
-  stickyScrollFrame = requestAnimationFrame(() => {
-    stickyScrollFrame = 0;
-    updateStickyActionsVisibility();
-  });
+const handleStoreScroll = (event: unknown) => {
+  const detail = (event as { detail?: { scrollTop?: number } })?.detail;
+  storeScrollTop = Number(detail?.scrollTop ?? 0);
+  if (stickyActionsThreshold === null) updateStickyActionsVisibility();
+  applyStickyActionsVisibility();
 };
 
 onMounted(() => {
@@ -283,15 +318,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   storeSearchActive.value = false;
-  if (stickyScrollFrame) {
-    cancelAnimationFrame(stickyScrollFrame);
-    stickyScrollFrame = 0;
-  }
+  if (stickyMeasureTimer) clearTimeout(stickyMeasureTimer);
 });
 
 defineExpose({
   updateStickyActionsVisibility,
-  scheduleStickyActionsUpdate,
 });
 
 const { visible: detailVisible, open: openDetail, close: closeDetail } = useSlideOver();
@@ -344,6 +375,7 @@ const closeSearch = () => {
   storeSearchActive.value = false;
   searchFocus.value = false;
   searchQuery.value = '';
+  nextTick(() => updateStickyActionsVisibility());
 };
 
 const applyHistory = (keyword: string) => {
@@ -511,12 +543,21 @@ watch([showSubcategories, productListKey], () => {
   height: 100%;
 }
 
-.container {
+.container.store-scroll {
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding: 0;
   box-sizing: border-box;
+}
+
+.store-safe-top-spacer {
+  height: var(--page-safe-top);
+}
+
+.store-bottom-spacer {
+  height: 240rpx;
 }
 
 .header {

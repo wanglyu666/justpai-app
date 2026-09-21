@@ -17,7 +17,7 @@
 }
 
 .report-toc {
-  position: fixed;
+  position: absolute;
   right: 24rpx;
   top: 26%;
   z-index: 30;

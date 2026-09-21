@@ -6,12 +6,31 @@
     :class="{ 'is-entered': entered, 'is-exit-left': !entered && exitToLeft }"
     :style="panelStyle"
   >
-    <view
+    <scroll-view
+      v-if="nativeScroll"
+      scroll-y
+      :show-scrollbar="false"
+      :scroll-into-view="scrollIntoView"
+      scroll-with-animation
       class="slide-over-scroll"
-      :class="scrollClass"
+      :class="hostClass"
+      @scroll="emit('scroll', $event)"
+    >
+      <view
+        v-if="!contentSafeTop"
+        class="slide-over-safe-top-spacer"
+        :class="{ 'is-edge': edgeToEdge }"
+      />
+      <slot />
+    </scroll-view>
+    <view
+      v-else
+      class="slide-over-scroll"
+      :class="[scrollClass, hostClass]"
     >
       <slot />
     </view>
+    <slot name="corner" />
   </view>
 </template>
 
@@ -32,12 +51,18 @@ const props = withDefaults(
     edgeToEdge?: boolean;
     contentSafeTop?: boolean;
     exitLeft?: boolean;
+    nativeScroll?: boolean;
+    hostClass?: string;
+    scrollIntoView?: string;
   }>(),
   {
     zIndex: SECONDARY_PAGE_Z_INDEX,
     edgeToEdge: false,
     contentSafeTop: false,
     exitLeft: false,
+    nativeScroll: false,
+    hostClass: '',
+    scrollIntoView: '',
   },
 );
 
@@ -52,6 +77,7 @@ const panelStyle = computed(() => ({
 
 const emit = defineEmits<{
   closed: [];
+  scroll: [event: unknown];
 }>();
 
 /** 不用 Vue Transition：App 端 leave 常卡住导致关不掉；改用 class + 超时兜底 */
@@ -65,7 +91,8 @@ let showSeq = 0;
 
 const forceReflow = () => {
   const raw = panelRef.value as { $el?: HTMLElement } | HTMLElement | null;
-  const el = raw && typeof raw === 'object' && '$el' in raw ? raw.$el : raw;
+  let el: HTMLElement | null = null;
+  if (raw) el = '$el' in raw ? raw.$el ?? null : (raw as HTMLElement);
   if (el) void el.offsetWidth;
 };
 
@@ -155,5 +182,14 @@ defineExpose({
 
 .slide-over-edge {
   padding-top: calc(16rpx + env(safe-area-inset-top, 0px));
+}
+
+/* scroll-view 的 padding 会停在视口顶端；安全区必须作为内容一起滚走。 */
+.slide-over-safe-top-spacer {
+  height: var(--page-safe-top);
+}
+
+.slide-over-safe-top-spacer.is-edge {
+  height: calc(16rpx + env(safe-area-inset-top, 0px));
 }
 </style>
