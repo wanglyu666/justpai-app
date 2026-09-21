@@ -42,8 +42,11 @@
           :class="menuOpenId === item.id ? 'is-menu-open' : ''"
           @click="openDetail(item)"
         >
-          <view class="card-heading">
-            <text class="card-title">{{ item.name }}</text>
+          <view class="card-heading list-card-heading">
+            <view class="list-card-title-block">
+              <text class="card-title">{{ item.name }}</text>
+              <text class="card-code">{{ item.code }}</text>
+            </view>
             <view class="card-menu-btn" @click.stop="toggleMenu(item.id)">
               <image
                 src="/static/icons/caret-down.svg"
@@ -73,32 +76,29 @@
             </view>
           </view>
 
-          <view class="info-grid">
-            <view class="info-row">
-              <view class="info-field">
-                <text class="info-label">合同金额</text>
-                <text class="info-value">{{ formatAmount(item.amount) }}</text>
-              </view>
-              <view class="info-field">
-                <text class="info-label">项目负责人</text>
-                <text class="info-value">{{ item.managerName }}</text>
-              </view>
+          <view class="list-card-metrics">
+            <view class="metric-amount-block">
+              <text class="metric-label">合同金额</text>
+              <text class="metric-amount">{{ formatAmount(item.amount) }}</text>
             </view>
-            <view class="info-row">
-              <view class="info-field">
-                <text class="info-label">联系方式</text>
-                <text class="info-value">{{ formatPhone(item.managerPhone) }}</text>
-              </view>
-              <view class="info-field">
-                <text class="info-label">开工日期</text>
-                <text class="info-value">{{ item.startDate }}</text>
-              </view>
+            <view class="metric-divider" />
+            <view class="metric-date-block">
+              <text class="metric-label">开工日期</text>
+              <text class="metric-date">{{ item.startDate }}</text>
             </view>
-            <view class="info-row">
-              <view class="info-field">
-                <text class="info-label">项目编号</text>
-                <text class="info-value">{{ item.code }}</text>
-              </view>
+          </view>
+
+          <view class="list-card-footer">
+            <view class="manager-avatar">
+              <text class="manager-avatar-text">{{ item.managerName.slice(0, 1) }}</text>
+            </view>
+            <view class="manager-meta">
+              <text class="footer-label">项目负责人</text>
+              <text class="footer-value">{{ item.managerName }}</text>
+            </view>
+            <view class="contact-meta">
+              <text class="footer-label">联系方式</text>
+              <text class="footer-value">{{ formatPhone(item.managerPhone) }}</text>
             </view>
           </view>
         </view>
@@ -652,23 +652,39 @@ const handleBack = usePageBack(() => emit('back'));
   box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 40rpx;
-  padding: 40rpx 36rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  padding: 0 32rpx 30rpx;
+  box-shadow: 0 8rpx 28rpx rgba(15, 23, 42, 0.045);
   display: flex;
   flex-direction: column;
-  gap: 36rpx;
   overflow: visible;
+}
+
+.ticket-card:active {
+  opacity: 0.9;
 }
 
 .ticket-card.is-menu-open {
   z-index: 8;
 }
 
+.list-card-heading {
+  align-items: flex-start;
+  padding: 30rpx 0 28rpx;
+}
+
+.list-card-title-block {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
 .card-menu-btn {
-  width: 56rpx;
-  height: 56rpx;
-  margin-top: 4rpx;
-  margin-right: -8rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background-color: #f4f6f8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -676,8 +692,8 @@ const handleBack = usePageBack(() => emit('back'));
 }
 
 .card-menu-icon {
-  width: 44rpx;
-  height: 44rpx;
+  width: 36rpx;
+  height: 36rpx;
   transition: transform 180ms ease;
 }
 
@@ -727,6 +743,114 @@ const handleBack = usePageBack(() => emit('back'));
   color: #111827;
   line-height: 1.2;
   white-space: nowrap;
+}
+
+.list-card-metrics {
+  min-height: 132rpx;
+  padding: 24rpx 28rpx;
+  border-radius: 28rpx;
+  background-color: #f8fafc;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.metric-amount-block,
+.metric-date-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  min-width: 0;
+}
+
+.metric-amount-block {
+  flex: 1;
+}
+
+.metric-date-block {
+  flex-shrink: 0;
+}
+
+.metric-label {
+  font-size: 24rpx;
+  color: #9ca3af;
+  line-height: 1.2;
+}
+
+.metric-amount {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.metric-date {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.metric-divider {
+  width: 2rpx;
+  height: 64rpx;
+  background-color: #e8edf2;
+  flex-shrink: 0;
+}
+
+.list-card-footer {
+  margin-top: 26rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.manager-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 20rpx;
+  background-color: #f0f3f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.manager-avatar-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #475569;
+}
+
+.manager-meta,
+.contact-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.manager-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-meta {
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.footer-label {
+  font-size: 22rpx;
+  color: #9ca3af;
+  line-height: 1.2;
+}
+
+.footer-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.3;
 }
 
 .empty-tip {

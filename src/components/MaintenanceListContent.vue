@@ -36,28 +36,46 @@
           v-for="item in filteredItems"
           :key="item.id"
           class="item-card"
+          :class="`item-card--${item.status}`"
           @click="openDetail(item)"
         >
-          <view class="item-top">
+          <view class="card-head">
+            <view class="card-project-icon">
+              <image src="/static/icons/building-2.svg" mode="aspectFit" class="project-icon" />
+            </view>
             <text class="item-name" :style="infoCardTitleStyle">{{ item.projectName }}</text>
             <StatusBadge :status="item.status" :label="statusLabel(item.status)" />
           </view>
 
-          <view class="item-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">维保编号</text>
-            <text class="field-value" :style="infoCardValueStyle">{{ item.code }}</text>
+          <view class="card-body">
+            <view class="card-code-row">
+              <text class="card-code-label" :style="infoCardLabelStyle">维保编号</text>
+              <text class="card-code-value">{{ item.code }}</text>
+            </view>
+
+            <view class="card-address">
+              <view class="address-icon-wrap">
+                <image src="/static/icons/map-pin-gray.svg" mode="aspectFit" class="address-icon" />
+              </view>
+              <view class="address-content">
+                <text class="field-label" :style="infoCardLabelStyle">项目地址</text>
+                <text class="address-value" :style="infoCardValueStyle">{{ item.address }}</text>
+              </view>
+            </view>
           </view>
-          <view class="item-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">项目地址</text>
-            <text class="field-value" :style="infoCardValueStyle">{{ item.address }}</text>
-          </view>
-          <view class="item-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">项目主管姓名</text>
-            <text class="field-value" :style="infoCardValueStyle">{{ item.managerName }}</text>
-          </view>
-          <view class="item-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">项目主管电话</text>
-            <text class="field-value" :style="infoCardValueStyle">{{ item.managerPhone }}</text>
+
+          <view class="card-footer">
+            <view class="manager-avatar">
+              <text class="manager-avatar-text">{{ item.managerName.slice(0, 1) }}</text>
+            </view>
+            <view class="manager-info">
+              <text class="footer-label">项目主管</text>
+              <text class="manager-name">{{ item.managerName }}</text>
+            </view>
+            <view class="phone-info">
+              <text class="footer-label">联系电话</text>
+              <text class="phone-value">{{ item.managerPhone }}</text>
+            </view>
           </view>
         </view>
 
@@ -117,7 +135,6 @@ import {
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
 import {
-  infoCardFieldStyle,
   infoCardLabelStyle,
   infoCardTitleStyle,
   infoCardValueStyle,
@@ -174,7 +191,6 @@ const filteredItems = computed(() => {
 });
 
 const statusLabel = (status: MaintenanceStatus) => STATUS_LABEL[status];
-const typeLabel = (type: RepairType) => TYPE_LABEL[type];
 
 const openDetail = (item: MaintenanceItem) => {
   selectedItem.value = { ...item, media: [...item.media] };
@@ -342,18 +358,47 @@ const handleFormSubmit = (payload: MaintenanceFormPayload) => {
   box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 40rpx;
-  padding: 40rpx 36rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  box-shadow: 0 8rpx 28rpx rgba(15, 23, 42, 0.045);
   display: flex;
   flex-direction: column;
-  gap: 28rpx;
 }
 
-.item-top {
+.item-card:active {
+  opacity: 0.88;
+}
+
+.card-head {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24rpx;
+  align-items: center;
+  gap: 20rpx;
+  padding: 32rpx 32rpx 28rpx;
+  background-color: #f7f9fb;
+}
+
+.item-card--in_maintenance .card-head {
+  background-color: #f4faf3;
+}
+
+.item-card--pending .card-head {
+  background-color: #f4f7fd;
+}
+
+.card-project-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2rpx 10rpx rgba(15, 23, 42, 0.05);
+}
+
+.project-icon {
+  width: 38rpx;
+  height: 38rpx;
 }
 
 .item-name {
@@ -361,9 +406,126 @@ const handleFormSubmit = (payload: MaintenanceFormPayload) => {
   min-width: 0;
 }
 
-.item-field {
+.card-body {
+  padding: 30rpx 32rpx 24rpx;
+}
+
+.card-code-row {
+  min-height: 64rpx;
+  padding: 0 20rpx;
+  border-radius: 20rpx;
+  background-color: #f7f8fa;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  box-sizing: border-box;
+}
+
+.card-code-label {
+  flex-shrink: 0;
+}
+
+.card-code-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #374151;
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+.card-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+  padding: 28rpx 4rpx 4rpx;
+}
+
+.address-icon-wrap {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 16rpx;
+  background-color: #f3f5f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.address-icon {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.address-content {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 10rpx;
+}
+
+.address-value {
+  word-break: break-all;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin: 0 32rpx;
+  padding: 24rpx 0 30rpx;
+  border-top: 2rpx solid #f0f2f4;
+}
+
+.manager-avatar {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background-color: #b2c4d7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.manager-avatar-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.manager-info,
+.phone-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.manager-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.phone-info {
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.footer-label {
+  font-size: 22rpx;
+  color: #9ca3af;
+  line-height: 1.2;
+}
+
+.manager-name,
+.phone-value {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.3;
 }
 
 .empty-tip {
