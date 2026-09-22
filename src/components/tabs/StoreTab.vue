@@ -166,8 +166,10 @@
             <view class="product-image-wrap">
               <image :src="product.image" mode="aspectFill" class="product-image" />
             </view>
-            <text class="product-name">{{ product.name }}</text>
-            <text class="product-price">¥ {{ product.price }}</text>
+            <view class="product-info">
+              <text class="product-name">{{ product.name }}</text>
+              <text class="product-price">¥ {{ product.price }}</text>
+            </view>
           </view>
         </view>
       </view>
@@ -1081,6 +1083,12 @@ watch([showSubcategories, productListKey], () => {
 .product-card {
   width: calc(50% - 16rpx);
   margin-bottom: 16rpx;
+  background-color: #ffffff;
+  border-radius: 40rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8rpx 28rpx rgba(15, 23, 42, 0.045);
 }
 
 .product-image-wrap {
@@ -1089,7 +1097,14 @@ watch([showSubcategories, productListKey], () => {
   border-radius: 40rpx;
   overflow: hidden;
   background-color: #e5e7eb;
-  margin-bottom: 20rpx;
+  flex-shrink: 0;
+}
+
+.product-info {
+  padding: 12rpx 24rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
 }
 
 .product-image {
@@ -1099,15 +1114,15 @@ watch([showSubcategories, productListKey], () => {
 }
 
 .product-name {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  display: block;
+  width: 100%;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 30rpx;
   font-weight: 700;
   color: #111827;
   line-height: 1.35;
-  margin-bottom: 8rpx;
 }
 
 .product-price {

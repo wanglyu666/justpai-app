@@ -807,10 +807,10 @@ const handleBack = usePageBack(() => emit('back'));
 }
 
 .manager-avatar {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 20rpx;
-  background-color: #f0f3f6;
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background-color: #b2c4d7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -820,7 +820,8 @@ const handleBack = usePageBack(() => emit('back'));
 .manager-avatar-text {
   font-size: 28rpx;
   font-weight: 800;
-  color: #475569;
+  color: #ffffff;
+  line-height: 1;
 }
 
 .manager-meta,

@@ -77,14 +77,22 @@
             </view>
           </view>
 
-          <view class="info-row">
-            <view class="info-field">
-              <text class="info-label">项目负责人</text>
-              <text class="info-value">{{ item.managerName }}</text>
+          <view class="list-card-meta">
+            <view class="list-card-meta-item">
+              <view class="manager-avatar">
+                <text class="manager-avatar-text">{{ item.managerName.slice(0, 1) }}</text>
+              </view>
+              <view class="list-card-meta-text">
+                <text class="info-label">项目负责人</text>
+                <text class="info-value">{{ item.managerName }}</text>
+              </view>
             </view>
-            <view class="info-field">
-              <text class="info-label">联系方式</text>
-              <text class="info-value">{{ formatPhone(item.managerPhone) }}</text>
+            <view class="list-card-meta-divider" />
+            <view class="list-card-meta-item">
+              <view class="list-card-meta-text">
+                <text class="info-label">联系方式</text>
+                <text class="info-value">{{ formatPhone(item.managerPhone) }}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -634,6 +642,56 @@ const handleBack = usePageBack(() => emit('back'));
   font-size: 26rpx;
   color: #9ca3af;
   line-height: 1.2;
+}
+
+.list-card-meta {
+  padding: 28rpx;
+  border-radius: 32rpx;
+  background-color: #f8fafc;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.list-card-meta-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.list-card-meta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  min-width: 0;
+}
+
+.manager-avatar {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background-color: #b2c4d7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.manager-avatar-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.list-card-meta-divider {
+  width: 2rpx;
+  height: 56rpx;
+  background-color: #e5e7eb;
+  flex-shrink: 0;
 }
 
 .info-grid {
