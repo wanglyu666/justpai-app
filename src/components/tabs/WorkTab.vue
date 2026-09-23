@@ -311,10 +311,10 @@ const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
 
 .card-banner-img {
   position: absolute;
-  right: -88rpx;
-  bottom: -64rpx;
-  width: 420rpx;
-  height: 420rpx;
+  right: -100rpx;
+  bottom: -60rpx;
+  width: 500rpx;
+  height: 500rpx;
   z-index: 1;
   pointer-events: none;
 }
