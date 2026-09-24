@@ -19,7 +19,7 @@
       >
         <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
       </view>
-      <text class="page-title store-fade" :class="{ hidden: searchMode }">商店</text>
+      <text class="page-title store-fade" :class="{ hidden: searchMode }">{{ t('store.title') }}</text>
       <view class="header-actions store-fade" :class="{ hidden: searchMode }">
         <view class="action-item cart-action" @click="openCart">
           <image src="/static/icons/shopping-cart.svg" mode="aspectFit" class="action-icon" />
@@ -44,7 +44,7 @@
           v-model="searchQuery"
           :focus="searchFocus"
           confirm-type="search"
-          placeholder="搜索商品"
+          :placeholder="t('store.searchPlaceholder')"
           placeholder-class="search-placeholder"
           @focus="openSearch"
           @confirm="onSearchConfirm"
@@ -57,7 +57,7 @@
 
     <view class="search-panel" :class="{ visible: searchMode }">
       <view v-if="showSearchHistory" class="search-history">
-        <text class="search-panel-heading">历史搜索</text>
+        <text class="search-panel-heading">{{ t('store.searchHistory') }}</text>
         <view
           v-for="item in searchHistory"
           :key="item"
@@ -87,7 +87,7 @@
           </view>
         </view>
         <view v-if="searchResults.length === 0" class="search-empty">
-          <text class="search-empty-text">未找到相关商品</text>
+          <text class="search-empty-text">{{ t('store.noResults') }}</text>
         </view>
       </view>
     </view>
@@ -238,6 +238,7 @@ import { useStoreSearchHistory } from '@/composables/useStoreSearchHistory';
 import { storeSearchActive } from '@/composables/useStoreSearchMode';
 import { getFrostedGlassStyle } from '@/utils/frostedGlass';
 import { rpx2px } from '@/utils/rpx';
+import { useLanguage } from '@/composables/useLanguage';
 import {
   storeProducts,
   annualProducts,
@@ -245,6 +246,8 @@ import {
   getAnnualProductsByRegion,
   type AnnualRegionId,
 } from '@/data/storeProducts';
+
+const { t } = useLanguage();
 
 const stickyActionsGlassStyle = getFrostedGlassStyle('tabbar');
 const categoryScrollStyle = {
@@ -419,10 +422,10 @@ const displayedProducts = computed(() => {
 
 const sectionTitle = computed(() => {
   if (displayProductType.value === 'ordinary') {
-    return '普通商品';
+    return t('store.normalProducts');
   }
   const region = annualRegions.find((item) => item.id === displayAnnualRegion.value);
-  return region ? `${region.name}商品` : '年框商品';
+  return region ? `${region.name} · ${t('store.annualProducts')}` : t('store.annualProducts');
 });
 
 const productListKey = computed(
@@ -463,64 +466,64 @@ type StoreCategory = {
   subcategories: StoreSubCategory[];
 };
 
-const categories: StoreCategory[] = [
-  { id: 'all', name: '全部商品', subcategories: [] },
+const categories = computed<StoreCategory[]>(() => [
+  { id: 'all', name: t('store.category.all'), subcategories: [] },
   {
     id: 'jacket',
-    name: '夹克',
+    name: t('store.category.jacket'),
     subcategories: [
-      { id: 'jacket-casual', name: '休闲夹克' },
-      { id: 'jacket-denim', name: '牛仔夹克' },
-      { id: 'jacket-leather', name: '皮夹克' },
-      { id: 'jacket-wind', name: '防风夹克' },
+      { id: 'jacket-casual', name: t('store.subcategory.jacketCasual') },
+      { id: 'jacket-denim', name: t('store.subcategory.jacketDenim') },
+      { id: 'jacket-leather', name: t('store.subcategory.jacketLeather') },
+      { id: 'jacket-wind', name: t('store.subcategory.jacketWind') },
     ],
   },
   {
     id: 'jumpers',
-    name: '卫衣',
+    name: t('store.category.jumpers'),
     subcategories: [
-      { id: 'jumpers-hoodie', name: '连帽卫衣' },
-      { id: 'jumpers-crew', name: '圆领卫衣' },
-      { id: 'jumpers-zip', name: '拉链卫衣' },
-      { id: 'jumpers-fleece', name: '抓绒卫衣' },
+      { id: 'jumpers-hoodie', name: t('store.subcategory.jumpersHoodie') },
+      { id: 'jumpers-crew', name: t('store.subcategory.jumpersCrew') },
+      { id: 'jumpers-zip', name: t('store.subcategory.jumpersZip') },
+      { id: 'jumpers-fleece', name: t('store.subcategory.jumpersFleece') },
     ],
   },
   {
     id: 'shoes',
-    name: '鞋靴',
+    name: t('store.category.shoes'),
     subcategories: [
-      { id: 'shoes-sneaker', name: '运动鞋' },
-      { id: 'shoes-boots', name: '靴子' },
-      { id: 'shoes-loafers', name: '乐福鞋' },
-      { id: 'shoes-sandals', name: '凉鞋' },
+      { id: 'shoes-sneaker', name: t('store.subcategory.shoesSneaker') },
+      { id: 'shoes-boots', name: t('store.subcategory.shoesBoots') },
+      { id: 'shoes-loafers', name: t('store.subcategory.shoesLoafers') },
+      { id: 'shoes-sandals', name: t('store.subcategory.shoesSandals') },
     ],
   },
   {
     id: 'jeans',
-    name: '牛仔裤',
+    name: t('store.category.jeans'),
     subcategories: [
-      { id: 'jeans-straight', name: '直筒' },
-      { id: 'jeans-slim', name: '修身' },
-      { id: 'jeans-wide', name: '阔腿' },
-      { id: 'jeans-cropped', name: '九分' },
+      { id: 'jeans-straight', name: t('store.subcategory.jeansStraight') },
+      { id: 'jeans-slim', name: t('store.subcategory.jeansSlim') },
+      { id: 'jeans-wide', name: t('store.subcategory.jeansWide') },
+      { id: 'jeans-cropped', name: t('store.subcategory.jeansCropped') },
     ],
   },
   {
     id: 'accessories',
-    name: '配饰',
+    name: t('store.category.accessories'),
     subcategories: [
-      { id: 'accessories-bag', name: '包袋' },
-      { id: 'accessories-belt', name: '腰带' },
-      { id: 'accessories-hat', name: '帽子' },
-      { id: 'accessories-scarf', name: '围巾' },
+      { id: 'accessories-bag', name: t('store.subcategory.accessoriesBag') },
+      { id: 'accessories-belt', name: t('store.subcategory.accessoriesBelt') },
+      { id: 'accessories-hat', name: t('store.subcategory.accessoriesHat') },
+      { id: 'accessories-scarf', name: t('store.subcategory.accessoriesScarf') },
     ],
   },
-];
+]);
 
 const showSubcategories = computed(() => activeCategory.value !== 'all');
 
 const activeSubcategories = computed(() => {
-  const category = categories.find((item) => item.id === activeCategory.value);
+  const category = categories.value.find((item) => item.id === activeCategory.value);
   return category?.subcategories ?? [];
 });
 

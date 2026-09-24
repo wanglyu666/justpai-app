@@ -39,15 +39,15 @@
       <view class="user-info">
         <text class="user-title">{{ profile.title }}</text>
         <view class="info-row">
-          <text class="info-label">联系方式：</text>
+          <text class="info-label">{{ t('profile.contact') }}</text>
           <text class="info-value">{{ profile.phone }}</text>
         </view>
         <view class="info-row">
-          <text class="info-label">邮箱：</text>
+          <text class="info-label">{{ t('profile.email') }}</text>
           <text class="info-value">{{ profile.email }}</text>
         </view>
         <view class="info-row">
-          <text class="info-label">部门：</text>
+          <text class="info-label">{{ t('profile.department') }}</text>
           <text class="info-value">{{ profile.department }}</text>
         </view>
       </view>
@@ -151,6 +151,15 @@
       </StepFadeTransition>
     </BottomSheetPanel>
 
+    <LanguageSheet
+      :show="languageSheetOpen"
+      :title="t('profile.language')"
+      :current="currentLanguage"
+      :options="languageOptions"
+      @close="closeLanguageSheet"
+      @select="handleLanguageSelect"
+    />
+
     <ProfileEditSheet
       :show="editSheetOpen"
       :avatar="profile.avatar"
@@ -163,7 +172,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import StepFadeTransition from '@/components/StepFadeTransition.vue';
 import PhoneVerifyContent from '@/components/PhoneVerifyContent.vue';
@@ -181,12 +190,16 @@ import UploadSuccessContent from '@/components/UploadSuccessContent.vue';
 import ProfileEditSheet, {
   type ProfileEditPayload,
 } from '@/components/ProfileEditSheet.vue';
+import LanguageSheet from '@/components/LanguageSheet.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const emit = defineEmits<{
   back: [];
 }>();
+
+const { currentLanguage, currentLanguageName, languageOptions, setLanguage, t } = useLanguage();
 
 const DEFAULT_AVATAR =
   'https://api.dicebear.com/7.x/notionists/svg?seed=Admin&backgroundColor=f8aba6';
@@ -201,6 +214,17 @@ const profile = reactive({
 });
 
 const editSheetOpen = ref(false);
+const languageSheetOpen = ref(false);
+
+const closeLanguageSheet = () => {
+  languageSheetOpen.value = false;
+};
+
+const openLanguageSheet = () => {
+  languageSheetOpen.value = true;
+};
+
+usePageBackWhen(languageSheetOpen, closeLanguageSheet);
 
 const { visible: passwordFlowVisible, open: openPasswordFlow, close: closePasswordFlow } = useSlideOver();
 const { visible: phoneFlowVisible, open: openPhoneFlow, close: closePhoneFlow } = useSlideOver();
@@ -215,42 +239,49 @@ const phoneStep = ref<'verify' | 'change' | 'success'>('verify');
 const deleteStep = ref<'verify' | 'confirm' | 'success'>('verify');
 const uploadStep = ref<'form' | 'success'>('form');
 
-const menuGroups = ref([
+const menuGroups = computed(() => [
   {
     id: 'security',
-    title: '账号与安全',
+    title: t('profile.group.security'),
     items: [
-      { id: 'password', title: '密码修改', subtitle: '更改您的登录密码', icon: '/static/icons/shield.svg' },
-      { id: 'phone', title: '手机号修改', subtitle: '更换绑定的手机号码', icon: '/static/icons/settings.svg' },
-      { id: 'cancel', title: '注销账户', subtitle: '永久注销当前账户', icon: '/static/icons/shield.svg' },
+      { id: 'password', title: t('profile.password'), subtitle: t('profile.passwordDescription'), icon: '/static/icons/shield.svg' },
+      { id: 'phone', title: t('profile.phone'), subtitle: t('profile.phoneDescription'), icon: '/static/icons/settings.svg' },
+      { id: 'cancel', title: t('profile.cancelAccount'), subtitle: t('profile.cancelAccountDescription'), icon: '/static/icons/shield.svg' },
     ],
   },
   {
     id: 'info',
-    title: '基本信息',
+    title: t('profile.group.basic'),
     items: [
-      { id: 'register', title: '注册信息', subtitle: '查看账户注册详情', icon: '/static/icons/file-text-gray.svg' },
-      { id: 'invoice', title: '开票信息', subtitle: '管理发票与开票资料', icon: '/static/icons/receipt.svg' },
-      { id: 'address', title: '地址信息', subtitle: '查看与编辑收货地址', icon: '/static/icons/file-text.svg' },
+      { id: 'register', title: t('profile.registration'), subtitle: t('profile.registrationDescription'), icon: '/static/icons/file-text-gray.svg' },
+      { id: 'invoice', title: t('profile.invoice'), subtitle: t('profile.invoiceDescription'), icon: '/static/icons/receipt.svg' },
+      { id: 'address', title: t('profile.address'), subtitle: t('profile.addressDescription'), icon: '/static/icons/file-text.svg' },
     ],
   },
   {
     id: 'upgrade',
-    title: '升级企业账号',
+    title: t('profile.group.upgrade'),
     items: [
-      { id: 'upload', title: '上传资料', subtitle: '提交企业认证所需材料', icon: '/static/icons/building-2.svg' },
+      { id: 'upload', title: t('profile.upload'), subtitle: t('profile.uploadDescription'), icon: '/static/icons/building-2.svg' },
+    ],
+  },
+  {
+    id: 'language',
+    title: t('profile.group.language'),
+    items: [
+      { id: 'language', title: t('profile.language'), subtitle: currentLanguageName.value, icon: '/static/icons/settings.svg' },
     ],
   },
   {
     id: 'rules',
-    title: '平台规则',
+    title: t('profile.group.rules'),
     items: [
-      { id: 'guide', title: '平台操作指导', subtitle: '了解平台功能与操作流程', icon: '/static/icons/book-open.svg' },
-      { id: 'manage', title: '平台管理规定', subtitle: '查看平台管理相关制度', icon: '/static/icons/book-open.svg' },
-      { id: 'quality', title: '质量与技术标准', subtitle: '查阅质量与技术规范文件', icon: '/static/icons/book-open.svg' },
-      { id: 'credit', title: '信用服务考核制度', subtitle: '了解信用服务考核规则', icon: '/static/icons/book-open.svg' },
-      { id: 'service', title: '服务标准和环境', subtitle: '查看服务标准与环境要求', icon: '/static/icons/book-open.svg' },
-      { id: 'health', title: '健康、安全、成品保护管理手册', subtitle: '查阅健康安全与保护规范', icon: '/static/icons/book-open.svg' },
+      { id: 'guide', title: t('profile.guide'), subtitle: t('profile.guideDescription'), icon: '/static/icons/book-open.svg' },
+      { id: 'manage', title: t('profile.managementRules'), subtitle: t('profile.managementRulesDescription'), icon: '/static/icons/book-open.svg' },
+      { id: 'quality', title: t('profile.qualityStandards'), subtitle: t('profile.qualityStandardsDescription'), icon: '/static/icons/book-open.svg' },
+      { id: 'credit', title: t('profile.creditRules'), subtitle: t('profile.creditRulesDescription'), icon: '/static/icons/book-open.svg' },
+      { id: 'service', title: t('profile.serviceStandards'), subtitle: t('profile.serviceStandardsDescription'), icon: '/static/icons/book-open.svg' },
+      { id: 'health', title: t('profile.safetyManual'), subtitle: t('profile.safetyManualDescription'), icon: '/static/icons/book-open.svg' },
     ],
   },
 ]);
@@ -309,6 +340,21 @@ const handleItemClick = (item: { id: string }) => {
   if (item.id === 'upload') {
     openUploadFlow();
   }
+
+  if (item.id === 'language') {
+    openLanguageSheet();
+  }
+};
+
+const handleLanguageSelect = (code: (typeof languageOptions)[number]['code']) => {
+  const changed = currentLanguage.value !== code;
+  setLanguage(code);
+  closeLanguageSheet();
+  if (!changed) return;
+  uni.showToast({
+    title: t('profile.languageChanged'),
+    icon: 'none',
+  });
 };
 
 const goPasswordStep = () => {

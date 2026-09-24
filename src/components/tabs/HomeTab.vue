@@ -12,7 +12,7 @@
           ></image>
         </view>
         <view class="login-test-btn" @click="openWelcome">
-          <text class="login-test-text">登录测试</text>
+          <text class="login-test-text">{{ t('home.loginTest') }}</text>
         </view>
       </view>
       <view class="header-actions">
@@ -68,8 +68,8 @@
             </view>
           </view>
           <view class="todo-panel-header-text">
-            <text class="todo-panel-title">今日待办</text>
-            <text class="todo-panel-desc">完成以下任务，提升工作效率</text>
+            <text class="todo-panel-title">{{ t('home.todayTodo') }}</text>
+            <text class="todo-panel-desc">{{ t('home.todoDescription') }}</text>
           </view>
           <view class="todo-panel-action-btn" @click.stop="onTodoAction">
             <image
@@ -96,7 +96,7 @@
 
     <!-- Latest News -->
     <view class="news-section">
-      <text class="section-title">最新动态</text>
+      <text class="section-title">{{ t('home.latestNews') }}</text>
       <scroll-view
         scroll-x
         class="news-scroll"
@@ -181,6 +181,9 @@ import ForgotPasswordContent from '@/components/ForgotPasswordContent.vue';
 import LoginOtpContent from '@/components/LoginOtpContent.vue';
 import ResetPasswordContent from '@/components/ResetPasswordContent.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const { visible: profileVisible, open: openProfile, close: closeProfile } = useSlideOver();
 const { visible: messagesVisible, open: openMessages, close: closeMessages } = useSlideOver();

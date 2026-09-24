@@ -1,8 +1,8 @@
 <template>
-  <view class="tab-root">
+  <view class="tab-root" :class="{ 'is-english': currentLanguage === 'en-US' }">
   <view class="container page-safe-top">
     <view class="header">
-      <text class="title">管理</text>
+      <text class="title">{{ t('manage.title') }}</text>
     </view>
 
     <view class="card-layout">
@@ -14,12 +14,12 @@
             mode="aspectFit"
           />
         </view>
-        <text class="card-top-title">工程项目管理</text>
+        <text class="card-top-title">{{ t('manage.engineeringProjects') }}</text>
       </view>
       <view class="card card-middle" @click="openMaintenanceList">
-        <text class="card-middle-title">维保报修管理</text>
+        <text class="card-middle-title">{{ t('manage.maintenanceRequests') }}</text>
         <view class="card-middle-add" @click.stop="onMaintenanceAdd">
-          <text class="card-middle-add-text">新增</text>
+          <text class="card-middle-add-text">{{ t('common.add') }}</text>
         </view>
         <image
           class="card-middle-img"
@@ -28,19 +28,19 @@
         />
         <view class="card-middle-stat">
           <text class="card-middle-stat-value">12</text>
-          <text class="card-middle-stat-label">项目数量</text>
+          <text class="card-middle-stat-label">{{ t('manage.projectCount') }}</text>
         </view>
       </view>
 
       <view class="card card-bottom wallet-stack">
         <view class="wallet-layer wallet-visa">
-          <text class="wallet-brand wallet-brand-visa">待开工</text>
+          <text class="wallet-brand wallet-brand-visa">{{ t('manage.pendingStart') }}</text>
         </view>
         <view class="wallet-layer wallet-stripe">
-          <text class="wallet-brand wallet-brand-stripe">施工中</text>
+          <text class="wallet-brand wallet-brand-stripe">{{ t('manage.inProgress') }}</text>
         </view>
         <view class="wallet-layer wallet-paypal">
-          <text class="wallet-brand wallet-brand-paypal">已完工</text>
+          <text class="wallet-brand wallet-brand-paypal">{{ t('manage.completed') }}</text>
         </view>
         <view
           class="wallet-status-hit wallet-pending-hit"
@@ -61,7 +61,7 @@
             mode="scaleToFill"
           />
           <view class="wallet-balance">
-            <text class="wallet-amount">维保项目管理</text>
+            <text class="wallet-amount">{{ t('manage.maintenanceProjects') }}</text>
           </view>
         </view>
       </view>
@@ -117,6 +117,9 @@ import EngineeringProjectListContent from '@/components/EngineeringProjectListCo
 import { useMaintenanceItems } from '@/composables/useMaintenanceItems';
 import type { MaintenanceProjectStatus } from '@/composables/useMaintenanceProjects';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { currentLanguage, t } = useLanguage();
 
 const { addMaintenance } = useMaintenanceItems();
 const maintenanceCreateStep = ref<'form' | 'success'>('form');
@@ -457,5 +460,25 @@ const handleMaintenanceCreateSubmit = (payload: MaintenanceFormPayload) => {
   color: #1a2332;
   line-height: 1.1;
   letter-spacing: -1rpx;
+}
+
+.tab-root.is-english .card-top-title {
+  max-width: 420rpx;
+  font-size: 34rpx;
+  text-align: right;
+}
+
+.tab-root.is-english .card-middle-title {
+  max-width: 350rpx;
+  font-size: 32rpx;
+}
+
+.tab-root.is-english .wallet-brand {
+  font-size: 25rpx;
+}
+
+.tab-root.is-english .wallet-amount {
+  max-width: 520rpx;
+  font-size: 44rpx;
 }
 </style>

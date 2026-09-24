@@ -1,8 +1,8 @@
 <template>
-  <view class="tab-root">
+  <view class="tab-root" :class="{ 'is-english': currentLanguage === 'en-US' }">
   <view class="container page-safe-top">
     <view class="header">
-      <text class="title">工作台</text>
+      <text class="title">{{ t('work.title') }}</text>
     </view>
 
     <view class="card-layout">
@@ -17,9 +17,9 @@
           src="/static/images/letter.png"
           mode="aspectFit"
         />
-        <text class="card-banner-title">合同档案</text>
+        <text class="card-banner-title">{{ t('work.contractArchive') }}</text>
         <view class="card-banner-stat">
-          <text class="card-banner-stat-label">合同数量</text>
+          <text class="card-banner-stat-label">{{ t('work.contractCount') }}</text>
           <text class="card-banner-stat-value">36</text>
         </view>
       </view>
@@ -28,8 +28,8 @@
         <view class="card card-left" @click="openConsultTicket">
           <view class="card-left-top">
             <view class="card-left-title">
-              <text class="card-left-title-line">咨询</text>
-              <text class="card-left-title-line">单</text>
+              <text class="card-left-title-line">{{ t('work.consultTicketLine1') }}</text>
+              <text class="card-left-title-line">{{ t('work.consultTicketLine2') }}</text>
             </view>
             <view class="card-left-add-btn" @click.stop="onConsultAdd">
               <image
@@ -54,7 +54,7 @@
                 mode="aspectFit"
                 class="card-action-icon card-action-icon-black"
               />
-              <text class="card-action-text card-action-text-black">审批配置</text>
+              <text class="card-action-text card-action-text-black">{{ t('work.approvalConfig') }}</text>
             </view>
           </view>
           <view class="card card-right-item card-bill" @click="openBillManagement">
@@ -64,7 +64,7 @@
                 mode="aspectFit"
                 class="card-action-icon"
               />
-              <text class="card-action-text card-action-text-green">账单管理</text>
+              <text class="card-action-text card-action-text-green">{{ t('work.billManagement') }}</text>
             </view>
           </view>
           <view class="card card-right-item card-feedback" @click="openFeedbackList">
@@ -74,7 +74,7 @@
                 mode="aspectFit"
                 class="card-action-icon card-action-icon-black"
               />
-              <text class="card-action-text card-action-text-black">意见反馈</text>
+              <text class="card-action-text card-action-text-black">{{ t('work.feedback') }}</text>
             </view>
             <view class="card-feedback-add-btn" @click.stop="onFeedbackAdd">
               <image
@@ -161,7 +161,10 @@ import ApprovalConfigContent from '@/components/ApprovalConfigContent.vue';
 import { useConsultTickets } from '@/composables/useConsultTickets';
 import { useFeedbackItems } from '@/composables/useFeedbackItems';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { useLanguage } from '@/composables/useLanguage';
 import { ref } from 'vue';
+
+const { currentLanguage, t } = useLanguage();
 
 const { addFeedback } = useFeedbackItems();
 const { addConsultTicket } = useConsultTickets();
@@ -465,6 +468,29 @@ const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
 
 .card-action-text-green {
   color: #163300;
+}
+
+.tab-root.is-english .card-left-title-line {
+  font-size: 50rpx;
+}
+
+.tab-root.is-english .card-action-content {
+  flex-direction: column;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 0 16rpx;
+  text-align: center;
+}
+
+.tab-root.is-english .card-action-icon {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.tab-root.is-english .card-action-text {
+  font-size: 27rpx;
+  white-space: normal;
+  text-align: center;
 }
 
 .card-feedback {
