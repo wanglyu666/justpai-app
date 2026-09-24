@@ -16,8 +16,8 @@
     </view>
 
     <view class="content">
-      <text class="page-title">消息</text>
-      <text class="page-desc">查看系统通知与重要提醒</text>
+      <text class="page-title">{{ t('messages.title') }}</text>
+      <text class="page-desc">{{ t('messages.description') }}</text>
 
       <view
         class="message-group"
@@ -54,6 +54,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { currentLanguage, t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -108,14 +111,26 @@ const messages = ref<MessageItem[]>([
   },
 ]);
 
+const formatMessageDate = (date: string) => {
+  if (date === '今天') return t('messages.today');
+  if (date === '昨天') return t('messages.yesterday');
+
+  const match = date.match(/^(\d{1,2})月(\d{1,2})日$/);
+  if (match && currentLanguage.value !== 'zh-CN') {
+    return `${match[1].padStart(2, '0')}/${match[2].padStart(2, '0')}`;
+  }
+
+  return date;
+};
+
 const messageGroups = computed(() => {
-  const groups: { date: string; items: MessageItem[] }[] = [];
+  const groups: { sourceDate: string; date: string; items: MessageItem[] }[] = [];
   for (const item of messages.value) {
     const last = groups[groups.length - 1];
-    if (last?.date === item.date) {
+    if (last?.sourceDate === item.date) {
       last.items.push(item);
     } else {
-      groups.push({ date: item.date, items: [item] });
+      groups.push({ sourceDate: item.date, date: formatMessageDate(item.date), items: [item] });
     }
   }
   return groups;

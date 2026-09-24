@@ -4,7 +4,7 @@
       <slot />
     </view>
     <view class="auth-success-hello" :class="{ 'is-visible': helloVisible }">
-      <text class="auth-success-word">欢迎！</text>
+      <text class="auth-success-word">{{ t('auth.welcome') }}</text>
     </view>
     <view class="auth-success-hello" :class="{ 'is-visible': welcomeVisible }">
       <text class="auth-success-word is-en">Welcome!</text>
@@ -13,6 +13,10 @@
 </template>
 
 <script setup lang="ts">
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
+
 defineProps<{
   faded: boolean;
   helloVisible: boolean;

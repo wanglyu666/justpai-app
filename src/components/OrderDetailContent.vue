@@ -5,7 +5,7 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="header-title">订单详情</text>
+        <text class="header-title">{{ t('order.details') }}</text>
         <view class="header-placeholder" />
       </view>
     </view>
@@ -34,39 +34,39 @@
       <view class="section-card">
         <view class="meta-list">
           <view class="meta-row">
-            <text class="meta-label">订单编号</text>
+            <text class="meta-label">{{ t('order.number') }}</text>
             <text class="meta-value">{{ order.orderNo }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">合同编号</text>
+            <text class="meta-label">{{ t('order.contractNumber') }}</text>
             <text class="meta-value">{{ order.contractNo }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">订单状态</text>
+            <text class="meta-label">{{ t('order.status') }}</text>
             <text class="meta-value">{{ statusLabel }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">联系人</text>
+            <text class="meta-label">{{ t('address.contact') }}</text>
             <text class="meta-value">{{ contactName }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">联系电话</text>
+            <text class="meta-label">{{ t('address.phone') }}</text>
             <text class="meta-value">{{ contactPhone }}</text>
           </view>
           <view class="meta-row meta-row-top">
-            <text class="meta-label">服务地址</text>
+            <text class="meta-label">{{ t('order.address') }}</text>
             <text class="meta-value meta-value-wrap">{{ order.serviceAddress }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">下单时间</text>
+            <text class="meta-label">{{ t('order.createdAt') }}</text>
             <text class="meta-value">{{ order.orderTime }}</text>
           </view>
           <view v-if="order.payDeadline" class="meta-row">
-            <text class="meta-label">支付截止时间</text>
+            <text class="meta-label">{{ t('order.paymentDeadline') }}</text>
             <text class="meta-value">{{ order.payDeadline }}</text>
           </view>
           <view class="meta-row meta-row-amount">
-            <text class="meta-label">订单金额</text>
+            <text class="meta-label">{{ t('order.amount') }}</text>
             <text class="meta-value meta-value-strong">¥{{ order.amount }}</text>
           </view>
         </view>
@@ -74,8 +74,8 @@
 
       <view class="section-card">
         <view class="section-head">
-          <text class="section-title">产品信息</text>
-          <text class="section-hint">共 {{ order.itemCount }} 件商品</text>
+          <text class="section-title">{{ t('order.productInfo') }}</text>
+          <text class="section-hint">{{ tf('order.productCount', { count: order.itemCount }) }}</text>
         </view>
 
         <view class="product-list">
@@ -113,6 +113,9 @@ import { computed } from 'vue';
 import type { OrderRecord } from '@/data/orders';
 import { getRefundItemsForOrder } from '@/data/refundForm';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 const props = defineProps<{
   order: OrderRecord;
@@ -124,23 +127,23 @@ const emit = defineEmits<{
 
 const currentStepIndex = 0;
 
-const steps = [
-  { id: 'signed', label: '签约', icon: '/static/icons/file-text.svg' },
-  { id: 'pay', label: '支付', icon: '/static/icons/order.svg' },
-  { id: 'service', label: '服务', icon: '/static/icons/shopping-bag.svg' },
-  { id: 'done', label: '完成', icon: '/static/icons/check.svg' },
-];
+const steps = computed(() => [
+  { id: 'signed', label: t('order.stepSign'), icon: '/static/icons/file-text.svg' },
+  { id: 'pay', label: t('order.stepPay'), icon: '/static/icons/order.svg' },
+  { id: 'service', label: t('order.stepService'), icon: '/static/icons/shopping-bag.svg' },
+  { id: 'done', label: t('order.stepDone'), icon: '/static/icons/check.svg' },
+]);
 
-const statusLabels: Record<OrderRecord['status'], string> = {
-  pending: '待支付',
-  signed: '已签约',
-  service: '服务中',
-  completed: '已完工',
-  cancelled: '已取消',
-  reviewed: '已评价',
-};
+const statusLabels = computed<Record<OrderRecord['status'], string>>(() => ({
+  pending: t('order.pending'),
+  signed: t('order.signed'),
+  service: t('order.service'),
+  completed: t('order.completed'),
+  cancelled: t('order.cancelled'),
+  reviewed: t('order.reviewed'),
+}));
 
-const statusLabel = computed(() => statusLabels[props.order.status]);
+const statusLabel = computed(() => statusLabels.value[props.order.status]);
 
 const contactName = computed(() => props.order.contactName ?? '管理员');
 const contactPhone = computed(() => props.order.contactPhone ?? '138-0013-8000');

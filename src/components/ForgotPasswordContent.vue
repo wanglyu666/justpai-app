@@ -4,7 +4,7 @@
       <view class="icon-btn" @click="handleBack">
         <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
       </view>
-      <text class="page-title">忘记密码</text>
+      <text class="page-title">{{ t('auth.forgotTitle') }}</text>
       <view class="header-spacer" />
     </view>
 
@@ -13,12 +13,12 @@
     </view>
 
     <view class="forgot-copy">
-      <text class="forgot-heading">忘记密码？</text>
-      <text class="forgot-hint">别担心，请输入与该账号绑定的手机号</text>
+      <text class="forgot-heading">{{ t('auth.forgotHeading') }}</text>
+      <text class="forgot-hint">{{ t('auth.forgotHint') }}</text>
     </view>
 
     <view class="forgot-field">
-      <text class="field-label">请输入手机号</text>
+      <text class="field-label">{{ t('auth.phoneLabel') }}</text>
       <view class="input-pill">
         <view class="country-code">
           <text class="country-code-text">+86</text>
@@ -29,7 +29,7 @@
           type="number"
           maxlength="11"
           v-model="phone"
-          placeholder="请输入手机号"
+          :placeholder="t('auth.phoneLabel')"
           placeholder-class="field-placeholder"
         />
         <image
@@ -46,7 +46,7 @@
       :class="{ 'is-disabled': !canSubmit }"
       @click="onNext"
     >
-      <text class="next-btn-text">下一步</text>
+      <text class="next-btn-text">{{ t('auth.next') }}</text>
     </view>
     <view class="forgot-footer-spacer" />
   </view>
@@ -55,6 +55,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = defineProps<{
   phone?: string;

@@ -7,11 +7,11 @@
     </view>
 
     <view class="content">
-      <text class="page-title">升级企业账号</text>
-      <text class="page-desc">上传营业执照并填写开票信息，提交后将进入企业账号审核流程</text>
+      <text class="page-title">{{ t('upgrade.title') }}</text>
+      <text class="page-desc">{{ t('upgrade.description') }}</text>
 
       <view class="section">
-        <text class="field-label">营业执照</text>
+        <text class="field-label">{{ t('registration.businessLicense') }}</text>
         <view class="upload-box" @click="handleChooseImage">
           <image
             v-if="licenseImage"
@@ -21,72 +21,72 @@
           ></image>
           <view v-else class="upload-placeholder">
             <image src="/static/icons/image-plus.svg" mode="aspectFit" class="upload-icon"></image>
-            <text class="upload-text">点击上传营业执照</text>
-            <text class="upload-hint">支持 JPG、PNG 等图片格式</text>
+            <text class="upload-text">{{ t('upgrade.uploadLicense') }}</text>
+            <text class="upload-hint">{{ t('upgrade.uploadHint') }}</text>
           </view>
         </view>
       </view>
 
       <view class="section">
-        <text class="section-title">开票信息</text>
+        <text class="section-title">{{ t('invoice.title') }}</text>
 
         <view class="form-list">
           <view class="field-group">
-            <text class="field-label">企业全称</text>
+            <text class="field-label">{{ t('invoice.companyName') }}</text>
             <input
               v-model="form.companyName"
               class="field-input"
-              placeholder="请输入企业全称"
+              :placeholder="t('upgrade.enterCompanyName')"
               placeholder-class="input-placeholder"
             />
           </view>
 
           <view class="field-group">
-            <text class="field-label">统一信用代码</text>
+            <text class="field-label">{{ t('invoice.creditCode') }}</text>
             <input
               v-model="form.creditCode"
               class="field-input"
-              placeholder="请输入统一信用代码"
+              :placeholder="t('upgrade.enterCreditCode')"
               placeholder-class="input-placeholder"
             />
           </view>
 
           <view class="field-group">
-            <text class="field-label">注册地址</text>
+            <text class="field-label">{{ t('invoice.registeredAddress') }}</text>
             <input
               v-model="form.registerAddress"
               class="field-input"
-              placeholder="请输入注册地址"
+              :placeholder="t('upgrade.enterRegisteredAddress')"
               placeholder-class="input-placeholder"
             />
           </view>
 
           <view class="field-group">
-            <text class="field-label">注册电话</text>
+            <text class="field-label">{{ t('invoice.registeredPhone') }}</text>
             <input
               v-model="form.registerPhone"
               class="field-input"
-              placeholder="请输入注册电话"
+              :placeholder="t('upgrade.enterRegisteredPhone')"
               placeholder-class="input-placeholder"
             />
           </view>
 
           <view class="field-group">
-            <text class="field-label">开户行</text>
+            <text class="field-label">{{ t('invoice.bankName') }}</text>
             <input
               v-model="form.bankName"
               class="field-input"
-              placeholder="请输入开户行"
+              :placeholder="t('upgrade.enterBankName')"
               placeholder-class="input-placeholder"
             />
           </view>
 
           <view class="field-group">
-            <text class="field-label">银行账号</text>
+            <text class="field-label">{{ t('invoice.bankAccount') }}</text>
             <input
               v-model="form.bankAccount"
               class="field-input"
-              placeholder="请输入银行账号"
+              :placeholder="t('upgrade.enterBankAccount')"
               placeholder-class="input-placeholder"
             />
           </view>
@@ -95,7 +95,7 @@
 
       <view class="submit-wrap">
         <view class="submit-btn" :class="{ active: isConfirmEnabled }" @click="handleConfirm">
-          <text class="submit-text">确认</text>
+          <text class="submit-text">{{ t('common.confirm') }}</text>
         </view>
       </view>
     </view>
@@ -105,6 +105,9 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];

@@ -1,21 +1,21 @@
 <template>
   <SheetPageLayout
-    title="咨询"
-    desc="填写服务信息后提交，顾问将尽快与您联系"
+    :title="t('consult.title')"
+    :desc="t('consult.description')"
     @back="handleBack"
   >
     <view class="section-card">
-      <text class="section-title">咨询信息</text>
+      <text class="section-title">{{ t('consult.information') }}</text>
 
       <view class="field-group">
         <text class="field-label">
           <text class="required">*</text>
-          服务地址
+          {{ t('consult.serviceAddress') }}
         </text>
         <input
           v-model="form.address"
           class="field-input"
-          placeholder="请输入服务地址"
+          :placeholder="t('consult.enterServiceAddress')"
           placeholder-class="input-placeholder"
         />
       </view>
@@ -24,14 +24,14 @@
         <view class="field-label-row">
           <text class="field-label">
             <text class="required">*</text>
-            交流内容
+            {{ t('consult.message') }}
           </text>
           <text class="field-count">{{ form.content.length }}/500</text>
         </view>
         <textarea
           v-model="form.content"
           class="field-textarea"
-          placeholder="请描述您的需求或问题，便于我们更快响应"
+          :placeholder="t('consult.enterMessage')"
           placeholder-class="input-placeholder"
           :maxlength="500"
         />
@@ -39,23 +39,23 @@
     </view>
 
     <view class="section-card">
-      <text class="section-title">联系信息</text>
+      <text class="section-title">{{ t('consult.contactInformation') }}</text>
       <view class="contact-grid">
         <view class="contact-item">
-          <text class="contact-label">联系人</text>
+          <text class="contact-label">{{ t('address.contact') }}</text>
           <text class="contact-value">管理员</text>
         </view>
         <view class="contact-divider" />
         <view class="contact-item">
-          <text class="contact-label">联系电话</text>
+          <text class="contact-label">{{ t('address.phone') }}</text>
           <text class="contact-value">138-0013-8000</text>
         </view>
       </view>
     </view>
 
     <view class="section-card">
-      <text class="section-title">交流附件</text>
-      <text class="section-hint">最多上传 {{ MAX_MEDIA }} 个文件（{{ mediaFiles.length }}/{{ MAX_MEDIA }}）</text>
+      <text class="section-title">{{ t('consult.attachments') }}</text>
+      <text class="section-hint">{{ tf('consult.attachmentHint', { max: MAX_MEDIA, current: mediaFiles.length }) }}</text>
 
       <view class="media-grid">
         <view
@@ -84,7 +84,7 @@
             mode="aspectFit"
             class="media-add-icon"
           />
-          <text class="media-add-text">添加</text>
+          <text class="media-add-text">{{ t('consult.add') }}</text>
         </view>
       </view>
     </view>
@@ -95,7 +95,7 @@
         :class="{ active: isSubmitEnabled }"
         @click="handleSubmit"
       >
-        <text class="submit-text">提交</text>
+        <text class="submit-text">{{ t('consult.submit') }}</text>
       </view>
     </template>
   </SheetPageLayout>
@@ -104,6 +104,9 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue';
 import SheetPageLayout from '@/components/SheetPageLayout.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 type MediaFile = {
   path: string;

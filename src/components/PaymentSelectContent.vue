@@ -2,7 +2,7 @@
   <view class="payment-page">
     <view class="payment-body">
       <view class="payment-center">
-        <text class="payment-title">请选择支付方式</text>
+        <text class="payment-title">{{ t('checkout.paymentMethodTitle') }}</text>
 
         <view class="payment-grid">
           <view class="payment-row payment-row-top">
@@ -36,7 +36,7 @@
         :class="{ active: selectedMethod !== null }"
         @click="handleConfirm"
       >
-        <text class="payment-confirm-text">确认</text>
+        <text class="payment-confirm-text">{{ t('common.confirm') }}</text>
       </view>
     </view>
   </view>
@@ -44,6 +44,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type PaymentMethodId = 'unionpay' | 'wechat' | 'alipay';
 

@@ -267,9 +267,9 @@ const menuGroups = computed(() => [
   },
   {
     id: 'language',
-    title: t('profile.group.language'),
+    title: '语言设置 Language',
     items: [
-      { id: 'language', title: t('profile.language'), subtitle: currentLanguageName.value, icon: '/static/icons/settings.svg' },
+      { id: 'language', title: '界面语言 App Language', subtitle: currentLanguageName.value, icon: '/static/icons/settings.svg' },
     ],
   },
   {

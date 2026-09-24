@@ -4,8 +4,8 @@
       <view class="icon-btn" @click="handleBack">
         <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
       </view>
-      <text class="page-title">选择退款商品</text>
-      <text class="page-desc">点击商品卡片选择需要退款的商品，可多选</text>
+      <text class="page-title">{{ t('refund.selectProducts') }}</text>
+      <text class="page-desc">{{ t('refund.selectHint') }}</text>
     </view>
 
     <view class="form-scroll-wrap">
@@ -50,7 +50,7 @@
         </view>
 
         <view class="section-card">
-          <text class="field-label">退款原因</text>
+          <text class="field-label">{{ t('refund.reason') }}</text>
           <view class="dropdown-wrap">
             <view
               class="picker-field"
@@ -58,20 +58,20 @@
               @click.stop="toggleReasonDropdown"
             >
               <text class="picker-text" :class="{ placeholder: reasonIndex < 0 }">
-                {{ reasonIndex >= 0 ? refundReasons[reasonIndex] : '请选择退款原因' }}
+                {{ reasonIndex >= 0 ? localizedRefundReasons[reasonIndex]?.label : t('refund.selectReason') }}
               </text>
               <text class="picker-arrow" :class="{ open: reasonOpen }">▾</text>
             </view>
 
             <view v-if="reasonOpen" class="dropdown-menu" @click.stop>
               <view
-                v-for="(reason, index) in refundReasons"
-                :key="reason"
+                v-for="(reason, index) in localizedRefundReasons"
+                :key="reason.value"
                 class="dropdown-option"
                 :class="{ active: reasonIndex === index }"
                 @click="selectReason(index)"
               >
-                <text class="dropdown-option-text">{{ reason }}</text>
+                <text class="dropdown-option-text">{{ reason.label }}</text>
                 <image
                   v-if="reasonIndex === index"
                   src="/static/icons/check.svg"
@@ -84,30 +84,30 @@
         </view>
 
         <view class="section-card">
-          <text class="field-label">备注</text>
+          <text class="field-label">{{ t('checkout.remarks') }}</text>
           <textarea
             v-model="remarks"
             class="field-textarea"
-            placeholder="请补充退款说明（选填）"
+            :placeholder="t('refund.remarksPlaceholder')"
             placeholder-class="input-placeholder"
             :maxlength="500"
           />
         </view>
 
         <view class="section-card">
-          <text class="field-label">附件上传</text>
+          <text class="field-label">{{ t('refund.upload') }}</text>
           <view class="upload-row">
             <view class="upload-btn" @click="handleChooseFile">
-              <text class="upload-btn-text">选取文件</text>
+              <text class="upload-btn-text">{{ t('refund.chooseFile') }}</text>
             </view>
-            <text class="upload-hint">最多 5 个文件，支持图片与文档</text>
+            <text class="upload-hint">{{ t('refund.uploadHint') }}</text>
           </view>
 
           <view v-if="attachments.length" class="attachment-list">
             <view v-for="(file, index) in attachments" :key="file" class="attachment-item">
-              <text class="attachment-name">附件 {{ index + 1 }}</text>
+              <text class="attachment-name">{{ tf('refund.attachment', { index: index + 1 }) }}</text>
               <view class="attachment-remove" @click="removeAttachment(index)">
-                <text class="attachment-remove-text">移除</text>
+                <text class="attachment-remove-text">{{ t('refund.remove') }}</text>
               </view>
             </view>
           </view>
@@ -119,7 +119,7 @@
 
     <view class="submit-footer">
       <view class="submit-btn" :class="{ active: isSubmitEnabled }" @click="handleSubmit">
-        <text class="submit-text">提交</text>
+        <text class="submit-text">{{ t('consult.submit') }}</text>
       </view>
     </view>
   </view>
@@ -129,11 +129,14 @@
 import { ref, computed, watch } from 'vue';
 import type { OrderRecord } from '@/data/orders';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 import {
   getRefundItemsForOrder,
   refundReasons,
   type RefundLineItem,
 } from '@/data/refundForm';
+
+const { t, tf } = useLanguage();
 
 const props = defineProps<{
   order: OrderRecord | null;
@@ -156,6 +159,22 @@ const reasonIndex = ref(-1);
 const reasonOpen = ref(false);
 const remarks = ref('');
 const attachments = ref<string[]>([]);
+
+const refundReasonKeys = [
+  'refund.reasonChangedMind',
+  'refund.reasonQuality',
+  'refund.reasonMismatch',
+  'refund.reasonService',
+  'refund.reasonSlowShipping',
+  'refund.reasonOther',
+] as const;
+
+const localizedRefundReasons = computed(() =>
+  refundReasons.map((value, index) => ({
+    value,
+    label: t(refundReasonKeys[index]),
+  })),
+);
 
 const resetForm = () => {
   lineItems.value = props.order ? getRefundItemsForOrder(props.order.id) : [];
@@ -197,7 +216,7 @@ const selectReason = (index: number) => {
 const handleChooseFile = () => {
   if (attachments.value.length >= 5) {
     uni.showToast({
-      title: '最多上传 5 个文件',
+      title: t('refund.maxFiles'),
       icon: 'none',
     });
     return;

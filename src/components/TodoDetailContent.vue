@@ -11,8 +11,8 @@
     </view>
 
     <view class="content">
-      <text class="page-title">今日待办</text>
-      <text class="page-desc">完成以下任务，提升工作效率</text>
+      <text class="page-title">{{ t('home.todayTodo') }}</text>
+      <text class="page-desc">{{ t('home.todoDescription') }}</text>
 
       <view class="todo-list">
         <view class="todo-card" v-for="todo in todos" :key="todo.id">
@@ -31,6 +31,9 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type TodoItem = {
   id: number;

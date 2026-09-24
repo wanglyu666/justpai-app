@@ -5,22 +5,22 @@
     <view class="form-grid">
       <view class="form-row form-row-2">
         <view class="field-group">
-          <text class="field-label">联系人</text>
+          <text class="field-label">{{ t('address.contact') }}</text>
           <input
             v-model="form.contact"
             class="field-input"
-            placeholder="请输入联系人"
+            :placeholder="t('address.enterContact')"
             placeholder-class="input-placeholder"
           />
         </view>
         <view class="field-group">
-          <text class="field-label">联系电话</text>
+          <text class="field-label">{{ t('address.phone') }}</text>
           <input
             v-model="form.phone"
             class="field-input"
             type="number"
             maxlength="11"
-            placeholder="请输入联系电话"
+            :placeholder="t('address.enterPhone')"
             placeholder-class="input-placeholder"
           />
         </view>
@@ -34,35 +34,35 @@
           :shift-y="selectedShift.y"
         />
         <view v-if="!selectedLocationName" class="map-card-mask">
-          <text class="map-card-hint">点击地图选择位置</text>
+          <text class="map-card-hint">{{ t('address.mapHint') }}</text>
         </view>
       </view>
 
       <view class="form-row form-row-3">
         <view class="field-group">
-          <text class="field-label">省</text>
+          <text class="field-label">{{ t('address.province') }}</text>
           <input
             v-model="form.province"
             class="field-input"
-            placeholder="请输入省份"
+            :placeholder="t('address.enterProvince')"
             placeholder-class="input-placeholder"
           />
         </view>
         <view class="field-group">
-          <text class="field-label">市</text>
+          <text class="field-label">{{ t('address.city') }}</text>
           <input
             v-model="form.city"
             class="field-input"
-            placeholder="请输入城市"
+            :placeholder="t('address.enterCity')"
             placeholder-class="input-placeholder"
           />
         </view>
         <view class="field-group">
-          <text class="field-label">区/县</text>
+          <text class="field-label">{{ t('address.district') }}</text>
           <input
             v-model="form.district"
             class="field-input"
-            placeholder="请输入区/县"
+            :placeholder="t('address.enterDistrict')"
             placeholder-class="input-placeholder"
           />
         </view>
@@ -70,11 +70,11 @@
 
       <view class="form-row">
         <view class="field-group field-group-full">
-          <text class="field-label">详细地址</text>
+          <text class="field-label">{{ t('address.detail') }}</text>
           <textarea
             v-model="form.detail"
             class="field-textarea"
-            placeholder="请输入详细地址"
+            :placeholder="t('address.enterDetail')"
             placeholder-class="input-placeholder"
             :maxlength="200"
             auto-height
@@ -84,7 +84,7 @@
 
       <view class="submit-wrap">
         <view class="submit-btn" :class="{ active: isConfirmEnabled }" @click="handleConfirm">
-          <text class="submit-text">确定</text>
+          <text class="submit-text">{{ t('common.done') }}</text>
         </view>
       </view>
     </view>
@@ -108,6 +108,9 @@ import MapLocationPickerContent from '@/components/MapLocationPickerContent.vue'
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBackWhen } from '@/composables/usePageBack';
 import { findPoiByName, type MapPoi } from '@/composables/useMapLocations';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type AddressFormValues = {
   contact: string;
@@ -163,7 +166,9 @@ watch(
   { deep: true },
 );
 
-const pageTitle = computed(() => (props.mode === 'edit' ? '修改地址信息' : '地址信息'));
+const pageTitle = computed(() =>
+  props.mode === 'edit' ? t('address.editTitle') : t('address.title'),
+);
 
 const isFormFilled = computed(() =>
   form.contact.trim() !== ''

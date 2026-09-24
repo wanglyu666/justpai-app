@@ -5,7 +5,7 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="header-title">退款详情</text>
+        <text class="header-title">{{ t('order.refundDetails') }}</text>
         <view class="header-placeholder" />
       </view>
     </view>
@@ -47,43 +47,43 @@
       <view class="section-card">
         <view class="meta-list">
           <view class="meta-row">
-            <text class="meta-label">订单编号</text>
+            <text class="meta-label">{{ t('order.number') }}</text>
             <text class="meta-value">{{ order.orderNo }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">合同编号</text>
+            <text class="meta-label">{{ t('order.contractNumber') }}</text>
             <text class="meta-value">{{ order.contractNo }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">退款状态</text>
+            <text class="meta-label">{{ t('refund.status') }}</text>
             <text class="meta-value">{{ refundStatusLabel }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">退款原因</text>
+            <text class="meta-label">{{ t('refund.reason') }}</text>
             <text class="meta-value">{{ refund.reason }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">申请时间</text>
+            <text class="meta-label">{{ t('refund.appliedAt') }}</text>
             <text class="meta-value">{{ refund.submittedAt }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">联系人</text>
+            <text class="meta-label">{{ t('address.contact') }}</text>
             <text class="meta-value">{{ contactName }}</text>
           </view>
           <view class="meta-row">
-            <text class="meta-label">联系电话</text>
+            <text class="meta-label">{{ t('address.phone') }}</text>
             <text class="meta-value">{{ contactPhone }}</text>
           </view>
           <view class="meta-row meta-row-top">
-            <text class="meta-label">服务地址</text>
+            <text class="meta-label">{{ t('order.address') }}</text>
             <text class="meta-value meta-value-wrap">{{ order.serviceAddress }}</text>
           </view>
           <view class="meta-row meta-row-top">
-            <text class="meta-label">备注</text>
+            <text class="meta-label">{{ t('checkout.remarks') }}</text>
             <text class="meta-value meta-value-wrap">{{ refundRemark }}</text>
           </view>
           <view class="meta-row meta-row-amount">
-            <text class="meta-label">退款金额</text>
+            <text class="meta-label">{{ t('refund.amount') }}</text>
             <text class="meta-value meta-value-strong">¥{{ order.amount }}</text>
           </view>
         </view>
@@ -91,8 +91,8 @@
 
       <view class="section-card">
         <view class="section-head">
-          <text class="section-title">退款商品</text>
-          <text class="section-hint">共 {{ refundItems.length }} 件商品</text>
+          <text class="section-title">{{ t('refund.products') }}</text>
+          <text class="section-hint">{{ tf('order.productCount', { count: refundItems.length }) }}</text>
         </view>
 
         <view class="product-list">
@@ -131,6 +131,9 @@ import type { OrderRecord } from '@/data/orders';
 import type { OrderRefundRecord } from '@/composables/useOrderRefunds';
 import { getRefundItemsForOrder } from '@/data/refundForm';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 type StepStatus = 'completed' | 'current' | 'pending';
 
@@ -143,15 +146,15 @@ const emit = defineEmits<{
   back: [];
 }>();
 
-const stepDefs = [
-  { id: 'submit', label: '提交申请' },
-  { id: 'review', label: '平台审核', currentSub: '处理中' },
-  { id: 'process', label: '退款处理' },
-  { id: 'done', label: '退款完成' },
-];
+const stepDefs = computed(() => [
+  { id: 'submit', label: t('refund.submitApplication') },
+  { id: 'review', label: t('refund.platformReview'), currentSub: t('refund.processing') },
+  { id: 'process', label: t('refund.refundProcessing') },
+  { id: 'done', label: t('refund.completed') },
+]);
 
 const progressSteps = computed(() =>
-  stepDefs.map((step, index) => {
+  stepDefs.value.map((step, index) => {
     let status: StepStatus = 'pending';
     if (index < props.refund.currentStep) status = 'completed';
     else if (index === props.refund.currentStep) status = 'current';
@@ -160,7 +163,7 @@ const progressSteps = computed(() =>
     let subTone: 'muted' | 'active' | undefined;
 
     if (status === 'completed' && step.id === 'submit') {
-      subText = '已提交';
+      subText = t('refund.submittedStatus');
       subTone = 'muted';
     } else if (status === 'current' && step.currentSub) {
       subText = step.currentSub;
@@ -177,13 +180,18 @@ const progressSteps = computed(() =>
 );
 
 const refundStatusLabel = computed(() => {
-  const labels = ['提交申请', '平台审核中', '退款处理中', '退款完成'];
-  return labels[props.refund.currentStep] ?? '平台审核中';
+  const labels = [
+    t('refund.submitApplication'),
+    t('refund.platformReviewing'),
+    t('refund.refundProcessingStatus'),
+    t('refund.completed'),
+  ];
+  return labels[props.refund.currentStep] ?? t('refund.platformReviewing');
 });
 
 const contactName = computed(() => props.order.contactName ?? '管理员');
 const contactPhone = computed(() => props.order.contactPhone ?? '138-0013-8000');
-const refundRemark = computed(() => props.refund.remarks.trim() || '无');
+const refundRemark = computed(() => props.refund.remarks.trim() || t('review.none'));
 
 const refundItems = computed(() => {
   const allItems = getRefundItemsForOrder(props.order.id);

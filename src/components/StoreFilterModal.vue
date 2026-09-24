@@ -12,7 +12,7 @@
       @click.stop
     >
       <view class="filter-modal-content">
-        <text class="filter-modal-title">商品筛选</text>
+        <text class="filter-modal-title">{{ t('store.filterTitle') }}</text>
 
         <view class="product-toggle">
           <view class="toggle-track">
@@ -23,7 +23,7 @@
               hover-class="none"
               @click.stop="draftProductType = 'ordinary'"
             >
-              <text class="toggle-text">普通产品</text>
+              <text class="toggle-text">{{ t('store.ordinaryProduct') }}</text>
             </view>
             <view
               class="toggle-item"
@@ -31,13 +31,13 @@
               hover-class="none"
               @click.stop="draftProductType = 'annual'"
             >
-              <text class="toggle-text">年框产品</text>
+              <text class="toggle-text">{{ t('store.annualProduct') }}</text>
             </view>
           </view>
         </view>
 
         <view class="region-section" :class="{ visible: draftProductType === 'annual' }">
-          <text class="region-label">年框区域</text>
+          <text class="region-label">{{ t('store.annualRegion') }}</text>
           <view class="region-scroll-wrap">
             <view
               class="region-scroll-inner"
@@ -61,7 +61,7 @@
         </view>
 
         <view class="filter-modal-action" hover-class="none" @click.stop="handleApply">
-          <text class="filter-modal-action-text">完成</text>
+          <text class="filter-modal-action-text">{{ t('common.done') }}</text>
         </view>
       </view>
     </view>
@@ -78,6 +78,9 @@ import { getFrostedGlassStyle, getFrostedOverlayStyle } from '@/utils/frostedGla
 import { annualRegions, type AnnualRegionId } from '@/data/storeProducts';
 import { waitFrames } from '@/utils/nextFrame';
 import { registerSecondaryPage } from '@/composables/useSecondaryPage';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type StoreProductType = 'ordinary' | 'annual';
 

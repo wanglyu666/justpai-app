@@ -1,22 +1,26 @@
 <template>
   <view class="delete-confirm">
     <view class="confirm-content">
-      <text class="confirm-title">您确定注销账户吗？</text>
-      <text class="confirm-subtitle">此操作不可撤回</text>
+      <text class="confirm-title">{{ t('security.deleteTitle') }}</text>
+      <text class="confirm-subtitle">{{ t('security.deleteWarning') }}</text>
     </view>
 
     <view class="action-wrap">
       <view class="cancel-btn" @click="handleCancel">
-        <text class="cancel-btn-text">取消</text>
+        <text class="cancel-btn-text">{{ t('common.cancel') }}</text>
       </view>
       <view class="confirm-btn" @click="handleConfirm">
-        <text class="confirm-btn-text">确认</text>
+        <text class="confirm-btn-text">{{ t('common.confirm') }}</text>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
+
 const emit = defineEmits<{
   cancel: [];
   confirm: [];

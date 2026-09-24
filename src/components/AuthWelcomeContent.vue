@@ -49,12 +49,12 @@
               </view>
               <view class="scene-project-metrics">
                 <view class="scene-project-metric">
-                  <text class="scene-project-label">合同金额</text>
+                  <text class="scene-project-label">{{ t('auth.contractAmount') }}</text>
                   <text class="scene-project-amount">¥ 128,000</text>
                 </view>
                 <view class="scene-project-divider" />
                 <view class="scene-project-metric scene-project-metric-date">
-                  <text class="scene-project-label">开工日期</text>
+                  <text class="scene-project-label">{{ t('auth.startDate') }}</text>
                   <text class="scene-project-date">2026-09-01</text>
                 </view>
               </view>
@@ -63,18 +63,18 @@
                   <text class="scene-surname-text">李</text>
                 </view>
                 <view class="scene-project-person">
-                  <text class="scene-project-label">项目负责人</text>
+                  <text class="scene-project-label">{{ t('auth.projectManager') }}</text>
                   <text class="scene-project-name">李志强</text>
                 </view>
                 <view class="scene-project-contact">
-                  <text class="scene-project-label">联系方式</text>
+                  <text class="scene-project-label">{{ t('auth.contact') }}</text>
                   <text class="scene-project-name">139-1234-5678</text>
                 </view>
               </view>
             </view>
 
             <view class="scene-approval-card">
-              <text class="scene-approval-kicker">审批类型</text>
+              <text class="scene-approval-kicker">{{ t('auth.approvalType') }}</text>
               <text class="scene-approval-title">下单审批</text>
               <view class="scene-approval-meta">
                 <view class="scene-approval-person">
@@ -82,19 +82,19 @@
                     <text class="scene-surname-text">张</text>
                   </view>
                   <view class="scene-approval-person-text">
-                    <text class="scene-project-label">发起人</text>
+                    <text class="scene-project-label">{{ t('auth.initiator') }}</text>
                     <text class="scene-project-name">张伟</text>
                   </view>
                 </view>
                 <view class="scene-project-divider" />
                 <view class="scene-approval-person-text">
-                  <text class="scene-project-label">发起时间</text>
+                  <text class="scene-project-label">{{ t('auth.startTime') }}</text>
                   <text class="scene-project-name">2026年4月10日</text>
                 </view>
               </view>
               <view class="scene-approval-flow">
                 <view class="scene-flow-edge">
-                  <text class="scene-flow-edge-text">开始</text>
+                  <text class="scene-flow-edge-text">{{ t('auth.flowStart') }}</text>
                 </view>
                 <view class="scene-flow-connector">
                   <view class="scene-flow-dot" />
@@ -103,7 +103,7 @@
                 </view>
                 <view class="scene-flow-current">
                   <text class="scene-flow-current-name">王强</text>
-                  <text class="scene-flow-current-label">当前</text>
+                  <text class="scene-flow-current-label">{{ t('auth.flowCurrent') }}</text>
                 </view>
                 <view class="scene-flow-connector">
                   <view class="scene-flow-dot" />
@@ -111,7 +111,7 @@
                   <view class="scene-flow-dot" />
                 </view>
                 <view class="scene-flow-edge">
-                  <text class="scene-flow-edge-text">结束</text>
+                  <text class="scene-flow-edge-text">{{ t('auth.flowEnd') }}</text>
                 </view>
               </view>
             </view>
@@ -134,10 +134,10 @@
 
     <view class="welcome-actions">
       <view class="primary-btn" @click="onOpenRegister">
-        <text class="primary-btn-text">注册</text>
+        <text class="primary-btn-text">{{ t('auth.register') }}</text>
       </view>
       <view class="secondary-btn" @click="openLogin">
-        <text class="secondary-btn-text">登录</text>
+        <text class="secondary-btn-text">{{ t('auth.login') }}</text>
       </view>
     </view>
 
@@ -160,6 +160,9 @@ import LoginContent from '@/components/LoginContent.vue';
 import { usePageBack } from '@/composables/usePageBack';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { NESTED_PAGE_Z_INDEX } from '@/utils/pageFadeTransition';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 defineProps<{
   exitLeft?: boolean;
@@ -176,21 +179,24 @@ const emit = defineEmits<{
 const { visible: loginVisible, open: openLogin, close: closeLogin } = useSlideOver();
 const currentSlide = ref(0);
 
-const defaultCopy = {
-  title: '把工程干对',
-  subtitle: '一站式创造与维护您的工作空间',
-};
-
-const slides = [
-  { id: 1, scene: 'image', compact: false, frameClass: '', image: '/static/images/poster1.png', ...defaultCopy },
+const slides = computed(() => [
+  {
+    id: 1,
+    scene: 'image',
+    compact: false,
+    frameClass: '',
+    image: '/static/images/poster1.png',
+    title: t('auth.slide1Title'),
+    subtitle: t('auth.slide1Subtitle'),
+  },
   {
     id: 2,
     scene: 'image',
     compact: true,
     frameClass: '',
     image: '/static/images/poster2.png',
-    title: '工程全程可掌握',
-    subtitle: '需求到售后，全流程数字化服务',
+    title: t('auth.slide2Title'),
+    subtitle: t('auth.slide2Subtitle'),
   },
   {
     id: 3,
@@ -198,8 +204,8 @@ const slides = [
     compact: false,
     frameClass: '',
     image: '',
-    title: '年框服务社区',
-    subtitle: '让长期工程需求，拥有一套统一的管理体系。',
+    title: t('auth.slide3Title'),
+    subtitle: t('auth.slide3Subtitle'),
   },
   {
     id: 4,
@@ -207,12 +213,12 @@ const slides = [
     compact: false,
     frameClass: 'is-poster3',
     image: '/static/images/poster3.png',
-    title: '这么派，化繁为简',
-    subtitle: '企业空间服务贯穿全生命周期',
+    title: t('auth.slide4Title'),
+    subtitle: t('auth.slide4Subtitle'),
   },
-];
+]);
 
-const activeSlide = computed(() => slides[currentSlide.value] ?? slides[0]);
+const activeSlide = computed(() => slides.value[currentSlide.value] ?? slides.value[0]);
 
 const handleBack = usePageBack(() => emit('back'));
 

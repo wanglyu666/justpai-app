@@ -4,16 +4,16 @@
     <view class="address-sheet-panel" :class="{ closing: isClosing }">
       <view class="address-sheet-content" :class="{ 'is-hidden': !contentVisible }">
         <view v-if="viewMode === 'list'" class="address-sheet-header">
-          <text class="address-sheet-title">选择服务方地址</text>
+          <text class="address-sheet-title">{{ t('checkout.selectAddress') }}</text>
           <view class="address-sheet-add" @click="handleAdd">
             <image src="/static/icons/plus.svg" mode="aspectFit" class="address-sheet-add-icon" />
-            <text class="address-sheet-add-text">新增</text>
+            <text class="address-sheet-add-text">{{ t('common.add') }}</text>
           </view>
         </view>
 
         <view v-else class="address-sheet-header">
           <text class="address-sheet-title">{{ formTitle }}</text>
-          <text class="address-sheet-back" @click="handleBackToList">返回列表</text>
+          <text class="address-sheet-back" @click="handleBackToList">{{ t('checkout.backToList') }}</text>
         </view>
 
         <view class="address-sheet-body">
@@ -37,17 +37,17 @@
 
               <view class="address-option-grid">
                 <view class="address-option-field">
-                  <text class="address-option-label">所在地区</text>
+                  <text class="address-option-label">{{ t('checkout.region') }}</text>
                   <text class="address-option-value">{{ item.region }}</text>
                 </view>
                 <view class="address-option-field">
-                  <text class="address-option-label">联系人</text>
+                  <text class="address-option-label">{{ t('address.contact') }}</text>
                   <text class="address-option-value">{{ item.contact }}</text>
                 </view>
               </view>
 
               <view class="address-option-field">
-                <text class="address-option-label">联系电话</text>
+                <text class="address-option-label">{{ t('address.phone') }}</text>
                 <text class="address-option-value">{{ item.phone }}</text>
               </view>
             </view>
@@ -56,23 +56,23 @@
           <view v-else class="address-form">
             <view class="address-form-row address-form-row-2">
               <view class="address-form-field">
-                <text class="address-form-label">联系人</text>
+                <text class="address-form-label">{{ t('address.contact') }}</text>
                 <input
                   v-model="form.contact"
                   class="address-form-input"
                   type="text"
-                  placeholder="请输入联系人"
+                  :placeholder="t('address.enterContact')"
                   placeholder-class="address-form-placeholder"
                   :maxlength="20"
                 />
               </view>
               <view class="address-form-field">
-                <text class="address-form-label">联系电话</text>
+                <text class="address-form-label">{{ t('address.phone') }}</text>
                 <input
                   v-model="form.phone"
                   class="address-form-input"
                   type="number"
-                  placeholder="请输入联系电话"
+                  :placeholder="t('address.enterPhone')"
                   placeholder-class="address-form-placeholder"
                   :maxlength="11"
                 />
@@ -87,29 +87,29 @@
                 :shift-y="selectedShift.y"
               />
               <view v-if="!selectedLocationName" class="map-card-mask">
-                <text class="map-card-hint">点击地图选择位置</text>
+                <text class="map-card-hint">{{ t('address.mapHint') }}</text>
               </view>
             </view>
 
             <view class="address-form-field">
-              <text class="address-form-label">所在地区</text>
+              <text class="address-form-label">{{ t('checkout.region') }}</text>
               <input
                 v-model="form.region"
                 class="address-form-input"
                 type="text"
-                placeholder="请输入所在地区"
+                :placeholder="t('checkout.enterRegion')"
                 placeholder-class="address-form-placeholder"
                 :maxlength="50"
               />
             </view>
 
             <view class="address-form-field">
-              <text class="address-form-label">详细地址</text>
+              <text class="address-form-label">{{ t('address.detail') }}</text>
               <input
                 v-model="form.detail"
                 class="address-form-input"
                 type="text"
-                placeholder="请输入详细地址"
+                :placeholder="t('address.enterDetail')"
                 placeholder-class="address-form-placeholder"
                 :maxlength="100"
               />
@@ -124,7 +124,7 @@
           :class="{ active: isConfirmEnabled }"
           @click="handleConfirm"
         >
-          <text class="address-sheet-confirm-text">确定</text>
+          <text class="address-sheet-confirm-text">{{ t('common.done') }}</text>
         </view>
       </view>
     </view>
@@ -148,6 +148,9 @@ import MapLocationPickerContent from '@/components/MapLocationPickerContent.vue'
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBackWhen } from '@/composables/usePageBack';
 import { findPoiByName, type MapPoi } from '@/composables/useMapLocations';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export interface CheckoutAddressItem {
   id: string;
@@ -296,7 +299,9 @@ const switchView = (mode: ViewMode) => {
   }, CONTENT_FADE_MS);
 };
 
-const formTitle = computed(() => (viewMode.value === 'edit' ? '修改地址' : '新增地址'));
+const formTitle = computed(() => (
+  viewMode.value === 'edit' ? t('checkout.editAddress') : t('checkout.addAddress')
+));
 
 const normalizedForm = computed(() => ({
   contact: form.contact.trim(),

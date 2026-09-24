@@ -63,8 +63,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type NewsItem = {
   id: number;
@@ -91,14 +94,14 @@ const shareRendered = ref(false);
 const shareClosing = ref(false);
 let shareCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
-const shareActions = [
-  { id: 'copy', label: '复制链接', icon: '/static/icons/link.svg', color: '#f3f4f6' },
-  { id: 'wechat', label: '分享到微信', icon: '/static/icons/wechat.svg', color: '#08C060' },
-  { id: 'moments', label: '分享到朋友圈', icon: '/static/icons/moments.svg', color: '#67CD23' },
-  { id: 'qq', label: '分享到QQ', icon: '/static/icons/QQ.svg', color: '#13B7F6' },
-] as const;
+type ShareActionId = 'copy' | 'wechat' | 'moments' | 'qq';
 
-type ShareActionId = (typeof shareActions)[number]['id'];
+const shareActions = computed(() => [
+  { id: 'copy' as const, label: t('news.copyLink'), icon: '/static/icons/link.svg', color: '#f3f4f6' },
+  { id: 'wechat' as const, label: t('news.shareWechat'), icon: '/static/icons/wechat.svg', color: '#08C060' },
+  { id: 'moments' as const, label: t('news.shareMoments'), icon: '/static/icons/moments.svg', color: '#67CD23' },
+  { id: 'qq' as const, label: t('news.shareQQ'), icon: '/static/icons/QQ.svg', color: '#13B7F6' },
+]);
 
 const clearShareCloseTimer = () => {
   if (shareCloseTimer) {
@@ -146,7 +149,7 @@ const copyShareLink = () => {
   uni.setClipboardData({
     data: href,
     success: () => {
-      uni.showToast({ title: '链接已复制', icon: 'none' });
+      uni.showToast({ title: t('news.linkCopied'), icon: 'none' });
     },
   });
 };

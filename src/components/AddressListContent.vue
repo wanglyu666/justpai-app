@@ -1,10 +1,10 @@
 <template>
   <view class="address-list">
     <view class="toolbar">
-      <text class="page-title">地址信息</text>
+      <text class="page-title">{{ t('address.title') }}</text>
       <view class="add-btn" @click="handleAdd">
         <image src="/static/icons/plus.svg" mode="aspectFit" class="add-icon"></image>
-        <text class="add-text">新增</text>
+        <text class="add-text">{{ t('common.add') }}</text>
       </view>
     </view>
 
@@ -13,7 +13,7 @@
         <view class="card-header">
           <view class="card-title-row">
             <text class="card-title">{{ item.name }}</text>
-            <text v-if="item.isDefault" class="default-tag">默认</text>
+            <text v-if="item.isDefault" class="default-tag">{{ t('address.default') }}</text>
           </view>
           <view class="card-actions">
             <view class="action-btn" @click="handleEdit(item.id)">
@@ -27,17 +27,17 @@
 
         <view class="card-body">
           <view class="info-col">
-            <text class="info-label">联系人</text>
+            <text class="info-label">{{ t('address.contact') }}</text>
             <text class="info-value">{{ item.contact }}</text>
           </view>
           <view class="info-col">
-            <text class="info-label">联系电话</text>
+            <text class="info-label">{{ t('address.phone') }}</text>
             <text class="info-value">{{ item.phone }}</text>
           </view>
         </view>
 
         <view class="card-region">
-          <text class="info-label">所在地区</text>
+          <text class="info-label">{{ t('address.region') }}</text>
           <text class="info-value">{{ item.region }}</text>
         </view>
       </view>
@@ -45,8 +45,10 @@
 
     <FrostedConfirmModal
       :show="deleteModalVisible"
-      title="确定删除该地址吗？"
-      message="删除后将无法恢复"
+      :title="t('address.deleteTitle')"
+      :message="t('address.deleteMessage')"
+      :cancel-text="t('common.cancel')"
+      :confirm-text="t('common.confirm')"
       @cancel="closeDeleteModal"
       @confirm="confirmDelete"
     />
@@ -56,6 +58,9 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import FrostedConfirmModal from '@/components/FrostedConfirmModal.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type AddressItem = {
   id: string;

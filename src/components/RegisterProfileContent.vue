@@ -9,53 +9,53 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="page-title">注册</text>
+        <text class="page-title">{{ t('auth.register') }}</text>
         <view class="header-spacer" />
       </view>
 
       <view class="profile-body">
         <view class="profile-cluster">
         <view class="profile-copy">
-          <text class="profile-heading">完善资料</text>
-          <text class="profile-hint">填写昵称、邮箱并设置登录密码</text>
+          <text class="profile-heading">{{ t('auth.completeProfile') }}</text>
+          <text class="profile-hint">{{ t('auth.completeProfileHint') }}</text>
         </view>
 
         <view class="profile-form">
           <view class="field-group">
-            <text class="field-label">昵称</text>
+            <text class="field-label">{{ t('auth.nickname') }}</text>
             <view class="input-pill">
               <input
                 class="field-input"
                 type="text"
                 v-model="nickname"
-                placeholder="请输入昵称"
+                :placeholder="t('auth.enterNickname')"
                 placeholder-class="field-placeholder"
               />
             </view>
           </view>
 
           <view class="field-group">
-            <text class="field-label">邮箱</text>
+            <text class="field-label">{{ t('profileEdit.email') }}</text>
             <view class="input-pill">
               <input
                 class="field-input"
                 type="text"
                 v-model="email"
-                placeholder="请输入邮箱"
+                :placeholder="t('profileEdit.enterEmail')"
                 placeholder-class="field-placeholder"
               />
             </view>
           </view>
 
           <view class="field-group">
-            <text class="field-label">设置密码</text>
+            <text class="field-label">{{ t('auth.setPassword') }}</text>
             <view class="input-pill">
               <input
                 class="field-input"
                 :class="{ 'field-input-masked': !showPassword && Boolean(password) }"
                 type="text"
                 v-model="password"
-                placeholder="请输入密码"
+                :placeholder="t('auth.passwordLabel')"
                 placeholder-class="field-placeholder"
               />
               <view class="eye-btn" @click.stop="showPassword = !showPassword">
@@ -66,18 +66,18 @@
                 />
               </view>
             </view>
-            <text class="field-rule">密码需要8位及以上</text>
+            <text class="field-rule">{{ t('auth.passwordRule') }}</text>
           </view>
 
           <view class="field-group">
-            <text class="field-label">确认密码</text>
+            <text class="field-label">{{ t('security.confirmPassword') }}</text>
             <view class="input-pill">
               <input
                 class="field-input"
                 :class="{ 'field-input-masked': !showConfirm && Boolean(confirmPassword) }"
                 type="text"
                 v-model="confirmPassword"
-                placeholder="请再次输入密码"
+                :placeholder="t('auth.enterPasswordAgain')"
                 placeholder-class="field-placeholder"
               />
               <view class="eye-btn" @click.stop="showConfirm = !showConfirm">
@@ -97,7 +97,7 @@
             :class="{ 'is-disabled': !canSubmit }"
             @click="onConfirm"
           >
-            <text class="confirm-btn-text">确认</text>
+            <text class="confirm-btn-text">{{ t('common.confirm') }}</text>
           </view>
         </view>
         </view>
@@ -111,6 +111,9 @@ import { computed, ref, watch } from 'vue';
 import AuthSuccessLayer from '@/components/AuthSuccessLayer.vue';
 import { useAuthSuccessSequence } from '@/composables/useAuthSuccessSequence';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -149,19 +152,19 @@ const handleBack = usePageBack(() => emit('back'));
 const onConfirm = async () => {
   if (!canSubmit.value) return;
   if (!nickname.value.trim()) {
-    formError.value = '请输入昵称';
+    formError.value = t('auth.nicknameRequired');
     return;
   }
   if (!isEmailValid(email.value)) {
-    formError.value = '请输入正确的邮箱';
+    formError.value = t('auth.invalidEmail');
     return;
   }
   if (password.value.length < 8) {
-    formError.value = '密码不符合要求，请输入8位及以上';
+    formError.value = t('auth.invalidPassword');
     return;
   }
   if (password.value !== confirmPassword.value) {
-    formError.value = '两次密码不一致，请重新输入';
+    formError.value = t('auth.passwordMismatch');
     return;
   }
   formError.value = '';

@@ -7,36 +7,36 @@
     </view>
 
     <view class="content">
-      <text class="page-title">开票信息</text>
+      <text class="page-title">{{ t('invoice.title') }}</text>
 
       <view class="info-list">
         <view class="info-item">
-          <text class="info-label">企业全称</text>
+          <text class="info-label">{{ t('invoice.companyName') }}</text>
           <text class="info-value">这么派（上海）科技有限公司</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">统一信用代码</text>
+          <text class="info-label">{{ t('invoice.creditCode') }}</text>
           <text class="info-value">91310000MA1FL2XXXX</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">注册地址</text>
+          <text class="info-label">{{ t('invoice.registeredAddress') }}</text>
           <text class="info-value">上海市浦东新区张江高科技园区科苑路 88 号</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">注册电话</text>
+          <text class="info-label">{{ t('invoice.registeredPhone') }}</text>
           <text class="info-value">021-5888-6600</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">开户行</text>
+          <text class="info-label">{{ t('invoice.bankName') }}</text>
           <text class="info-value">中国工商银行上海张江支行</text>
         </view>
 
         <view class="info-item info-item-last">
-          <text class="info-label">银行账号</text>
+          <text class="info-label">{{ t('invoice.bankAccount') }}</text>
           <text class="info-value">1001 2345 6789 0123 456</text>
         </view>
       </view>
@@ -46,6 +46,9 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 const emit = defineEmits<{
   back: [];
 }>();

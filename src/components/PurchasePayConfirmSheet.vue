@@ -3,7 +3,7 @@
     <view class="purchase-sheet-mask" :class="{ closing: isClosing }" @click="handleClose" />
     <view class="purchase-sheet-panel" :class="{ closing: isClosing }">
       <view class="purchase-sheet-header">
-        <text class="purchase-sheet-title">确认信息</text>
+        <text class="purchase-sheet-title">{{ t('checkout.confirmInformation') }}</text>
         <view class="purchase-sheet-close" @click="handleClose">
           <text class="purchase-sheet-close-text">×</text>
         </view>
@@ -12,7 +12,7 @@
       <view class="purchase-sheet-body">
         <view class="purchase-message-wrap">
           <text class="purchase-message-text">
-            您好，根据这么派平台规则中订单支付的规则，您的订单已优享先服务后支付的优惠政策。您可根据流程亲自创建产品采购单或由平台协助创建，创建完成后，请前往合同管理中「签约管理」进行签约确认，给您带来的不便敬请谅解，如有其它问题请您拨打客服热线
+            {{ t('checkout.purchaseSelfNotice') }}
             <text class="purchase-hotline">400-688-1997</text>
           </text>
         </view>
@@ -20,10 +20,10 @@
 
       <view class="purchase-sheet-footer">
         <view class="purchase-action purchase-action-primary" @click="handleEngineerCreate">
-          <text class="purchase-action-text purchase-action-text-light">专属工程师创建</text>
+          <text class="purchase-action-text purchase-action-text-light">{{ t('checkout.engineerCreate') }}</text>
         </view>
         <view class="purchase-action purchase-action-secondary" @click="handleSelfCreate">
-          <text class="purchase-action-text">亲自创建</text>
+          <text class="purchase-action-text">{{ t('checkout.selfCreate') }}</text>
         </view>
       </view>
     </view>
@@ -32,6 +32,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type PurchasePayConfirmAction = 'engineer' | 'self';
 

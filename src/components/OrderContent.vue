@@ -5,7 +5,7 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="header-title">订单</text>
+        <text class="header-title">{{ t('order.title') }}</text>
         <view class="header-placeholder" />
       </view>
 
@@ -60,7 +60,7 @@
           </template>
         </template>
         <view v-else class="empty-state">
-          <text class="empty-text">暂无订单</text>
+          <text class="empty-text">{{ t('order.empty') }}</text>
         </view>
         <view class="list-bottom-spacer" />
       </scroll-view>
@@ -137,18 +137,21 @@ import { useOrderRefunds } from '@/composables/useOrderRefunds';
 import { useOrderReviews } from '@/composables/useOrderReviews';
 import { getOrdersByStatus, getOrderById, type OrderRecord, type OrderStatusId } from '@/data/orders';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 type OrderStatusTabId = OrderStatusId;
 
-const statusTabs: { id: OrderStatusTabId; label: string }[] = [
-  { id: 'all', label: '全部订单' },
-  { id: 'pending', label: '待支付' },
-  { id: 'signed', label: '已签约' },
-  { id: 'service', label: '服务中' },
-  { id: 'completed', label: '已完工' },
-  { id: 'cancelled', label: '已取消' },
-  { id: 'reviewed', label: '已评价' },
-];
+const statusTabs = computed<{ id: OrderStatusTabId; label: string }[]>(() => [
+  { id: 'all', label: t('order.all') },
+  { id: 'pending', label: t('order.pending') },
+  { id: 'signed', label: t('order.signed') },
+  { id: 'service', label: t('order.service') },
+  { id: 'completed', label: t('order.completed') },
+  { id: 'cancelled', label: t('order.cancelled') },
+  { id: 'reviewed', label: t('order.reviewed') },
+]);
 
 const emit = defineEmits<{
   back: [];
@@ -188,7 +191,7 @@ const reviewSubject = computed(() =>
         name: reviewOrder.value.productName,
         code: reviewOrder.value.orderNo,
         image: reviewOrder.value.productImage,
-        codeLabel: '订单编号',
+        codeLabel: t('order.number'),
       }
     : null,
 );
@@ -208,14 +211,14 @@ const resetDetailFlow = () => {
 
 const handleOrderPay = (orderId: string) => {
   uni.showToast({
-    title: `前往支付 ${orderId}`,
+    title: `${t('order.pay')} ${orderId}`,
     icon: 'none',
   });
 };
 
 const handleOrderReorder = (orderId: string) => {
   uni.showToast({
-    title: `再次下单 ${orderId}`,
+    title: `${t('order.reorder')} ${orderId}`,
     icon: 'none',
   });
 };
@@ -248,7 +251,7 @@ const handleReviewSubmit = (payload: {
 
 const handleSignedDetail = (orderId: string) => {
   uni.showToast({
-    title: `签约详情 ${orderId}`,
+    title: `${t('order.contractDetails')} ${orderId}`,
     icon: 'none',
   });
 };
@@ -354,7 +357,7 @@ const resetRefundDetailFlow = () => {
 .order-body {
   flex: 1;
   min-height: 0;
-  padding: 0 48rpx calc(40rpx + env(safe-area-inset-bottom, 0px));
+  padding: 0 48rpx;
   box-sizing: border-box;
 }
 
@@ -368,7 +371,7 @@ const resetRefundDetailFlow = () => {
 }
 
 .list-bottom-spacer {
-  height: 24rpx;
+  height: calc(40rpx + env(safe-area-inset-bottom, 0px));
 }
 
 .order-card-item {

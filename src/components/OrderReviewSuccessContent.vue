@@ -6,13 +6,13 @@
         mode="aspectFit"
         class="success-icon"
       />
-      <text class="success-title">评价成功</text>
-      <text class="success-desc">感谢您的评价，我们会持续改进服务质量</text>
+      <text class="success-title">{{ t('review.success') }}</text>
+      <text class="success-desc">{{ t('review.successDescription') }}</text>
     </view>
 
     <view class="action-wrap">
       <view class="back-btn" @click="handleBack">
-        <text class="back-btn-text">{{ backText }}</text>
+        <text class="back-btn-text">{{ resolvedBackText }}</text>
       </view>
     </view>
   </view>
@@ -20,15 +20,21 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { computed } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
 
-withDefaults(
+const { t } = useLanguage();
+
+const props = withDefaults(
   defineProps<{
     backText?: string;
   }>(),
   {
-    backText: '返回订单',
+    backText: '',
   },
 );
+
+const resolvedBackText = computed(() => props.backText || t('refund.backToOrders'));
 
 const emit = defineEmits<{
   back: [];

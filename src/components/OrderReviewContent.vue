@@ -5,7 +5,7 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="header-title">{{ editable ? formTitle : '查看评价' }}</text>
+        <text class="header-title">{{ editable ? resolvedFormTitle : t('review.view') }}</text>
         <view class="header-placeholder" />
       </view>
     </view>
@@ -34,7 +34,7 @@
 
       <view class="review-card">
         <view class="rating-section">
-          <text class="rating-title">{{ editable ? '请对本次服务进行评分' : '评价结果' }}</text>
+          <text class="rating-title">{{ editable ? t('review.rateService') : t('review.result') }}</text>
 
           <view class="star-row">
             <view
@@ -57,12 +57,12 @@
         </view>
 
         <view class="content-section">
-          <text class="content-title">评价内容</text>
+          <text class="content-title">{{ t('review.content') }}</text>
           <textarea
             v-if="editable"
             v-model="content"
             class="content-textarea"
-            placeholder="请写下您的宝贵评价..."
+            :placeholder="t('review.placeholder')"
             placeholder-class="input-placeholder"
             :maxlength="500"
           />
@@ -72,7 +72,7 @@
         </view>
 
         <view v-if="!editable && submittedAt" class="submitted-at-row">
-          <text class="submitted-at-label">评价时间</text>
+          <text class="submitted-at-label">{{ t('review.time') }}</text>
           <text class="submitted-at-value">{{ submittedAt }}</text>
         </view>
       </view>
@@ -82,7 +82,7 @@
 
     <view v-if="editable" class="submit-footer">
       <view class="submit-btn" :class="{ active: rating > 0 }" @click="handleSubmit">
-        <text class="submit-text">提交评价</text>
+        <text class="submit-text">{{ t('review.submit') }}</text>
       </view>
     </view>
   </view>
@@ -91,6 +91,9 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type ReviewSubject = {
   id: string;
@@ -113,7 +116,7 @@ const props = withDefaults(
     submittedAt?: string;
   }>(),
   {
-    formTitle: '订单评价',
+    formTitle: '',
     editable: true,
   },
 );
@@ -134,13 +137,22 @@ watch(
   },
 );
 
-const ratingLabels = ['', '非常不满意', '不满意', '一般', '满意', '非常满意'];
+const ratingLabels = computed(() => [
+  '',
+  t('review.veryDissatisfied'),
+  t('review.dissatisfied'),
+  t('review.average'),
+  t('review.satisfied'),
+  t('review.verySatisfied'),
+]);
 
-const ratingLabel = computed(() => ratingLabels[rating.value] ?? '');
+const ratingLabel = computed(() => ratingLabels.value[rating.value] ?? '');
 
-const codeLabel = computed(() => props.subject.codeLabel || '订单编号');
+const resolvedFormTitle = computed(() => props.formTitle || t('review.title'));
 
-const displayContent = computed(() => content.value.trim() || '无');
+const codeLabel = computed(() => props.subject.codeLabel || t('order.number'));
+
+const displayContent = computed(() => content.value.trim() || t('review.none'));
 
 const setRating = (value: number) => {
   if (!props.editable) return;

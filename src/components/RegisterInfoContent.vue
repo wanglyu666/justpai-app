@@ -7,16 +7,16 @@
     </view>
 
     <view class="content">
-      <text class="page-title">注册信息</text>
+      <text class="page-title">{{ t('registration.title') }}</text>
 
       <view class="info-list">
         <view class="info-item">
-          <text class="info-label">公司名称</text>
+          <text class="info-label">{{ t('registration.companyName') }}</text>
           <text class="info-value">这么派（上海）科技有限公司</text>
         </view>
 
         <view class="info-item license-item">
-          <text class="info-label">营业执照</text>
+          <text class="info-label">{{ t('registration.businessLicense') }}</text>
           <view class="license-wrap">
             <image
               src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80"
@@ -27,32 +27,32 @@
         </view>
 
         <view class="info-item">
-          <text class="info-label">所属行业</text>
+          <text class="info-label">{{ t('registration.industry') }}</text>
           <text class="info-value">建筑装饰与工程服务</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">姓名</text>
+          <text class="info-label">{{ t('registration.name') }}</text>
           <text class="info-value">管理员</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">职位</text>
+          <text class="info-label">{{ t('registration.position') }}</text>
           <text class="info-value">系统管理员</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">联系方式</text>
+          <text class="info-label">{{ t('registration.contact') }}</text>
           <text class="info-value">138-0013-8000</text>
         </view>
 
         <view class="info-item">
-          <text class="info-label">邮箱</text>
+          <text class="info-label">{{ t('registration.email') }}</text>
           <text class="info-value">admin@justpai.com</text>
         </view>
 
         <view class="info-item info-item-last">
-          <text class="info-label">服务区域</text>
+          <text class="info-label">{{ t('registration.serviceArea') }}</text>
           <text class="info-value">上海市、江苏省、浙江省</text>
         </view>
       </view>
@@ -62,6 +62,9 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 const emit = defineEmits<{
   back: [];
 }>();

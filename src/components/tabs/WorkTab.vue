@@ -17,7 +17,13 @@
           src="/static/images/letter.png"
           mode="aspectFit"
         />
-        <text class="card-banner-title">{{ t('work.contractArchive') }}</text>
+        <view class="card-banner-title">
+          <text
+            v-for="(line, index) in t('work.contractArchive').split('\n')"
+            :key="index"
+            class="card-banner-title-line"
+          >{{ line }}</text>
+        </view>
         <view class="card-banner-stat">
           <text class="card-banner-stat-label">{{ t('work.contractCount') }}</text>
           <text class="card-banner-stat-value">36</text>
@@ -325,6 +331,11 @@ const handleConsultCreateSubmit = (payload: ConsultTicketFormPayload) => {
 .card-banner-title {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-banner-title-line {
   display: block;
   font-size: 60rpx;
   font-weight: 800;

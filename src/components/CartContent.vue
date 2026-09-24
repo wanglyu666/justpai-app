@@ -5,7 +5,7 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="header-title">购物车</text>
+        <text class="header-title">{{ t('cart.title') }}</text>
         <view class="header-actions">
           <view
             class="icon-btn icon-btn--consult"
@@ -23,7 +23,7 @@
           </view>
         </view>
       </view>
-      <view class="product-toggle">
+      <view class="product-toggle" :class="{ 'is-english': currentLanguage === 'en-US' }">
         <view class="toggle-track">
           <view class="toggle-thumb" :class="{ right: activeProductType === 'annual' }" />
           <view
@@ -31,14 +31,14 @@
             :class="{ active: activeProductType === 'ordinary' }"
             @click="activeProductType = 'ordinary'"
           >
-            <text class="toggle-text">普通产品</text>
+            <text class="toggle-text">{{ t('store.ordinaryProduct') }}</text>
           </view>
           <view
             class="toggle-item"
             :class="{ active: activeProductType === 'annual' }"
             @click="activeProductType = 'annual'"
           >
-            <text class="toggle-text">年框产品</text>
+            <text class="toggle-text">{{ t('store.annualProduct') }}</text>
           </view>
         </view>
       </view>
@@ -110,21 +110,21 @@
 
       <view class="cart-test-actions">
         <view class="test-btn" @click="handleTestPurchasePay">
-          <text class="test-btn-text">产品采购单支付</text>
+          <text class="test-btn-text">{{ t('cart.purchasePayment') }}</text>
         </view>
         <view class="test-btn" @click="handleTestSignContract">
-          <text class="test-btn-text">签署产品采购合同</text>
+          <text class="test-btn-text">{{ t('cart.signContract') }}</text>
         </view>
       </view>
 
       <view class="checkout-bar" :class="{ 'actions-disabled': !hasSelection }">
         <view class="total-block">
-          <text class="total-label">总计 (TOTAL)</text>
+          <text class="total-label">{{ t('cart.total') }}</text>
           <text class="total-value">¥ {{ orderAmount }}</text>
         </view>
         <view class="footer-actions">
           <view class="footer-btn" @click="handleCheckout">
-            <text class="footer-btn-text">去结算 →</text>
+            <text class="footer-btn-text">{{ t('cart.checkout') }}</text>
           </view>
         </view>
       </view>
@@ -182,6 +182,9 @@ import PaymentSelectContent from '@/components/PaymentSelectContent.vue';
 import FlipQty from '@/components/FlipQty.vue';
 import { FADE_DURATION_MS } from '@/utils/fadeTransition';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { currentLanguage, t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -210,7 +213,7 @@ const visibleCartItems = computed(() =>
 );
 
 const emptyText = computed(() =>
-  activeProductType.value === 'ordinary' ? '暂无普通产品' : '暂无年框产品',
+  activeProductType.value === 'ordinary' ? t('cart.emptyOrdinary') : t('cart.emptyAnnual'),
 );
 
 const orderAmount = computed(() => {
@@ -286,7 +289,7 @@ const handleCheckoutSubmit = () => {
   if (checkoutMode.value === 'contract' || checkoutMode.value === 'purchase-pay') {
     closeCheckoutFlow();
     uni.showToast({
-      title: '提交成功',
+      title: t('cart.submitted'),
       icon: 'success',
     });
     return;
@@ -299,7 +302,7 @@ const handlePaymentConfirm = () => {
   closePaymentFlow();
   closeCheckoutFlow();
   uni.showToast({
-    title: '订单已提交',
+    title: t('cart.orderSubmitted'),
     icon: 'success',
   });
 };
@@ -341,6 +344,10 @@ const handlePaymentConfirm = () => {
 .product-toggle {
   width: 312rpx;
   margin-top: 32rpx;
+}
+
+.product-toggle.is-english {
+  width: 640rpx;
 }
 
 .toggle-track {

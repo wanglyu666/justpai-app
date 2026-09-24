@@ -9,7 +9,7 @@
       <view class="icon-btn" @click="handleBack">
         <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
       </view>
-      <text class="page-title">验证</text>
+      <text class="page-title">{{ t('auth.verify') }}</text>
       <view class="header-spacer" />
     </view>
 
@@ -18,8 +18,8 @@
     </view>
 
     <view class="otp-copy">
-      <text class="otp-heading">输入验证码</text>
-      <text class="otp-hint">4 位验证码已发送至</text>
+      <text class="otp-heading">{{ t('auth.enterCode') }}</text>
+      <text class="otp-hint">{{ t('auth.codeSentTo') }}</text>
       <text class="otp-phone">{{ formattedPhone }}</text>
     </view>
 
@@ -53,7 +53,7 @@
       :class="{ 'is-disabled': !canVerify }"
       @click="onVerify"
     >
-      <text class="verify-btn-text">验证</text>
+      <text class="verify-btn-text">{{ t('auth.verify') }}</text>
     </view>
 
     <text
@@ -72,6 +72,9 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import AuthSuccessLayer from '@/components/AuthSuccessLayer.vue';
 import { useAuthSuccessSequence } from '@/composables/useAuthSuccessSequence';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = defineProps<{
   phone: string;
@@ -112,8 +115,8 @@ const formattedPhone = computed(() => {
 });
 
 const resendLabel = computed(() => {
-  if (countdown.value <= 0) return '重新发送验证码';
-  return `重新发送验证码 (${countdown.value}s)`;
+  if (countdown.value <= 0) return t('auth.resendCode');
+  return `${t('auth.resendCode')} (${countdown.value}s)`;
 });
 
 const handleBack = usePageBack(() => emit('back'));
@@ -153,7 +156,7 @@ const onOtpInput = (event: { detail: { value: string } }) => {
 const resendCode = () => {
   if (countdown.value > 0) return;
   startCountdown();
-  uni.showToast({ title: '验证码已发送', icon: 'none' });
+  uni.showToast({ title: t('security.codeSent'), icon: 'none' });
 };
 
 const playShake = async () => {
@@ -163,7 +166,7 @@ const playShake = async () => {
   if (shakeTimer) clearTimeout(shakeTimer);
   shakeTimer = setTimeout(() => {
     shaking.value = false;
-    otpError.value = '验证码不正确，请重新输入';
+    otpError.value = t('auth.incorrectCode');
     shakeTimer = null;
   }, 420);
 };

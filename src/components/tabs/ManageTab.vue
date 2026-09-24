@@ -14,7 +14,13 @@
             mode="aspectFit"
           />
         </view>
-        <text class="card-top-title">{{ t('manage.engineeringProjects') }}</text>
+        <view class="card-top-title">
+          <text
+            v-for="(line, index) in t('manage.engineeringProjects').split('\n')"
+            :key="index"
+            class="card-top-title-line"
+          >{{ line }}</text>
+        </view>
       </view>
       <view class="card card-middle" @click="openMaintenanceList">
         <text class="card-middle-title">{{ t('manage.maintenanceRequests') }}</text>
@@ -245,10 +251,18 @@ const handleMaintenanceCreateSubmit = (payload: MaintenanceFormPayload) => {
   right: 36rpx;
   bottom: 28rpx;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.card-top-title-line {
+  display: block;
   font-size: 40rpx;
   font-weight: 800;
   color: #1a2332;
   line-height: 1.2;
+  text-align: right;
 }
 
 .card-top-img {
@@ -462,10 +476,9 @@ const handleMaintenanceCreateSubmit = (payload: MaintenanceFormPayload) => {
   letter-spacing: -1rpx;
 }
 
-.tab-root.is-english .card-top-title {
+.tab-root.is-english .card-top-title-line {
   max-width: 420rpx;
   font-size: 34rpx;
-  text-align: right;
 }
 
 .tab-root.is-english .card-middle-title {

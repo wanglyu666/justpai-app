@@ -40,7 +40,7 @@
               <text class="hero-star">★</text>
               <text class="hero-rating-value">{{ product.rating.toFixed(1) }}</text>
             </view>
-            <text class="hero-rating-label">推荐指数</text>
+            <text class="hero-rating-label">{{ t('store.recommendation') }}</text>
           </view>
         </view>
         <view class="hero-meta-side hero-meta-side-right">
@@ -62,7 +62,7 @@
 
       <view class="info-block">
         <view class="info-heading-wrap">
-          <text class="info-heading">商品参数</text>
+          <text class="info-heading">{{ t('store.productParameters') }}</text>
           <view class="info-heading-bar" />
         </view>
         <view class="param-list">
@@ -85,7 +85,7 @@
 
       <view class="info-block">
         <view class="info-heading-wrap">
-          <text class="info-heading">详细信息</text>
+          <text class="info-heading">{{ t('store.details') }}</text>
           <view class="info-heading-bar" />
         </view>
         <view class="detail-list">
@@ -109,7 +109,7 @@
           </view>
         </view>
         <view class="cart-btn" @click="openCartSuccessModal">
-          <text class="cart-btn-text">加入购物车</text>
+          <text class="cart-btn-text">{{ t('store.addToCart') }}</text>
         </view>
       </view>
     </view>
@@ -132,7 +132,7 @@
 
     <FrostedConfirmModal
       :show="cartSuccessVisible"
-      title="已加入购物车"
+      :title="t('store.addedToCart')"
       icon="/static/images/check-mark.png"
       :show-cancel="false"
       :show-confirm="false"
@@ -155,6 +155,9 @@ import FlipQty from '@/components/FlipQty.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { useCart } from '@/composables/useCart';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const headerGlassStyle = getFrostedGlassStyle('default');
 
@@ -231,22 +234,22 @@ type ParamKey = 'brand' | 'model' | 'spec' | 'color';
 const paramGroups = computed(() => [
   {
     key: 'brand' as ParamKey,
-    label: '品牌',
+    label: t('store.brand'),
     options: [props.product.brand, 'H&M', 'Uniqlo', 'P&B', 'Gap', 'Nike', 'Adidas', 'COS', 'Mango'],
   },
   {
     key: 'model' as ParamKey,
-    label: '型号',
+    label: t('store.model'),
     options: ['标准款', '修身款', '宽松款', '短款', '长款', '加厚款', '薄款'],
   },
   {
     key: 'spec' as ParamKey,
-    label: '规格',
+    label: t('store.specification'),
     options: ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
   },
   {
     key: 'color' as ParamKey,
-    label: '颜色',
+    label: t('store.color'),
     options: ['黑色', '驼色', '灰色', '藏青', '白色', '米色', '棕色', '酒红', '卡其'],
   },
 ]);
@@ -276,11 +279,11 @@ const selectParam = (key: ParamKey, value: string) => {
 };
 
 const detailItems = computed(() => [
-  { label: '品牌', value: props.product.brand },
-  { label: '材质', value: '羊毛混纺' },
-  { label: '适用季节', value: '秋冬' },
-  { label: '版型', value: '标准版型' },
-  { label: '产地', value: '中国' },
+  { label: t('store.brand'), value: props.product.brand },
+  { label: t('store.material'), value: '羊毛混纺' },
+  { label: t('store.season'), value: '秋冬' },
+  { label: t('store.fit'), value: '标准版型' },
+  { label: t('store.origin'), value: '中国' },
 ]);
 
 const emit = defineEmits<{

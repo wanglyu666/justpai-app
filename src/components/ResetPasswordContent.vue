@@ -9,26 +9,26 @@
         <view class="icon-btn" @click="handleBack">
           <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
         </view>
-        <text class="page-title">重置密码</text>
+        <text class="page-title">{{ t('auth.resetPassword') }}</text>
         <view class="header-spacer" />
       </view>
 
       <view class="reset-body">
       <view class="reset-copy">
-        <text class="reset-heading">设置新密码</text>
-        <text class="reset-hint">请输入新密码并再次确认</text>
+        <text class="reset-heading">{{ t('auth.setNewPassword') }}</text>
+        <text class="reset-hint">{{ t('auth.setNewPasswordHint') }}</text>
       </view>
 
       <view class="reset-form">
         <view class="field-group">
-          <text class="field-label">请输入密码</text>
+          <text class="field-label">{{ t('auth.passwordLabel') }}</text>
           <view class="input-pill">
             <input
               class="field-input"
               :class="{ 'field-input-masked': !showPassword && Boolean(password) }"
               type="text"
               v-model="password"
-              placeholder="请输入密码"
+              :placeholder="t('auth.passwordLabel')"
               placeholder-class="field-placeholder"
             />
             <view class="eye-btn" @click.stop="showPassword = !showPassword">
@@ -39,18 +39,18 @@
               />
             </view>
           </view>
-          <text class="field-rule">密码需要8位及以上</text>
+          <text class="field-rule">{{ t('auth.passwordRule') }}</text>
         </view>
 
         <view class="field-group">
-          <text class="field-label">再次输入密码</text>
+          <text class="field-label">{{ t('auth.repeatPassword') }}</text>
           <view class="input-pill">
             <input
               class="field-input"
               :class="{ 'field-input-masked': !showConfirm && Boolean(confirmPassword) }"
               type="text"
               v-model="confirmPassword"
-              placeholder="请再次输入密码"
+              :placeholder="t('auth.enterPasswordAgain')"
               placeholder-class="field-placeholder"
             />
             <view class="eye-btn" @click.stop="showConfirm = !showConfirm">
@@ -70,7 +70,7 @@
           :class="{ 'is-disabled': !canSubmit }"
           @click="onConfirm"
         >
-          <text class="confirm-btn-text">确认</text>
+          <text class="confirm-btn-text">{{ t('common.confirm') }}</text>
         </view>
       </view>
       </view>
@@ -83,6 +83,9 @@ import { computed, ref, watch } from 'vue';
 import AuthSuccessLayer from '@/components/AuthSuccessLayer.vue';
 import { useAuthSuccessSequence } from '@/composables/useAuthSuccessSequence';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -112,11 +115,11 @@ const handleBack = usePageBack(() => emit('back'));
 const onConfirm = async () => {
   if (!canSubmit.value) return;
   if (password.value.length < 8) {
-    formError.value = '密码不符合要求，请输入8位及以上';
+    formError.value = t('auth.invalidPassword');
     return;
   }
   if (password.value !== confirmPassword.value) {
-    formError.value = '两次密码不一致，请重新输入';
+    formError.value = t('auth.passwordMismatch');
     return;
   }
   formError.value = '';

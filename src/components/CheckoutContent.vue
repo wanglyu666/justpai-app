@@ -8,7 +8,7 @@
           <view class="icon-btn" @click="handleBack">
             <image src="/static/icons/chevron-left.svg" mode="aspectFit" class="header-icon" />
           </view>
-          <text class="header-title">确认订单</text>
+          <text class="header-title">{{ t('checkout.confirmOrder') }}</text>
           <view class="header-placeholder" />
         </view>
       </view>
@@ -25,8 +25,8 @@
 
       <view class="section-card">
         <view class="section-head">
-          <text class="section-title">订单商品</text>
-          <text class="section-hint">共 {{ totalQuantity }} 件</text>
+          <text class="section-title">{{ t('checkout.orderProducts') }}</text>
+          <text class="section-hint">{{ tf('checkout.itemCount', { count: totalQuantity }) }}</text>
         </view>
 
         <view class="product-list">
@@ -86,7 +86,7 @@
             <view class="purchase-expand-inner purchase-expand-inner--top">
               <view class="purchase-content" :class="{ visible: purchaseContentVisible }">
                 <view class="meta-row">
-                  <text class="meta-label">确认单编号</text>
+                  <text class="meta-label">{{ t('checkout.confirmationNo') }}</text>
                   <view class="meta-value-group">
                     <text class="meta-value">{{ confirmationOrderNo }}</text>
                     <view class="meta-chevron-slot" />
@@ -97,7 +97,7 @@
           </view>
 
           <view class="meta-row">
-            <text class="meta-label">确认编号</text>
+            <text class="meta-label">{{ t('checkout.confirmNo') }}</text>
             <view class="meta-value-group">
               <text class="meta-value">{{ confirmNo }}</text>
               <view class="meta-chevron-slot" />
@@ -105,7 +105,7 @@
           </view>
 
           <view class="meta-row meta-row--clickable" @click="openEditSheet('serviceDate')">
-            <text class="meta-label">选择服务时间</text>
+            <text class="meta-label">{{ t('checkout.serviceTime') }}</text>
             <view class="meta-value-group">
               <text class="meta-value" :class="{ 'meta-value--placeholder': !serviceDate }">
                 {{ serviceDateDisplay }}
@@ -115,7 +115,7 @@
           </view>
 
           <view class="meta-row meta-row--clickable" @click="openEditSheet('purchaser')">
-            <text class="meta-label">采购方</text>
+            <text class="meta-label">{{ t('checkout.purchaser') }}</text>
             <view class="meta-value-group">
               <text class="meta-value">{{ purchaser }}</text>
               <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
@@ -123,7 +123,7 @@
           </view>
 
           <view class="meta-row">
-            <text class="meta-label">支付方式</text>
+            <text class="meta-label">{{ t('checkout.paymentMethod') }}</text>
             <view class="meta-value-group">
               <text class="meta-value">{{ paymentMethod }}</text>
               <view class="meta-chevron-slot" />
@@ -131,17 +131,17 @@
           </view>
 
           <view class="meta-row meta-row--clickable" @click="openEditSheet('paymentTerm')">
-            <text class="meta-label">支付期限</text>
+            <text class="meta-label">{{ t('checkout.paymentTerm') }}</text>
             <view class="meta-value-group">
-              <text class="meta-value">{{ paymentTerm }} 天</text>
+              <text class="meta-value">{{ tf('checkout.days', { count: paymentTerm }) }}</text>
               <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
             </view>
           </view>
 
           <view class="meta-row">
-            <text class="meta-label">工期</text>
+            <text class="meta-label">{{ t('checkout.workDuration') }}</text>
             <view class="meta-value-group">
-              <text class="meta-value">{{ workDuration }} 天</text>
+              <text class="meta-value">{{ tf('checkout.days', { count: workDuration }) }}</text>
               <view class="meta-chevron-slot" />
             </view>
           </view>
@@ -153,10 +153,10 @@
           >
             <view class="purchase-expand-inner purchase-expand-inner--bottom">
               <view class="purchase-content" :class="{ visible: purchaseContentVisible }">
-                <text class="meta-section-title">采购方信息</text>
+                <text class="meta-section-title">{{ t('checkout.buyerInfo') }}</text>
 
                 <view class="meta-row meta-row--clickable" @click="openEditSheet('buyerCompanyName')">
-              <text class="meta-label">公司名称</text>
+              <text class="meta-label">{{ t('checkout.companyName') }}</text>
               <view class="meta-value-group">
                 <text
                   class="meta-value"
@@ -169,7 +169,7 @@
             </view>
 
             <view class="meta-row meta-row--wrap meta-row--clickable" @click="openEditSheet('buyerRegisteredAddress')">
-              <text class="meta-label">注册地址</text>
+              <text class="meta-label">{{ t('checkout.registeredAddress') }}</text>
               <view class="meta-value-group">
                 <text
                   class="meta-value meta-value--wrap"
@@ -182,7 +182,7 @@
             </view>
 
             <view class="meta-row meta-row--clickable" @click="openEditSheet('buyerContact')">
-              <text class="meta-label">联系人</text>
+              <text class="meta-label">{{ t('checkout.contact') }}</text>
               <view class="meta-value-group">
                 <text
                   class="meta-value"
@@ -195,7 +195,7 @@
             </view>
 
             <view class="meta-row meta-row--clickable" @click="openEditSheet('buyerContactPhone')">
-              <text class="meta-label">联系电话</text>
+              <text class="meta-label">{{ t('checkout.phone') }}</text>
               <view class="meta-value-group">
                 <text
                   class="meta-value"
@@ -207,10 +207,10 @@
               </view>
             </view>
 
-            <text class="meta-section-title meta-section-title--supplier">供应商信息</text>
+            <text class="meta-section-title meta-section-title--supplier">{{ t('checkout.supplierInfo') }}</text>
 
             <view class="meta-row">
-              <text class="meta-label">公司名称</text>
+              <text class="meta-label">{{ t('checkout.companyName') }}</text>
               <view class="meta-value-group">
                 <text class="meta-value">{{ supplierInfo.companyName }}</text>
                 <view class="meta-chevron-slot" />
@@ -218,7 +218,7 @@
             </view>
 
             <view class="meta-row meta-row--wrap">
-              <text class="meta-label">注册地址</text>
+              <text class="meta-label">{{ t('checkout.registeredAddress') }}</text>
               <view class="meta-value-group">
                 <text class="meta-value meta-value--wrap">{{ supplierInfo.registeredAddress }}</text>
                 <view class="meta-chevron-slot" />
@@ -226,7 +226,7 @@
             </view>
 
             <view class="meta-row">
-              <text class="meta-label">联系人</text>
+              <text class="meta-label">{{ t('checkout.contact') }}</text>
               <view class="meta-value-group">
                 <text class="meta-value">{{ supplierInfo.contact }}</text>
                 <view class="meta-chevron-slot" />
@@ -234,7 +234,7 @@
             </view>
 
             <view class="meta-row">
-              <text class="meta-label">联系电话</text>
+              <text class="meta-label">{{ t('checkout.phone') }}</text>
               <view class="meta-value-group">
                 <text class="meta-value">{{ supplierInfo.phone }}</text>
                 <view class="meta-chevron-slot" />
@@ -245,7 +245,7 @@
           </view>
 
           <view class="meta-row meta-row--clickable" @click="openEditSheet('remarks')">
-            <text class="meta-label">备注</text>
+            <text class="meta-label">{{ t('checkout.remarks') }}</text>
             <view class="meta-value-group">
               <text class="meta-value" :class="{ 'meta-value--placeholder': !remarks }">
                 {{ remarksDisplay }}
@@ -255,7 +255,7 @@
           </view>
 
           <view class="meta-row meta-row-amount">
-            <text class="meta-label">订单金额</text>
+            <text class="meta-label">{{ t('checkout.orderAmount') }}</text>
             <view class="meta-value-group">
               <text class="meta-value meta-value-strong">¥{{ orderAmount }}</text>
               <view class="meta-chevron-slot" />
@@ -275,13 +275,13 @@
             />
           </view>
           <view class="terms-text-wrap">
-            <text class="terms-text">我已阅读并同意产品与服务确认单的 </text>
-            <text class="terms-link" @click.stop="handleOpenTerms">通用条款</text>
+            <text class="terms-text">{{ t('checkout.termsPrefix') }}</text>
+            <text class="terms-link" @click.stop="handleOpenTerms">{{ t('checkout.terms') }}</text>
           </view>
         </view>
 
         <view class="submit-btn" :class="{ disabled: !termsAgreed }" @click="handleSubmit">
-          <text class="submit-text">提交订单</text>
+          <text class="submit-text">{{ t('checkout.submitOrder') }}</text>
         </view>
       </view>
     </scroll-view>
@@ -301,7 +301,7 @@
           v-model="draftPurchaser"
           class="sheet-input"
           type="text"
-          placeholder="请输入采购方名称"
+          :placeholder="t('checkout.enterPurchaser')"
           placeholder-class="sheet-input-placeholder"
           :maxlength="50"
         />
@@ -316,7 +316,7 @@
             :class="{ active: draftPaymentTerm === option }"
             @click="draftPaymentTerm = option"
           >
-            <text class="sheet-option-text">{{ option }} 天</text>
+            <text class="sheet-option-text">{{ tf('checkout.days', { count: option }) }}</text>
             <image
               v-if="draftPaymentTerm === option"
               src="/static/icons/check.svg"
@@ -332,7 +332,7 @@
           <textarea
             v-model="draftRemarks"
             class="sheet-textarea"
-            placeholder="选填，请先和商家协商一致，付款后商家可见"
+            :placeholder="t('checkout.optionalRemarks')"
             placeholder-class="sheet-textarea-placeholder"
             :maxlength="200"
           />
@@ -364,13 +364,13 @@
 
     <CheckoutEditSheet
       :show="contractConfirmVisible"
-      title="确认信息"
+      :title="t('checkout.confirmInformation')"
       @close="closeContractConfirm"
       @confirm="handleContractConfirm"
     >
       <view class="sheet-textarea-wrap contract-message-wrap">
         <text class="contract-message-text">
-          您好，根据这么派平台规则中订单支付的规则，您的订单已优享先服务后支付的优惠政策，平台会在与您沟通后创建一份产品采购合同，请根据提示前往合同管理中「签约管理」进行签约，给您带来的不便敬请谅解，如有其它问题请您拨打客服热线
+          {{ t('checkout.purchaseNotice') }}
           <text class="contract-hotline">400-688-1997</text>
         </text>
       </view>
@@ -397,6 +397,9 @@ import PurchasePayConfirmSheet, {
   type PurchasePayConfirmAction,
 } from '@/components/PurchasePayConfirmSheet.vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 type EditField =
   | 'serviceDate'
@@ -449,7 +452,7 @@ const confirmationOrderNo = 'QRD-20260806-001';
 const serviceDate = ref('');
 const remarks = ref('');
 const purchaser = ref('管理员');
-const paymentMethod = '线上立即支付';
+const paymentMethod = t('checkout.onlinePay');
 const paymentTerm = ref(7);
 const workDuration = 1;
 
@@ -482,36 +485,36 @@ const buyerFieldConfig: Record<
   { title: string; placeholder: string; key: keyof BuyerInfo; maxLength: number }
 > = {
   buyerCompanyName: {
-    title: '公司名称',
-    placeholder: '请输入公司名称',
+    title: t('checkout.companyName'),
+    placeholder: t('upgrade.enterCompanyName'),
     key: 'companyName',
     maxLength: 50,
   },
   buyerRegisteredAddress: {
-    title: '注册地址',
-    placeholder: '请输入注册地址',
+    title: t('checkout.registeredAddress'),
+    placeholder: t('upgrade.enterRegisteredAddress'),
     key: 'registeredAddress',
     maxLength: 100,
   },
   buyerContact: {
-    title: '联系人',
-    placeholder: '请输入联系人',
+    title: t('checkout.contact'),
+    placeholder: t('address.enterContact'),
     key: 'contact',
     maxLength: 20,
   },
   buyerContactPhone: {
-    title: '联系电话',
-    placeholder: '请输入联系电话',
+    title: t('checkout.phone'),
+    placeholder: t('address.enterPhone'),
     key: 'phone',
     maxLength: 11,
   },
 };
 
 const sheetTitles: Record<Exclude<EditField, BuyerEditField>, string> = {
-  serviceDate: '选择服务时间',
-  purchaser: '采购方',
-  paymentTerm: '支付期限',
-  remarks: '备注',
+  serviceDate: t('checkout.serviceTime'),
+  purchaser: t('checkout.purchaser'),
+  paymentTerm: t('checkout.paymentTerm'),
+  remarks: t('checkout.remarks'),
 };
 
 const serviceAddresses = ref<CheckoutAddressItem[]>([
@@ -628,10 +631,10 @@ const buyerFieldMaxLength = computed(() => {
   return buyerFieldConfig[activeSheet.value as BuyerEditField].maxLength;
 });
 
-const buyerCompanyDisplay = computed(() => buyerInfo.companyName.trim() || '请填写');
-const buyerAddressDisplay = computed(() => buyerInfo.registeredAddress.trim() || '请填写');
-const buyerContactDisplay = computed(() => buyerInfo.contact.trim() || '请填写');
-const buyerPhoneDisplay = computed(() => buyerInfo.phone.trim() || '请填写');
+const buyerCompanyDisplay = computed(() => buyerInfo.companyName.trim() || t('checkout.fillRequired'));
+const buyerAddressDisplay = computed(() => buyerInfo.registeredAddress.trim() || t('checkout.fillRequired'));
+const buyerContactDisplay = computed(() => buyerInfo.contact.trim() || t('checkout.fillRequired'));
+const buyerPhoneDisplay = computed(() => buyerInfo.phone.trim() || t('checkout.fillRequired'));
 
 const isBuyerEditSheet = computed(
   () => activeSheet.value !== null && activeSheet.value in buyerFieldConfig,
@@ -642,7 +645,7 @@ const serviceDateDisplay = computed(() => {
   return serviceDate.value.replace(/-/g, '/');
 });
 
-const remarksDisplay = computed(() => remarks.value.trim() || '无备注');
+const remarksDisplay = computed(() => remarks.value.trim() || t('checkout.noRemarks'));
 
 const totalQuantity = computed(() =>
   props.items.reduce((sum, item) => sum + item.quantity, 0),
@@ -694,7 +697,7 @@ const toggleTermsAgreed = () => {
 
 const handleOpenTerms = () => {
   uni.showToast({
-    title: '通用条款',
+    title: t('checkout.terms'),
     icon: 'none',
   });
 };
@@ -781,7 +784,7 @@ const handleAddressUpdate = (id: string, values: CheckoutAddressFormValues) => {
 const handleSubmit = () => {
   if (!termsAgreed.value) {
     uni.showToast({
-      title: '请先阅读并同意通用条款',
+      title: t('checkout.agreeTermsFirst'),
       icon: 'none',
     });
     return;

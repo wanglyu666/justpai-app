@@ -3,7 +3,7 @@
     <view class="profile-edit-mask" :class="{ closing: isClosing }" @click="handleClose" />
     <view class="profile-edit-panel" :class="{ closing: isClosing }">
       <view class="profile-edit-header">
-        <text class="profile-edit-title">编辑资料</text>
+        <text class="profile-edit-title">{{ t('profileEdit.title') }}</text>
         <view class="profile-edit-close" @click="handleClose">
           <text class="profile-edit-close-text">×</text>
         </view>
@@ -14,28 +14,28 @@
           <view class="avatar-ring">
             <image :src="draft.avatar" mode="aspectFill" class="avatar-img" />
           </view>
-          <text class="avatar-hint">点击头像更换</text>
+          <text class="avatar-hint">{{ t('profileEdit.avatarHint') }}</text>
         </view>
 
         <view class="field">
-          <text class="field-label">名称</text>
+          <text class="field-label">{{ t('profileEdit.name') }}</text>
           <input
             v-model="draft.name"
             class="field-input"
             type="text"
-            placeholder="请输入名称"
+            :placeholder="t('profileEdit.enterName')"
             placeholder-class="field-placeholder"
             :maxlength="20"
           />
         </view>
 
         <view class="field">
-          <text class="field-label">邮箱</text>
+          <text class="field-label">{{ t('profileEdit.email') }}</text>
           <input
             v-model="draft.email"
             class="field-input"
             type="text"
-            placeholder="请输入邮箱"
+            :placeholder="t('profileEdit.enterEmail')"
             placeholder-class="field-placeholder"
             :maxlength="50"
           />
@@ -44,7 +44,7 @@
 
       <view class="profile-edit-footer">
         <view class="profile-edit-confirm" @click="handleConfirm">
-          <text class="profile-edit-confirm-text">确定</text>
+          <text class="profile-edit-confirm-text">{{ t('common.done') }}</text>
         </view>
       </view>
     </view>
@@ -53,6 +53,9 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type ProfileEditPayload = {
   avatar: string;

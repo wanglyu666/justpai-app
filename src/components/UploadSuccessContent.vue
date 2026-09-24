@@ -6,13 +6,13 @@
         mode="aspectFit"
         class="success-icon"
       ></image>
-      <text class="success-title">已完成提交</text>
-      <text class="success-desc">您的企业账号资料已提交，等待审核</text>
+      <text class="success-title">{{ t('common.completed') }}</text>
+      <text class="success-desc">{{ t('upgrade.submitted') }}</text>
     </view>
 
     <view class="action-wrap">
       <view class="back-btn" @click="handleBack">
-        <text class="back-btn-text">返回个人中心</text>
+        <text class="back-btn-text">{{ t('common.backToProfile') }}</text>
       </view>
     </view>
   </view>
@@ -20,6 +20,9 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 const emit = defineEmits<{
   back: [];
 }>();

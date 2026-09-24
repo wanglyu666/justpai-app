@@ -11,11 +11,11 @@
       </view>
     </view>
 
-    <text class="login-title">登录</text>
+    <text class="login-title">{{ t('auth.login') }}</text>
 
     <view class="login-body">
       <view class="field-group">
-        <text class="field-label">请输入手机号</text>
+        <text class="field-label">{{ t('auth.phoneLabel') }}</text>
         <view class="input-pill">
           <view class="country-code">
             <text class="country-code-text">+86</text>
@@ -26,7 +26,7 @@
             type="number"
             maxlength="11"
             v-model="phone"
-            placeholder="请输入手机号"
+            :placeholder="t('auth.phoneLabel')"
             placeholder-class="field-placeholder"
           />
           <image
@@ -40,14 +40,14 @@
 
       <view class="password-slot" :class="{ collapsed: codeMode }">
         <view class="field-group">
-          <text class="field-label">请输入密码</text>
+          <text class="field-label">{{ t('auth.passwordLabel') }}</text>
           <view class="input-pill">
             <input
               class="field-input"
               :class="{ 'field-input-masked': !showPassword && Boolean(password) }"
               type="text"
               v-model="password"
-              placeholder="请输入密码"
+              :placeholder="t('auth.passwordLabel')"
               placeholder-class="field-placeholder"
             />
             <view class="eye-btn" @click.stop="showPassword = !showPassword">
@@ -59,7 +59,7 @@
             </view>
           </view>
           <text v-if="passwordError" class="auth-error">{{ passwordError }}</text>
-          <text class="forgot-link" @click="onForgotPassword">忘记密码？</text>
+          <text class="forgot-link" @click="onForgotPassword">{{ t('auth.forgotPassword') }}</text>
         </view>
       </view>
 
@@ -68,12 +68,12 @@
         :class="{ 'is-disabled': !canSubmit }"
         @click="onPrimary"
       >
-        <text class="login-btn-text">{{ codeMode ? '下一步' : '登录' }}</text>
+        <text class="login-btn-text">{{ codeMode ? t('auth.next') : t('auth.login') }}</text>
       </view>
 
       <view class="signup-row">
-        <text class="signup-hint">还没有账号？</text>
-        <text class="signup-link" @click="onSignUp">注册</text>
+        <text class="signup-hint">{{ t('auth.noAccount') }}</text>
+        <text class="signup-link" @click="onSignUp">{{ t('auth.register') }}</text>
       </view>
 
       <view class="divider-or" />
@@ -86,17 +86,17 @@
           class="social-icon"
           :class="{ 'social-icon-password': codeMode }"
         />
-        <text class="social-text">{{ codeMode ? '通过 密码 继续' : '通过 验证码 继续' }}</text>
+        <text class="social-text">{{ codeMode ? t('auth.continuePassword') : t('auth.continueCode') }}</text>
       </view>
 
-      <view class="social-btn" @click="onSocial('微信')">
+      <view class="social-btn" @click="onSocial">
         <image src="/static/icons/wechatgreen.svg" mode="aspectFit" class="social-icon social-icon-wechat" />
-        <text class="social-text">通过 微信 继续</text>
+        <text class="social-text">{{ t('auth.continueWechat') }}</text>
       </view>
 
       <view class="divider-or" />
 
-      <text class="guest-link" @click="onGuest">游客登录</text>
+      <text class="guest-link" @click="onGuest">{{ t('auth.guestLogin') }}</text>
     </view>
     </view>
   </AuthSuccessLayer>
@@ -107,6 +107,9 @@ import { computed, ref, watch } from 'vue';
 import AuthSuccessLayer from '@/components/AuthSuccessLayer.vue';
 import { useAuthSuccessSequence } from '@/composables/useAuthSuccessSequence';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -150,7 +153,7 @@ const onPrimary = async () => {
     return;
   }
   if (password.value !== '2222') {
-    passwordError.value = '密码不正确，请重新输入';
+    passwordError.value = t('auth.incorrectPassword');
     return;
   }
   submitting.value = true;
@@ -172,8 +175,8 @@ const onToggleCodeMode = () => {
   codeMode.value = !codeMode.value;
 };
 
-const onSocial = (name: string) => {
-  toast(`${name} 登录开发中`);
+const onSocial = () => {
+  toast(t('auth.wechatLoginInDevelopment'));
 };
 
 const onGuest = () => {

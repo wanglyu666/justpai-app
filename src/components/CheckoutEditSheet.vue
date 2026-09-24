@@ -18,7 +18,7 @@
 
       <view class="edit-sheet-footer">
         <view class="edit-sheet-confirm" @click="handleConfirm">
-          <text class="edit-sheet-confirm-text">确定</text>
+          <text class="edit-sheet-confirm-text">{{ t('common.done') }}</text>
         </view>
       </view>
     </view>
@@ -27,6 +27,9 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = withDefaults(
   defineProps<{

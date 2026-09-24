@@ -28,6 +28,12 @@ const t = (key: LanguageKey): string => {
   return languagePatches[language][key] ?? baseMessages[key];
 };
 
+const tf = (key: LanguageKey, values: Record<string, string | number>): string =>
+  Object.entries(values).reduce(
+    (message, [name, value]) => message.split(`{${name}}`).join(String(value)),
+    t(key),
+  );
+
 const setLanguage = (language: AppLanguage) => {
   if (currentLanguage.value === language) return;
   currentLanguage.value = language;
@@ -51,5 +57,6 @@ export const useLanguage = () => {
     languageOptions,
     setLanguage,
     t,
+    tf,
   };
 };

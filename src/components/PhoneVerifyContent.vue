@@ -7,46 +7,46 @@
     </view>
 
     <view class="form-body">
-      <text class="form-heading">请输入手机验证码</text>
-      <text class="form-heading">完成身份验证</text>
+      <text class="form-heading">{{ t('security.verifyHeading1') }}</text>
+      <text class="form-heading">{{ t('security.verifyHeading2') }}</text>
 
       <view class="form-content">
         <view class="field-group field-group-first">
-          <text class="field-label">手机号</text>
+          <text class="field-label">{{ t('security.phoneNumber') }}</text>
           <view class="input-wrap">
             <input
               v-model="phone"
               class="field-input field-input-readonly"
               type="number"
               maxlength="11"
-              placeholder="请输入手机号"
+              :placeholder="t('security.enterPhoneNumber')"
               placeholder-class="input-placeholder"
               disabled
             />
           </view>
-          <text class="field-hint">验证码将发送至您的绑定手机</text>
+          <text class="field-hint">{{ t('security.boundPhoneHint') }}</text>
         </view>
 
         <view class="field-group">
-          <text class="field-label">验证码</text>
+          <text class="field-label">{{ t('security.verificationCode') }}</text>
           <view class="input-wrap">
             <input
               v-model="verifyCode"
               class="field-input field-input-code"
               type="number"
               maxlength="6"
-              placeholder="请输入验证码"
+              :placeholder="t('security.enterVerificationCode')"
               placeholder-class="input-placeholder"
             />
             <view class="code-btn" :class="{ disabled: countdown > 0 }" @click="sendCode">
-              <text class="code-btn-text">{{ countdown > 0 ? `${countdown}s` : '获取验证码' }}</text>
+              <text class="code-btn-text">{{ countdown > 0 ? `${countdown}s` : t('security.getVerificationCode') }}</text>
             </view>
           </view>
         </view>
 
         <view class="submit-wrap">
           <view class="submit-btn" :class="{ active: isConfirmEnabled }" @click="handleConfirm">
-            <text class="submit-text">确认</text>
+            <text class="submit-text">{{ t('common.confirm') }}</text>
           </view>
         </view>
       </view>
@@ -57,6 +57,9 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -90,7 +93,7 @@ const sendCode = () => {
   }, 1000);
 
   uni.showToast({
-    title: '验证码已发送',
+    title: t('security.codeSent'),
     icon: 'none',
   });
 };

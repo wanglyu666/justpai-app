@@ -2,7 +2,7 @@
   <view class="order-card">
     <view class="card-meta-row">
       <text class="deadline-text">{{ order.signedAt }}</text>
-      <StatusBadge :status="order.status" label="已签约" size="compact" />
+      <StatusBadge :status="order.status" :label="t('order.signed')" size="compact" />
     </view>
 
     <view class="card-body">
@@ -13,12 +13,12 @@
 
         <view class="product-info">
           <text class="product-name">{{ order.productName }}</text>
-          <text class="product-sub">共 {{ order.itemCount }} 件商品</text>
+          <text class="product-sub">{{ tf('order.productCount', { count: order.itemCount }) }}</text>
         </view>
       </view>
 
       <view class="price-col">
-        <text class="price-label">订单金额</text>
+        <text class="price-label">{{ t('order.amount') }}</text>
         <text class="price-value">¥{{ order.amount }}</text>
       </view>
     </view>
@@ -27,10 +27,10 @@
 
     <view class="card-actions">
       <view class="action-btn action-btn--secondary" @click="emit('refund', order.id)">
-        <text class="action-btn-text">{{ refundSubmitted ? '退款详情' : '申请退款' }}</text>
+        <text class="action-btn-text">{{ refundSubmitted ? t('order.refundDetails') : t('order.applyRefund') }}</text>
       </view>
       <view class="action-btn action-btn--primary" @click="emit('detail', order.id)">
-        <text class="action-btn-text action-btn-text--primary">签约详情</text>
+        <text class="action-btn-text action-btn-text--primary">{{ t('order.contractDetails') }}</text>
       </view>
     </view>
   </view>
@@ -39,6 +39,9 @@
 <script setup lang="ts">
 import StatusBadge from '@/components/StatusBadge.vue';
 import type { OrderRecord } from '@/data/orders';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 defineProps<{
   order: OrderRecord;

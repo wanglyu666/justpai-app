@@ -7,19 +7,19 @@
     </view>
 
     <view class="form-body">
-      <text class="form-heading">请输入新的密码</text>
-      <text class="form-heading">并再次输入确认</text>
+      <text class="form-heading">{{ t('security.passwordHeading1') }}</text>
+      <text class="form-heading">{{ t('security.passwordHeading2') }}</text>
 
       <view class="form-content">
         <view class="field-group field-group-first">
-          <text class="field-label">新密码</text>
+          <text class="field-label">{{ t('security.newPassword') }}</text>
           <view class="input-wrap">
             <input
               v-model="newPassword"
               type="text"
               class="field-input"
               :class="{ 'field-input-masked': !showNewPassword }"
-              placeholder="请输入新密码"
+              :placeholder="t('security.enterNewPassword')"
               placeholder-class="input-placeholder"
               autocomplete="off"
             />
@@ -31,18 +31,18 @@
               ></image>
             </view>
           </view>
-          <text class="field-hint">密码需在9位及以上，包含数字和字母</text>
+          <text class="field-hint">{{ t('security.passwordHint') }}</text>
         </view>
 
         <view class="field-group">
-          <text class="field-label">确认密码</text>
+          <text class="field-label">{{ t('security.confirmPassword') }}</text>
           <view class="input-wrap">
             <input
               v-model="confirmPassword"
               type="text"
               class="field-input"
               :class="{ 'field-input-masked': !showConfirmPassword }"
-              placeholder="请再次输入新密码"
+              :placeholder="t('security.enterPasswordAgain')"
               placeholder-class="input-placeholder"
               autocomplete="off"
             />
@@ -58,7 +58,7 @@
 
         <view class="submit-wrap">
           <view class="submit-btn" :class="{ active: isConfirmEnabled }" @click="handleConfirm">
-            <text class="submit-text">确认</text>
+            <text class="submit-text">{{ t('common.confirm') }}</text>
           </view>
         </view>
       </view>
@@ -69,6 +69,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];

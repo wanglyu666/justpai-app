@@ -19,7 +19,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="输入小区/写字楼等"
+          :placeholder="t('address.searchPlace')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -58,7 +58,7 @@
         </view>
 
         <view v-if="visiblePois.length === 0" class="poi-empty">
-          <text class="poi-empty-text">未找到相关地点</text>
+          <text class="poi-empty-text">{{ t('address.noPlace') }}</text>
         </view>
       </scroll-view>
     </view>
@@ -74,6 +74,9 @@ import {
   type MapPoi,
 } from '@/composables/useMapLocations';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = defineProps<{
   city?: string;
