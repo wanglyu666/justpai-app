@@ -1,43 +1,44 @@
 <template>
   <SheetPageLayout
-    title="验收"
+    :title="t('acceptance.inspect')"
     :desc="item.name"
     @back="handleBack"
   >
     <FileAttachmentCard
       class="attach-card"
       :files="item.attachments || []"
-      empty-text="暂无附件"
+      :title="t('common.attachments')"
+      :empty-text="t('common.noAttachments')"
     />
 
     <view class="section-card">
-      <text class="section-title">其余内容</text>
+      <text class="section-title">{{ t('acceptance.other') }}</text>
       <view class="meta-list">
         <view class="meta-row">
-          <text class="meta-label">计划验收时间</text>
+          <text class="meta-label">{{ t('acceptance.plannedTime') }}</text>
           <text class="meta-value">{{ plannedDisplay }}</text>
         </view>
         <view class="meta-row">
-          <text class="meta-label">预约验收时间</text>
+          <text class="meta-label">{{ t('acceptance.appointmentTime') }}</text>
           <text class="meta-value">{{ bookedDisplay }}</text>
         </view>
         <view class="meta-row meta-row--radio">
           <text class="meta-label">
             <text class="required">*</text>
-            验收评价
+            {{ t('acceptance.review') }}
           </text>
           <view class="radio-group">
             <view class="radio-option" @click="result = 'pass'">
               <view class="radio-circle" :class="result === 'pass' ? 'is-active' : ''">
                 <view v-if="result === 'pass'" class="radio-dot" />
               </view>
-              <text class="radio-text">通过</text>
+              <text class="radio-text">{{ t('acceptance.pass') }}</text>
             </view>
             <view class="radio-option" @click="result = 'fail'">
               <view class="radio-circle" :class="result === 'fail' ? 'is-active' : ''">
                 <view v-if="result === 'fail'" class="radio-dot" />
               </view>
-              <text class="radio-text">不通过</text>
+              <text class="radio-text">{{ t('acceptance.fail') }}</text>
             </view>
           </view>
         </view>
@@ -50,7 +51,7 @@
         :class="canSubmit ? 'is-active' : ''"
         @click="handleSubmit"
       >
-        <text class="submit-text">确定</text>
+        <text class="submit-text">{{ t('common.done') }}</text>
       </view>
     </template>
   </SheetPageLayout>
@@ -64,6 +65,9 @@ import type {
   ProcessAcceptanceItem,
   ProgressAcceptStatus,
 } from '@/composables/useProcessAcceptance';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = defineProps<{
   item: ProcessAcceptanceItem;

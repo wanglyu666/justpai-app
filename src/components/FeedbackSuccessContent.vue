@@ -6,13 +6,13 @@
         mode="aspectFit"
         class="success-icon"
       />
-      <text class="success-title">已完成提交</text>
-      <text class="success-desc">{{ desc }}</text>
+      <text class="success-title">{{ t('common.completed') }}</text>
+      <text class="success-desc">{{ resolvedDesc }}</text>
     </view>
 
     <view class="action-wrap">
       <view class="back-btn" @click="handleBack">
-        <text class="back-btn-text">{{ backText }}</text>
+        <text class="back-btn-text">{{ resolvedBackText }}</text>
       </view>
     </view>
   </view>
@@ -20,17 +20,24 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { computed } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
 
-withDefaults(
+const { t } = useLanguage();
+
+const props = withDefaults(
   defineProps<{
     desc?: string;
     backText?: string;
   }>(),
   {
-    desc: '您的意见反馈已提交，我们将尽快处理',
-    backText: '返回意见反馈',
+    desc: '',
+    backText: '',
   },
 );
+
+const resolvedDesc = computed(() => props.desc || t('feedback.submitted'));
+const resolvedBackText = computed(() => props.backText || t('feedback.back'));
 
 const emit = defineEmits<{
   back: [];

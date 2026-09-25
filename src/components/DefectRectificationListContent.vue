@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索整改"
+          :placeholder="t('defect.rectificationSearch')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,11 +23,11 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">缺陷整改</text>
-          <text class="page-desc">查看全部缺陷整改</text>
+          <text class="page-title">{{ t('defect.rectificationTitle') }}</text>
+          <text class="page-desc">{{ t('defect.rectificationDescription') }}</text>
         </view>
         <view class="add-btn" @click="onAdd">
-          <text class="add-btn-text">新增</text>
+          <text class="add-btn-text">{{ t('common.add') }}</text>
         </view>
       </view>
 
@@ -44,13 +44,13 @@
           </view>
 
           <view class="defect-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">汇报时间</text>
+            <text class="field-label" :style="infoCardLabelStyle">{{ t('defect.reportTime') }}</text>
             <text class="field-value" :style="infoCardValueStyle">{{ item.time }}</text>
           </view>
         </view>
 
         <view v-if="filteredItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关缺陷整改</text>
+          <text class="empty-tip-text">{{ t('defect.rectificationEmpty') }}</text>
         </view>
       </view>
     </view>
@@ -73,30 +73,30 @@
 
         <view class="detail-content" v-if="selectedItem">
           <view class="detail-title-row">
-            <text class="detail-title">整改详情</text>
+            <text class="detail-title">{{ t('defect.rectificationDetails') }}</text>
             <view class="end-btn" @click="openDeleteModal">
-              <text class="end-btn-text">删除记录</text>
+              <text class="end-btn-text">{{ t('defect.delete') }}</text>
             </view>
           </view>
 
           <view class="info-card">
             <view class="info-block" :style="infoCardFieldStyle">
-              <text class="info-label" :style="infoCardLabelStyle">缺陷名称</text>
+              <text class="info-label" :style="infoCardLabelStyle">{{ t('defect.name') }}</text>
               <text class="info-value" :style="infoCardTitleStyle">{{ selectedItem.name }}</text>
             </view>
             <view class="info-divider" />
             <view class="info-block" :style="infoCardFieldStyle">
-              <text class="info-label" :style="infoCardLabelStyle">缺陷内容</text>
+              <text class="info-label" :style="infoCardLabelStyle">{{ t('defect.content') }}</text>
               <text class="info-value" :style="infoCardValueStyle">{{ selectedItem.content }}</text>
             </view>
             <view class="info-divider" />
             <view class="info-meta-row">
               <view class="info-block info-block-grow" :style="infoCardFieldStyle">
-                <text class="info-label" :style="infoCardLabelStyle">汇报时间</text>
+                <text class="info-label" :style="infoCardLabelStyle">{{ t('defect.reportTime') }}</text>
                 <text class="info-value" :style="infoCardValueStyle">{{ selectedItem.time }}</text>
               </view>
               <view class="info-block info-block-status" :style="infoCardFieldStyle">
-                <text class="info-label" :style="infoCardLabelStyle">状态</text>
+                <text class="info-label" :style="infoCardLabelStyle">{{ t('defect.status') }}</text>
                 <StatusBadge
                   :status="selectedItem.status"
                   :label="statusLabel(selectedItem.status)"
@@ -106,11 +106,11 @@
             <view class="info-divider" />
             <view class="info-meta-row">
               <view class="info-block info-block-grow" :style="infoCardFieldStyle">
-                <text class="info-label" :style="infoCardLabelStyle">计划完成时间</text>
+                <text class="info-label" :style="infoCardLabelStyle">{{ t('defect.plannedComplete') }}</text>
                 <text class="info-value" :style="infoCardValueStyle">{{ displayTime(selectedItem.plannedAt) }}</text>
               </view>
               <view class="info-block info-block-grow" :style="infoCardFieldStyle">
-                <text class="info-label" :style="infoCardLabelStyle">实际完成时间</text>
+                <text class="info-label" :style="infoCardLabelStyle">{{ t('defect.actualComplete') }}</text>
                 <text class="info-value" :style="infoCardValueStyle">{{ displayTime(selectedItem.actualAt) }}</text>
               </view>
             </view>
@@ -119,11 +119,11 @@
           <view class="file-card">
             <view class="file-card-head">
               <view class="file-card-bar" />
-              <text class="file-card-title">附件</text>
+              <text class="file-card-title">{{ t('common.attachments') }}</text>
             </view>
 
             <view class="attach-group">
-              <text class="attach-group-title">缺陷照片</text>
+              <text class="attach-group-title">{{ t('defect.photos') }}</text>
               <view v-if="selectedItem.defectPhotos.length" class="file-card-list">
                 <FileAttachmentItem
                   v-for="(file, index) in selectedItem.defectPhotos"
@@ -131,11 +131,11 @@
                   :name="file"
                 />
               </view>
-              <text v-else class="file-card-empty">暂无缺陷照片</text>
+              <text v-else class="file-card-empty">{{ t('defect.noPhotos') }}</text>
             </view>
 
             <view class="attach-group">
-              <text class="attach-group-title">整改完成照片</text>
+              <text class="attach-group-title">{{ t('defect.rectifiedPhotos') }}</text>
               <view v-if="selectedItem.fixPhotos.length" class="file-card-list">
                 <FileAttachmentItem
                   v-for="(file, index) in selectedItem.fixPhotos"
@@ -143,7 +143,7 @@
                   :name="file"
                 />
               </view>
-              <text v-else class="file-card-empty">暂无整改完成照片</text>
+              <text v-else class="file-card-empty">{{ t('defect.noRectifiedPhotos') }}</text>
             </view>
           </view>
         </view>
@@ -159,15 +159,15 @@
       <SuccessPageTransition :show-success="formStep === 'success'">
         <DefectReportFormContent
           ref="formRef"
-          title="新增整改"
-          desc="填写整改信息后提交"
+          :title="t('defect.rectificationAddTitle')"
+          :desc="t('defect.rectificationAddDescription')"
           @back="closeForm"
           @submit="handleFormSubmit"
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="您的缺陷整改已提交，我们将尽快处理"
-            back-text="返回缺陷整改"
+            :desc="t('defect.rectificationSubmitted')"
+            :back-text="t('defect.rectificationBack')"
             @back="closeForm"
           />
         </template>
@@ -176,8 +176,10 @@
 
     <FrostedConfirmModal
       :show="deleteModalVisible"
-      title="确定删除该记录吗？"
-      message="删除后将无法恢复"
+      :title="t('defect.deleteTitle')"
+      :message="t('defect.deleteMessage')"
+      :cancel-text="t('common.cancel')"
+      :confirm-text="t('common.confirm')"
       @cancel="closeDeleteModal"
       @confirm="confirmDelete"
     />
@@ -207,6 +209,7 @@ import {
 } from '@/composables/useDefectRectifications';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const props = defineProps<{
   acceptanceItemId: string;
@@ -215,6 +218,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   back: [];
 }>();
+
+const { t } = useLanguage();
 
 const keyword = ref('');
 const selectedItem = ref<DefectRectificationItem | null>(null);
@@ -255,8 +260,14 @@ const filteredItems = computed(() => {
   });
 });
 
+const defectStatusKeys = {
+  pending_reply: 'defect.pendingReply',
+  in_progress: 'defect.inProgress',
+  closed: 'defect.closed',
+  rejected: 'defect.rejected',
+} as const;
 const statusLabel = (status: DefectRectificationStatus) =>
-  DEFECT_RECTIFICATION_STATUS_LABEL[status];
+  t(defectStatusKeys[status]);
 
 const displayTime = (value: string) => value || '—';
 

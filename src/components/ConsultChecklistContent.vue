@@ -11,26 +11,26 @@
     </view>
 
     <view class="sheet-page__body">
-      <text class="sheet-page__title">清单详情</text>
+      <text class="sheet-page__title">{{ t('checklist.title') }}</text>
 
       <view class="info-card">
         <view class="info-row">
           <view class="info-field">
-            <text class="info-label">报价人</text>
+            <text class="info-label">{{ t('checklist.quotedBy') }}</text>
             <text class="info-value">{{ checklist.quoter || '—' }}</text>
           </view>
           <view class="info-field">
-            <text class="info-label">联系方式</text>
+            <text class="info-label">{{ t('checklist.contact') }}</text>
             <text class="info-value">{{ checklist.contact || '—' }}</text>
           </view>
         </view>
         <view class="info-row">
           <view class="info-field">
-            <text class="info-label">报价时间</text>
+            <text class="info-label">{{ t('checklist.quotedAt') }}</text>
             <text class="info-value">{{ checklist.quoteTime }}</text>
           </view>
           <view class="info-field">
-            <text class="info-label">备注</text>
+            <text class="info-label">{{ t('checklist.remarks') }}</text>
             <text class="info-value">{{ checklist.remark || '—' }}</text>
           </view>
         </view>
@@ -38,9 +38,9 @@
 
       <view class="info-card">
         <view class="card-head">
-          <text class="card-heading">清单明细</text>
+          <text class="card-heading">{{ t('checklist.items') }}</text>
           <view class="cart-btn" @click="onAddToCart">
-            <text class="cart-btn-text">加入购物车</text>
+            <text class="cart-btn-text">{{ t('checklist.addToCart') }}</text>
           </view>
         </view>
 
@@ -56,19 +56,19 @@
 
           <view class="product-grid">
             <view class="product-field">
-              <text class="product-label">专业</text>
+              <text class="product-label">{{ t('checklist.specialty') }}</text>
               <text class="product-value">{{ item.specialty }}</text>
             </view>
             <view class="product-field">
-              <text class="product-label">品牌</text>
+              <text class="product-label">{{ t('checklist.brand') }}</text>
               <text class="product-value">{{ item.brand }}</text>
             </view>
             <view class="product-field">
-              <text class="product-label">数量</text>
+              <text class="product-label">{{ t('checklist.quantity') }}</text>
               <text class="product-value">{{ item.quantity }}</text>
             </view>
             <view class="product-field">
-              <text class="product-label">综合单价</text>
+              <text class="product-label">{{ t('checklist.unitPrice') }}</text>
               <text class="product-value">{{ item.unitPrice }}</text>
             </view>
           </view>
@@ -79,31 +79,31 @@
         <view class="summary-block">
           <view class="summary-row">
             <view class="summary-field">
-              <text class="info-label">专业</text>
+              <text class="info-label">{{ t('checklist.specialty') }}</text>
               <text class="info-value">{{ checklist.summary.specialty }}</text>
             </view>
             <view class="summary-field">
-              <text class="info-label">价格</text>
+              <text class="info-label">{{ t('checklist.price') }}</text>
               <text class="info-value">{{ formatMoney(checklist.summary.price) }}</text>
             </view>
           </view>
           <view class="summary-row">
             <view class="summary-field">
-              <text class="info-label">税率%</text>
+              <text class="info-label">{{ t('checklist.taxRate') }}</text>
               <text class="info-value">{{ checklist.summary.taxRate }}</text>
             </view>
             <view class="summary-field">
-              <text class="info-label">税金</text>
+              <text class="info-label">{{ t('checklist.tax') }}</text>
               <text class="info-value">{{ formatMoney(checklist.summary.tax) }}</text>
             </view>
           </view>
           <view class="summary-row">
             <view class="summary-field">
-              <text class="info-label">合计价格</text>
+              <text class="info-label">{{ t('checklist.total') }}</text>
               <text class="info-value">{{ formatMoney(checklist.summary.totalPrice) }}</text>
             </view>
             <view class="summary-field">
-              <text class="info-label">含税价格</text>
+              <text class="info-label">{{ t('checklist.taxIncluded') }}</text>
               <text class="info-value info-value-accent">
                 {{ formatMoney(checklist.summary.priceInclTax) }}
               </text>
@@ -112,13 +112,20 @@
         </view>
       </view>
 
-      <FileAttachmentCard :files="checklist.attachments" />
+      <FileAttachmentCard
+        :files="checklist.attachments"
+        :title="t('common.attachments')"
+        :empty-text="t('common.noAttachments')"
+      />
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { currentLanguage, t } = useLanguage();
 
 export type ChecklistItem = {
   id: number;
@@ -163,7 +170,7 @@ const emit = defineEmits<{
 }>();
 
 const formatMoney = (value: number) =>
-  value.toLocaleString('zh-CN', {
+  value.toLocaleString(currentLanguage.value, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
@@ -175,7 +182,7 @@ const handleBack = () => {
 const onAddToCart = () => {
   emit('addToCart');
   uni.showToast({
-    title: '已加入购物车',
+    title: t('checklist.added'),
     icon: 'success',
   });
 };

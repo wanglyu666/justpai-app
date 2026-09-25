@@ -1,6 +1,6 @@
 <template>
-  <SheetPageLayout title="验收图片" @back="handleBack">
-    <FileAttachmentCard :files="files" title="附件" empty-text="暂无验收附件" />
+  <SheetPageLayout :title="t('acceptance.imageTitle')" @back="handleBack">
+    <FileAttachmentCard :files="files" :title="t('common.attachments')" :empty-text="t('acceptance.noAttachments')" />
 
     <template #footer>
       <view
@@ -8,7 +8,7 @@
         :class="{ done: accepted }"
         @click="handleConfirm"
       >
-        <text class="confirm-btn-text">{{ accepted ? '已验收' : '确认验收' }}</text>
+        <text class="confirm-btn-text">{{ accepted ? t('acceptance.accepted') : t('acceptance.confirmAcceptance') }}</text>
       </view>
     </template>
   </SheetPageLayout>
@@ -17,6 +17,9 @@
 <script setup lang="ts">
 import SheetPageLayout from '@/components/SheetPageLayout.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = withDefaults(
   defineProps<{

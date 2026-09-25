@@ -6,13 +6,13 @@
         mode="aspectFit"
         class="success-icon"
       />
-      <text class="success-title">已完成提交</text>
-      <text class="success-desc">您的维保报修已提交，我们将尽快安排上门</text>
+      <text class="success-title">{{ t('common.completed') }}</text>
+      <text class="success-desc">{{ t('maintenance.submitted') }}</text>
     </view>
 
     <view class="action-wrap">
       <view class="back-btn" @click="handleBack">
-        <text class="back-btn-text">返回维保报修</text>
+        <text class="back-btn-text">{{ t('maintenance.back') }}</text>
       </view>
     </view>
   </view>
@@ -20,6 +20,9 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 const emit = defineEmits<{
   back: [];
 }>();

@@ -14,7 +14,7 @@
       <view class="title-row">
         <view class="title-block">
           <text class="page-title">{{ item.title }}</text>
-          <text class="page-desc">查看施工现场报告记录</text>
+          <text class="page-desc">{{ t('construction.reportDescription') }}</text>
         </view>
         <ReportFeedbackAction :report-id="item.id" />
       </view>
@@ -30,7 +30,7 @@
           <view class="section-card anchor-size-card">
             <view class="progress-block">
               <view class="progress-head">
-                <text class="progress-label">当前总进度</text>
+                <text class="progress-label">{{ t('construction.currentProgress') }}</text>
                 <text class="progress-value">{{ currentProgressPercent }}%</text>
               </view>
               <view class="progress-track">
@@ -42,7 +42,7 @@
             </view>
             <view class="progress-block">
               <view class="progress-head">
-                <text class="progress-label">原计划进度</text>
+                <text class="progress-label">{{ t('construction.plannedProgress') }}</text>
                 <text class="progress-value">{{ plannedProgressPercent }}%</text>
               </view>
               <view class="progress-track">
@@ -54,7 +54,7 @@
             </view>
           </view>
           <view class="section-card">
-            <text class="section-title">主要施工内容及劳动力安排</text>
+            <text class="section-title">{{ t('construction.mainContent') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.laborArrangement"
@@ -63,7 +63,7 @@
             />
           </view>
           <view class="section-card">
-            <text class="section-title">进度偏差分析与应对措施</text>
+            <text class="section-title">{{ t('construction.deviation') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.deviationAction"
@@ -93,14 +93,14 @@
           v-else-if="chapter.id === 'photos'"
           title=""
           :files="detail.photos"
-          empty-text="暂无现场照片"
+          :empty-text="t('construction.noSitePhotos')"
         />
 
         <FileAttachmentCard
           v-else
           title=""
           :files="detail.acceptance"
-          empty-text="暂无验收记录"
+          :empty-text="t('construction.noAcceptanceRecords')"
         />
       </view>
     </view>
@@ -119,6 +119,7 @@ import {
 } from '@/composables/useConstructionReports';
 import { reportChapterDomId } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const props = defineProps<{
   item: ConstructionReportItem;
@@ -128,8 +129,24 @@ const emit = defineEmits<{
   back: [];
 }>();
 
+const { t } = useLanguage();
+
 const { getWeeklyDetail } = useConstructionReports();
-const chapters = WEEKLY_REPORT_TABS;
+const chapterKeys = {
+  progress: 'construction.weeklyProgress',
+  quality: 'construction.weeklyQuality',
+  issues: 'construction.weeklyIssues',
+  nextWeek: 'construction.weeklyNext',
+  others: 'construction.weeklyOther',
+  photos: 'construction.weeklyPhotos',
+  acceptance: 'construction.weeklyAcceptance',
+} as const;
+const chapters = computed(() =>
+  WEEKLY_REPORT_TABS.map((chapter) => ({
+    ...chapter,
+    label: t(chapterKeys[chapter.id]),
+  })),
+);
 const chapterDomId = (id: string) => reportChapterDomId('weekly-chapter', id);
 
 const detail = computed(() => getWeeklyDetail(props.item.id));
@@ -148,20 +165,20 @@ const chapterCards = computed(() => {
   const data = detail.value;
   return {
     quality: [
-      { title: '质量检查与验收', value: data.qualityAcceptance },
-      { title: '问题整改', value: data.qualityRectification },
+      { title: t('construction.qualityAcceptance'), value: data.qualityAcceptance },
+      { title: t('construction.problemRectification'), value: data.qualityRectification },
     ],
     issues: [
-      { title: '现场问题', value: data.siteIssues },
-      { title: '解决方案与进展', value: data.issueSolution },
+      { title: t('construction.siteIssues'), value: data.siteIssues },
+      { title: t('construction.solutionProgress'), value: data.issueSolution },
     ],
     nextWeek: [
-      { title: '计划施工内容', value: data.plannedContent },
-      { title: '资源需求', value: data.resourceDemand },
+      { title: t('construction.plannedContent'), value: data.plannedContent },
+      { title: t('construction.resourceNeeds'), value: data.resourceDemand },
     ],
     others: [
-      { title: '需甲方确认事项', value: data.ownerConfirmItems },
-      { title: '其他未尽事项', value: data.otherOutstandingItems },
+      { title: t('construction.ownerConfirmation'), value: data.ownerConfirmItems },
+      { title: t('construction.otherItems'), value: data.otherOutstandingItems },
     ],
   } as Partial<Record<WeeklyReportSection, { title: string; value: string }[]>>;
 });

@@ -11,33 +11,33 @@
     </view>
 
     <view class="detail-content">
-      <text class="detail-title">维保详情</text>
+      <text class="detail-title">{{ t('maintenanceDetail.title') }}</text>
 
       <view class="info-card info-card-no-line">
         <view class="info-block">
-          <text class="info-label">项目</text>
+          <text class="info-label">{{ t('maintenanceDetail.project') }}</text>
           <text class="info-value info-value-lg">{{ item.projectName }}</text>
         </view>
         <view class="info-divider" />
         <view class="info-block">
-          <text class="info-label">项目组信息</text>
+          <text class="info-label">{{ t('maintenanceDetail.team') }}</text>
           <text class="info-value">
             {{ item.managerName }}（{{ item.managerPhone }}）
           </text>
         </view>
         <view class="info-divider" />
         <view class="info-block">
-          <text class="info-label">维保编号</text>
+          <text class="info-label">{{ t('maintenanceDetail.number') }}</text>
           <text class="info-value">{{ item.code }}</text>
         </view>
         <view class="info-divider" />
         <view class="info-block">
-          <text class="info-label">项目编号</text>
+          <text class="info-label">{{ t('maintenanceDetail.projectNumber') }}</text>
           <text class="info-value">{{ item.projectCode }}</text>
         </view>
         <view class="info-divider" />
         <view class="info-block">
-          <text class="info-label">项目地址</text>
+          <text class="info-label">{{ t('maintenanceDetail.address') }}</text>
           <text class="info-value">{{ item.address }}</text>
         </view>
       </view>
@@ -45,29 +45,33 @@
       <view class="info-card">
         <view class="meta-row">
           <view class="meta-col">
-            <text class="info-label">报修类型</text>
+            <text class="info-label">{{ t('maintenanceDetail.repairType') }}</text>
             <StatusBadge :status="item.repairType" :label="typeLabel" />
           </view>
           <view class="meta-col meta-col-end">
-            <text class="info-label">工单状态</text>
+            <text class="info-label">{{ t('maintenanceDetail.status') }}</text>
             <StatusBadge :status="item.status" :label="statusLabel" />
           </view>
         </view>
 
         <view class="info-block">
-          <text class="info-label">上门时间</text>
+          <text class="info-label">{{ t('maintenanceDetail.visitTime') }}</text>
           <text class="info-value visit-time">{{ item.visitTime }}</text>
         </view>
 
         <view class="info-divider" />
 
         <view class="info-block">
-          <text class="info-label">报修原因</text>
+          <text class="info-label">{{ t('maintenanceDetail.reason') }}</text>
           <text class="info-value info-value-body">{{ item.reason }}</text>
         </view>
       </view>
 
-      <FileAttachmentCard :files="item.media" />
+      <FileAttachmentCard
+        :files="item.media"
+        :title="t('common.attachments')"
+        :empty-text="t('common.noAttachments')"
+      />
     </view>
   </view>
 </template>
@@ -76,23 +80,26 @@
 import { computed } from 'vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import FileAttachmentCard from '@/components/FileAttachmentCard.vue';
-import {
-  type MaintenanceItem,
-  type MaintenanceStatus,
-  type RepairType,
+import type {
+  MaintenanceItem,
+  MaintenanceStatus,
+  RepairType,
 } from '@/composables/useMaintenanceItems';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
-const STATUS_LABEL: Record<MaintenanceStatus, string> = {
-  in_maintenance: '维保中',
-  pending: '待处理',
-  completed: '已完成',
-};
+const { t } = useLanguage();
 
-const TYPE_LABEL: Record<RepairType, string> = {
-  normal: '普通',
-  urgent: '紧急',
-};
+const STATUS_LABEL = computed<Record<MaintenanceStatus, string>>(() => ({
+  in_maintenance: t('maintenanceDetail.inMaintenance'),
+  pending: t('maintenanceDetail.pending'),
+  completed: t('maintenanceDetail.completed'),
+}));
+
+const TYPE_LABEL = computed<Record<RepairType, string>>(() => ({
+  normal: t('maintenanceDetail.normal'),
+  urgent: t('maintenanceDetail.urgent'),
+}));
 
 const props = defineProps<{
   item: MaintenanceItem;
@@ -102,8 +109,8 @@ const emit = defineEmits<{
   back: [];
 }>();
 
-const statusLabel = computed(() => STATUS_LABEL[props.item.status]);
-const typeLabel = computed(() => TYPE_LABEL[props.item.repairType]);
+const statusLabel = computed(() => STATUS_LABEL.value[props.item.status]);
+const typeLabel = computed(() => TYPE_LABEL.value[props.item.repairType]);
 
 const handleBack = usePageBack(() => emit('back'));
 </script>

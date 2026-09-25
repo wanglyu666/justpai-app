@@ -3,7 +3,7 @@
     <view class="short-chat-mask" :class="{ closing: isClosing }" @click="handleClose" />
     <view class="short-chat-panel" :class="{ closing: isClosing }">
       <view class="short-chat-header">
-        <text class="short-chat-title">短交流</text>
+        <text class="short-chat-title">{{ t('inquiry.shortChat') }}</text>
         <view class="short-chat-close" @click="handleClose">
           <text class="short-chat-close-text">×</text>
         </view>
@@ -14,22 +14,22 @@
           <view class="field-label-row">
             <text class="field-label">
               <text class="required">*</text>
-              交流内容
+              {{ t('inquiry.content') }}
             </text>
             <text class="field-count">{{ content.length }}/500</text>
           </view>
           <textarea
             v-model="content"
             class="field-textarea"
-            placeholder="请输入本次交流内容"
+            :placeholder="t('inquiry.enterContent')"
             placeholder-class="input-placeholder"
             :maxlength="500"
           />
         </view>
 
         <view class="section-card">
-          <text class="section-title">上传附件</text>
-          <text class="section-hint">支持图片与视频，最多 3 个</text>
+          <text class="section-title">{{ t('inquiry.upload') }}</text>
+          <text class="section-hint">{{ t('inquiry.uploadHint') }}</text>
 
           <view class="media-grid">
             <view
@@ -62,7 +62,7 @@
               mode="aspectFit"
               class="media-add-icon"
             />
-            <text class="media-add-text">添加附件</text>
+            <text class="media-add-text">{{ t('inquiry.addAttachment') }}</text>
           </view>
         </view>
       </view>
@@ -73,7 +73,7 @@
           :class="{ active: isSubmitEnabled }"
           @click="handleConfirm"
         >
-          <text class="confirm-btn-text">确认</text>
+          <text class="confirm-btn-text">{{ t('common.confirm') }}</text>
         </view>
       </view>
     </view>
@@ -82,6 +82,9 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 type MediaFile = {
   path: string;

@@ -12,7 +12,7 @@
 
     <view class="content">
       <view class="hero">
-        <text class="page-title">审批流</text>
+        <text class="page-title">{{ t('approval.flow') }}</text>
         <view class="hero-tag">
           <text class="hero-tag-text">{{ title }}</text>
         </view>
@@ -46,18 +46,18 @@
             </view>
 
             <view class="step-meta">
-              <text class="meta-label">审批时间</text>
+              <text class="meta-label">{{ t('approval.time') }}</text>
               <text class="meta-value">{{ step.time || '—' }}</text>
             </view>
 
             <view class="comment-box">
-              <text class="comment-label">审批意见</text>
+              <text class="comment-label">{{ t('approval.comment') }}</text>
               <text class="comment-text">{{ step.comment }}</text>
             </view>
 
             <view v-if="step.result === 'pending'" class="pending-action">
               <view class="go-approve-btn" @click.stop="emit('approve', step)">
-                <text class="go-approve-text">前往审批</text>
+                <text class="go-approve-text">{{ t('approval.go') }}</text>
               </view>
             </view>
           </view>
@@ -69,6 +69,10 @@
 
 <script setup lang="ts">
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+import { computed } from 'vue';
+
+const { t } = useLanguage();
 export type ApprovalResult = 'approved' | 'pending' | 'not_started';
 
 export type ApprovalFlowStep = {
@@ -90,13 +94,13 @@ const emit = defineEmits<{
   approve: [step: ApprovalFlowStep];
 }>();
 
-const RESULT_LABEL: Record<ApprovalResult, string> = {
-  approved: '同意',
-  pending: '待审批',
-  not_started: '未开始',
-};
+const RESULT_LABEL = computed<Record<ApprovalResult, string>>(() => ({
+  approved: t('approval.approved'),
+  pending: t('approval.pending'),
+  not_started: t('approval.notStarted'),
+}));
 
-const resultLabel = (result: ApprovalResult) => RESULT_LABEL[result];
+const resultLabel = (result: ApprovalResult) => RESULT_LABEL.value[result];
 
 const handleBack = usePageBack(() => emit('back'));
 </script>

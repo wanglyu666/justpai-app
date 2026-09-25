@@ -1,20 +1,20 @@
 <template>
   <SheetPageLayout
-    title="预约验收"
+    :title="t('acceptance.bookingTitle')"
     :desc="item.name"
     @back="handleBack"
   >
     <view class="section-card">
-      <text class="section-title" :style="infoCardTitleStyle">验收信息</text>
+      <text class="section-title" :style="infoCardTitleStyle">{{ t('acceptance.information') }}</text>
       <view class="meta-list">
         <view class="meta-row">
-          <text class="meta-label" :style="infoCardLabelStyle">计划时间</text>
+          <text class="meta-label" :style="infoCardLabelStyle">{{ t('acceptance.plannedTime') }}</text>
           <text class="meta-value" :style="infoCardValueStyle">{{ plannedDisplay }}</text>
         </view>
         <view class="meta-row meta-row--clickable" @click="openDateSheet">
           <text class="meta-label" :style="infoCardLabelStyle">
             <text class="required">*</text>
-            预约验收时间
+            {{ t('acceptance.appointmentTime') }}
           </text>
           <view class="meta-value-group">
             <text
@@ -33,7 +33,7 @@
         >
           <text class="meta-label" :style="infoCardLabelStyle">
             <text class="required">*</text>
-            验收类型
+            {{ t('acceptance.type') }}
           </text>
           <view class="radio-group">
             <view
@@ -45,12 +45,12 @@
               <view class="radio-circle" :class="{ active: acceptType === type }">
                 <view v-if="acceptType === type" class="radio-dot" />
               </view>
-              <text class="radio-text" :style="infoCardValueStyle">{{ type }}</text>
+              <text class="radio-text" :style="infoCardValueStyle">{{ acceptTypeLabel(type) }}</text>
             </view>
           </view>
         </view>
         <view class="meta-row meta-row--clickable" @click="openContactSheet">
-          <text class="meta-label" :style="infoCardLabelStyle">现场联系人</text>
+          <text class="meta-label" :style="infoCardLabelStyle">{{ t('acceptance.siteContact') }}</text>
           <view class="meta-value-group">
             <text
               class="meta-value"
@@ -71,14 +71,14 @@
         :class="{ active: isSubmitEnabled }"
         @click="handleSubmit"
       >
-        <text class="submit-text">确定</text>
+        <text class="submit-text">{{ t('common.done') }}</text>
       </view>
     </template>
   </SheetPageLayout>
 
   <CheckoutEditSheet
     :show="dateSheetOpen"
-    title="预约验收时间"
+    :title="t('acceptance.appointmentTime')"
     :z-index="2500"
     @close="closeDateSheet"
     @confirm="confirmDateSheet"
@@ -113,6 +113,7 @@ import {
   type SiteContact,
 } from '@/composables/useProcessAcceptance';
 import { usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const props = withDefaults(
   defineProps<{
@@ -141,6 +142,10 @@ const emit = defineEmits<{
   ];
 }>();
 
+const { t } = useLanguage();
+const acceptTypeLabel = (type: ProgressAcceptType) =>
+  t(type === '现场验收' ? 'acceptance.onSite' : 'acceptance.online');
+
 const formatSlashDate = (value?: string) => {
   if (!value) return '—';
   return value.replace(/-/g, '/');
@@ -167,7 +172,7 @@ const bookedDisplay = computed(() =>
   bookedAt.value ? formatSlashDate(bookedAt.value) : 'yyyy/mm/dd',
 );
 const contactsDisplay = computed(() => {
-  if (!contacts.value.length) return '点击添加联系人';
+  if (!contacts.value.length) return t('acceptance.addContactHint');
   return contacts.value.map((item) => item.name).join('、');
 });
 const infoCardPlaceholderStyle = {

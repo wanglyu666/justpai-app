@@ -5,12 +5,12 @@
     @back="handleBack"
   >
     <view class="section-card">
-      <text class="section-title">缺陷信息</text>
+      <text class="section-title">{{ t('defect.information') }}</text>
       <view class="field-group">
         <view class="field-label-row">
           <text class="field-label">
             <text class="required">*</text>
-            缺陷内容
+            {{ t('defect.content') }}
           </text>
           <text class="field-count">{{ content.length }}/500</text>
         </view>
@@ -25,8 +25,8 @@
     </view>
 
     <view class="section-card">
-      <text class="section-title">上传附件</text>
-      <text class="section-hint">最多上传 {{ MAX_MEDIA }} 个文件（{{ mediaFiles.length }}/{{ MAX_MEDIA }}）</text>
+      <text class="section-title">{{ t('defect.upload') }}</text>
+      <text class="section-hint">{{ tf('defect.uploadHint', { max: MAX_MEDIA, current: mediaFiles.length }) }}</text>
 
       <view class="media-grid">
         <view
@@ -51,7 +51,7 @@
             mode="aspectFit"
             class="media-add-icon"
           />
-          <text class="media-add-text">添加</text>
+          <text class="media-add-text">{{ t('common.add') }}</text>
         </view>
       </view>
     </view>
@@ -62,7 +62,7 @@
         :class="{ active: isSubmitEnabled }"
         @click="handleSubmit"
       >
-        <text class="submit-text">确定</text>
+        <text class="submit-text">{{ t('common.done') }}</text>
       </view>
     </template>
   </SheetPageLayout>
@@ -71,6 +71,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import SheetPageLayout from '@/components/SheetPageLayout.vue';
+import { useLanguage } from '@/composables/useLanguage';
 
 type MediaFile = {
   path: string;
@@ -79,18 +80,23 @@ type MediaFile = {
 
 const MAX_MEDIA = 4;
 
-const { title, desc, placeholder } = withDefaults(
+const props = withDefaults(
   defineProps<{
     title?: string;
     desc?: string;
     placeholder?: string;
   }>(),
   {
-    title: '新增缺陷',
-    desc: '填写缺陷信息后提交',
-    placeholder: '请描述缺陷位置、现象与影响，便于尽快处理',
+    title: '',
+    desc: '',
+    placeholder: '',
   },
 );
+
+const { t, tf } = useLanguage();
+const title = computed(() => props.title || t('defect.addTitle'));
+const desc = computed(() => props.desc || t('defect.addDescription'));
+const placeholder = computed(() => props.placeholder || t('defect.placeholder'));
 
 const emit = defineEmits<{
   back: [];

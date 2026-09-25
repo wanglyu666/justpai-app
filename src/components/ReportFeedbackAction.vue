@@ -1,7 +1,7 @@
 <template>
   <view class="feedback-action">
     <view class="add-btn" @click.stop="openFeedback">
-      <text class="add-btn-text">意见反馈</text>
+      <text class="add-btn-text">{{ t('reportFeedback.title') }}</text>
     </view>
 
     <SlideOverPanel
@@ -20,8 +20,8 @@
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="您对该报告的意见反馈已提交"
-            back-text="返回报告"
+            :desc="t('reportFeedback.submitted')"
+            :back-text="t('reportFeedback.back')"
             @back="closePanel"
           />
         </template>
@@ -38,6 +38,9 @@ import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import ReportFeedbackFormContent from '@/components/ReportFeedbackFormContent.vue';
 import { useReportFeedback } from '@/composables/useReportFeedback';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = defineProps<{
   reportId: string;

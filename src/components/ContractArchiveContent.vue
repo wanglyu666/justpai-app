@@ -19,15 +19,15 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索合同"
+          :placeholder="t('contract.search')"
           placeholder-class="search-placeholder"
         />
       </view>
     </view>
 
     <view class="content">
-      <text class="page-title">合同档案</text>
-      <text class="page-desc">查看全部合同信息</text>
+      <text class="page-title">{{ t('contract.title') }}</text>
+      <text class="page-desc">{{ t('contract.description') }}</text>
 
       <view class="contract-list">
         <view
@@ -39,12 +39,12 @@
           <view class="card-heading">
             <text class="contract-name" :style="infoCardTitleStyle">{{ item.name }}</text>
             <view class="amount-block" :style="infoCardFieldStyle">
-              <text class="meta-label" :style="infoCardLabelStyle">合同金额</text>
+              <text class="meta-label" :style="infoCardLabelStyle">{{ t('contract.amount') }}</text>
               <text class="meta-amount">{{ item.amountText }}</text>
             </view>
           </view>
           <view class="contract-meta" :style="infoCardFieldStyle">
-            <text class="meta-label" :style="infoCardLabelStyle">合同编号</text>
+            <text class="meta-label" :style="infoCardLabelStyle">{{ t('contract.number') }}</text>
             <text class="meta-value" :style="infoCardValueStyle">{{ item.no }}</text>
           </view>
         </view>
@@ -68,56 +68,56 @@
         </view>
 
         <view class="detail-content" v-if="selectedContract">
-          <text class="detail-title">合同详情</text>
+          <text class="detail-title">{{ t('contract.details') }}</text>
 
           <view class="detail-card">
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">合同类型</text>
+                <text class="detail-label">{{ t('contract.type') }}</text>
                 <text class="detail-value">{{ selectedContract.type }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">合同编号</text>
+                <text class="detail-label">{{ t('contract.number') }}</text>
                 <text class="detail-value">{{ selectedContract.no }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field detail-field-full">
-                <text class="detail-label">合同名称</text>
+                <text class="detail-label">{{ t('contract.name') }}</text>
                 <text class="detail-value">{{ selectedContract.fullName }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">联系人</text>
+                <text class="detail-label">{{ t('address.contact') }}</text>
                 <text class="detail-value">{{ selectedContract.contact }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">联系电话</text>
+                <text class="detail-label">{{ t('address.phone') }}</text>
                 <text class="detail-value">{{ selectedContract.phone }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">合同金额</text>
+                <text class="detail-label">{{ t('contract.amount') }}</text>
                 <text class="detail-value">{{ selectedContract.amount }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">合同开始日期</text>
+                <text class="detail-label">{{ t('contract.startDate') }}</text>
                 <text class="detail-value">{{ selectedContract.startDate }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">合同结束日期</text>
+                <text class="detail-label">{{ t('contract.endDate') }}</text>
                 <text class="detail-value">{{ selectedContract.endDate }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">签订日期</text>
+                <text class="detail-label">{{ t('contract.signDate') }}</text>
                 <text class="detail-value">{{ selectedContract.signDate }}</text>
               </view>
             </view>
@@ -126,7 +126,7 @@
 
         <view class="detail-footer">
           <view class="preview-btn" @click="onPreview">
-            <text class="preview-btn-text">预览</text>
+            <text class="preview-btn-text">{{ t('contract.preview') }}</text>
           </view>
         </view>
       </view>
@@ -139,12 +139,15 @@ import { computed, ref } from 'vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 import {
   infoCardFieldStyle,
   infoCardLabelStyle,
   infoCardTitleStyle,
   infoCardValueStyle,
 } from '@/config/infoCard';
+
+const { t } = useLanguage();
 
 type ContractItem = {
   id: number;

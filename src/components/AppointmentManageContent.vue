@@ -19,15 +19,15 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索预约"
+          :placeholder="t('appointment.search')"
           placeholder-class="search-placeholder"
         />
       </view>
     </view>
 
     <view class="content">
-      <text class="page-title">预约管理</text>
-      <text class="page-desc">查看全部预约信息</text>
+      <text class="page-title">{{ t('appointment.title') }}</text>
+      <text class="page-desc">{{ t('appointment.description') }}</text>
 
       <view class="appointment-list">
         <view
@@ -40,11 +40,11 @@
           </view>
           <view class="appointment-meta-row">
             <view class="appointment-meta">
-              <text class="meta-label">倒计时</text>
+              <text class="meta-label">{{ t('appointment.countdown') }}</text>
               <text class="meta-value">{{ item.countdown }}</text>
             </view>
             <view class="appointment-meta appointment-meta-time">
-              <text class="meta-label">预约时间</text>
+              <text class="meta-label">{{ t('appointment.time') }}</text>
               <text class="meta-value">{{ item.scheduledAt }}</text>
             </view>
           </view>
@@ -59,20 +59,20 @@
               class="action-btn"
               @click.stop="onConfirm(item)"
             >
-              <text class="action-btn-text">确认</text>
+              <text class="action-btn-text">{{ t('common.confirm') }}</text>
             </view>
             <view
               v-else-if="canViewAcceptance(item)"
               class="action-btn action-btn-muted"
               @click.stop="onViewAcceptance(item)"
             >
-              <text class="action-btn-text">查看验收</text>
+              <text class="action-btn-text">{{ t('appointment.viewAcceptance') }}</text>
             </view>
           </view>
         </view>
 
         <view v-if="filteredAppointments.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关预约</text>
+          <text class="empty-tip-text">{{ t('appointment.empty') }}</text>
         </view>
       </view>
     </view>
@@ -93,8 +93,8 @@
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="验收已确认"
-            back-text="返回预约管理"
+            :desc="t('acceptance.confirmed')"
+            :back-text="t('appointment.back')"
             @back="closeAcceptance"
           />
         </template>
@@ -130,7 +130,6 @@ import AppointmentChangeConfirmSheet from '@/components/AppointmentChangeConfirm
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import {
-  APPOINTMENT_STATUS_LABEL,
   canConfirmAppointment,
   confirmAppointmentAcceptance,
   confirmAppointmentChange,
@@ -140,6 +139,7 @@ import {
 } from '@/composables/useAppointments';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const props = defineProps<{
   projectId: number;
@@ -148,6 +148,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   back: [];
 }>();
+
+const { t } = useLanguage();
 
 const keyword = ref('');
 const { appointments } = useAppointments(toRef(props, 'projectId'));
@@ -180,8 +182,17 @@ const changeConfirmAppointment = ref<AppointmentItem | null>(null);
 const changeConfirmStep = ref<'form' | 'success'>('form');
 usePageBackWhen(changeConfirmVisible, closeChangeConfirmPanel);
 
+const appointmentStatusKeys = {
+  pending_acceptance: 'appointment.pendingAcceptance',
+  pending_confirm_time: 'appointment.pendingConfirmTime',
+  pending_confirm_change: 'appointment.pendingConfirmChange',
+  order_suspended: 'appointment.orderSuspended',
+  appointment_abnormal: 'appointment.abnormal',
+  pending_visit: 'appointment.pendingVisit',
+  completed: 'appointment.completed',
+} as const;
 const statusLabel = (status: AppointmentItem['status']) =>
-  APPOINTMENT_STATUS_LABEL[status];
+  t(appointmentStatusKeys[status]);
 
 const filteredAppointments = computed(() => {
   const q = keyword.value.trim().toLowerCase();

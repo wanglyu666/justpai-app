@@ -1,16 +1,16 @@
 <template>
   <SheetPageLayout
-    title="新增维保"
-    desc="选择项目并填写报修原因后提交"
+    :title="t('maintenance.addTitle')"
+    :desc="t('maintenance.addDescription')"
     @back="handleBack"
     @click="closeProjectDropdown"
   >
     <view class="section-card">
-      <text class="section-title">项目选择</text>
+      <text class="section-title">{{ t('maintenance.projectSelection') }}</text>
       <view class="field-group" @click.stop>
         <text class="field-label">
           <text class="required">*</text>
-          所属项目
+          {{ t('maintenance.project') }}
         </text>
         <view class="dropdown-wrap">
           <view
@@ -22,7 +22,7 @@
               class="picker-text"
               :class="{ placeholder: !selectedProject }"
             >
-              {{ selectedProject?.name || '请选择项目' }}
+              {{ selectedProject?.name || t('maintenance.selectProject') }}
             </text>
             <text class="picker-arrow" :class="{ open: projectOpen }">▾</text>
           </view>
@@ -49,24 +49,24 @@
     </view>
 
     <view class="section-card" @click.stop>
-      <text class="section-title">维保信息</text>
+      <text class="section-title">{{ t('maintenance.information') }}</text>
       <view class="meta-list">
         <view class="meta-row">
-          <text class="meta-label">开工时间</text>
+          <text class="meta-label">{{ t('maintenance.startDate') }}</text>
           <text class="meta-value">{{ HARDCODED_START_DATE }}</text>
         </view>
         <view class="meta-row">
-          <text class="meta-label">竣工时间</text>
+          <text class="meta-label">{{ t('maintenance.endDate') }}</text>
           <text class="meta-value">{{ HARDCODED_END_DATE }}</text>
         </view>
         <view class="meta-row">
-          <text class="meta-label">质保期</text>
-          <text class="meta-value">{{ HARDCODED_WARRANTY }}</text>
+          <text class="meta-label">{{ t('maintenance.warranty') }}</text>
+          <text class="meta-value">{{ tf('maintenance.months', { count: 24 }) }}</text>
         </view>
         <view class="meta-row meta-row--clickable" @click="openDateSheet">
           <text class="meta-label">
             <text class="required">*</text>
-            上门时间
+            {{ t('maintenance.visitTime') }}
           </text>
           <view class="meta-value-group">
             <text
@@ -81,20 +81,20 @@
         <view class="meta-row meta-row--radio">
           <text class="meta-label">
             <text class="required">*</text>
-            保修类型
+            {{ t('maintenance.repairType') }}
           </text>
           <view class="radio-group">
             <view class="radio-option" @click="selectedType = 'normal'">
               <view class="radio-circle" :class="{ active: selectedType === 'normal' }">
                 <view v-if="selectedType === 'normal'" class="radio-dot" />
               </view>
-              <text class="radio-text">普通</text>
+              <text class="radio-text">{{ t('maintenanceDetail.normal') }}</text>
             </view>
             <view class="radio-option" @click="selectedType = 'urgent'">
               <view class="radio-circle" :class="{ active: selectedType === 'urgent' }">
                 <view v-if="selectedType === 'urgent'" class="radio-dot" />
               </view>
-              <text class="radio-text">紧急</text>
+              <text class="radio-text">{{ t('maintenanceDetail.urgent') }}</text>
             </view>
           </view>
         </view>
@@ -102,16 +102,16 @@
     </view>
 
     <view class="section-card">
-      <text class="section-title">报修原因</text>
+      <text class="section-title">{{ t('maintenance.reason') }}</text>
       <view class="field-group">
         <text class="field-label">
           <text class="required">*</text>
-          报修描述
+          {{ t('maintenance.descriptionLabel') }}
         </text>
         <textarea
           v-model="reason"
           class="field-textarea"
-          placeholder="请描述故障现象或报修需求，便于安排上门"
+          :placeholder="t('maintenance.descriptionPlaceholder')"
           placeholder-class="input-placeholder"
           :maxlength="500"
         />
@@ -119,8 +119,8 @@
     </view>
 
     <view class="section-card">
-      <text class="section-title">上传附件</text>
-      <text class="section-hint">最多上传 {{ MAX_MEDIA }} 个文件（{{ mediaFiles.length }}/{{ MAX_MEDIA }}）</text>
+      <text class="section-title">{{ t('maintenance.upload') }}</text>
+      <text class="section-hint">{{ tf('maintenance.uploadHint', { max: MAX_MEDIA, current: mediaFiles.length }) }}</text>
 
       <view class="media-grid">
         <view
@@ -149,7 +149,7 @@
             mode="aspectFit"
             class="media-add-icon"
           />
-          <text class="media-add-text">添加</text>
+          <text class="media-add-text">{{ t('consult.add') }}</text>
         </view>
       </view>
     </view>
@@ -160,14 +160,14 @@
         :class="{ active: isSubmitEnabled }"
         @click="handleSubmit"
       >
-        <text class="submit-text">确定</text>
+        <text class="submit-text">{{ t('common.done') }}</text>
       </view>
     </template>
   </SheetPageLayout>
 
   <CheckoutEditSheet
     :show="dateSheetOpen"
-    title="上门时间"
+    :title="t('maintenance.visitTime')"
     @close="closeDateSheet"
     @confirm="confirmDateSheet"
   >
@@ -184,6 +184,9 @@ import {
   maintenanceProjects,
   type RepairType,
 } from '@/composables/useMaintenanceItems';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 type MediaFile = {
   path: string;
@@ -193,7 +196,6 @@ type MediaFile = {
 const MAX_MEDIA = 4;
 const HARDCODED_START_DATE = '2025/06/18';
 const HARDCODED_END_DATE = '2025/12/30';
-const HARDCODED_WARRANTY = '24个月';
 
 const projects = maintenanceProjects;
 

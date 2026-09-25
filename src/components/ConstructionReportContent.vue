@@ -13,8 +13,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">施工报告</text>
-          <text class="page-desc">查看施工现场报告记录</text>
+          <text class="page-title">{{ t('construction.reportTitle') }}</text>
+          <text class="page-desc">{{ t('construction.reportDescription') }}</text>
         </view>
       </view>
 
@@ -54,7 +54,7 @@
                   mode="aspectFit"
                   class="meta-icon"
                 />
-                <text class="meta-text">负责人：{{ item.owner }}</text>
+                <text class="meta-text">{{ tf('construction.owner', { name: item.owner }) }}</text>
               </view>
             </view>
             <view
@@ -131,12 +131,14 @@ import {
 import { useReportChapterNav } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
 import { useSlideOver } from '@/composables/useSlideOver';
+import { useLanguage } from '@/composables/useLanguage';
 
 const emit = defineEmits<{
   back: [];
 }>();
 
-const { tabs, getByCategory } = useConstructionReports();
+const { t, tf } = useLanguage();
+const { tabs: rawTabs, getByCategory } = useConstructionReports();
 const activeCategory = ref<ConstructionReportCategory>('daily');
 const selectedItem = ref<ConstructionReportItem | null>(null);
 const {
@@ -150,11 +152,55 @@ const categoryIcon = computed(
   () => CONSTRUCTION_REPORT_ICONS[activeCategory.value],
 );
 
+const categoryTabKeys = {
+  daily: 'construction.daily',
+  weekly: 'construction.weekly',
+  ehs: 'construction.ehsWeekly',
+} as const;
+const tabs = computed(() =>
+  rawTabs.map((tab) => ({ ...tab, label: t(categoryTabKeys[tab.id]) })),
+);
+
+const dailyChapterKeys = {
+  content: 'construction.dailyContent',
+  trades: 'construction.dailyTrades',
+  plan: 'construction.dailyPlan',
+  photos: 'construction.dailyPhotos',
+} as const;
+const weeklyChapterKeys = {
+  progress: 'construction.weeklyProgress',
+  quality: 'construction.weeklyQuality',
+  issues: 'construction.weeklyIssues',
+  nextWeek: 'construction.weeklyNext',
+  others: 'construction.weeklyOther',
+  photos: 'construction.weeklyPhotos',
+  acceptance: 'construction.weeklyAcceptance',
+} as const;
+const ehsChapterKeys = {
+  summary: 'construction.ehsSummary',
+  nextPlan: 'construction.ehsNext',
+  hazards: 'construction.ehsHazards',
+  trainingPhotos: 'construction.ehsPhotos',
+} as const;
+
 const tocChapters = computed(() => {
   const category = selectedItem.value?.category;
-  if (category === 'weekly') return WEEKLY_REPORT_TABS;
-  if (category === 'ehs') return EHS_REPORT_TABS;
-  return DAILY_REPORT_TABS;
+  if (category === 'weekly') {
+    return WEEKLY_REPORT_TABS.map((tab) => ({
+      ...tab,
+      label: t(weeklyChapterKeys[tab.id]),
+    }));
+  }
+  if (category === 'ehs') {
+    return EHS_REPORT_TABS.map((tab) => ({
+      ...tab,
+      label: t(ehsChapterKeys[tab.id]),
+    }));
+  }
+  return DAILY_REPORT_TABS.map((tab) => ({
+    ...tab,
+    label: t(dailyChapterKeys[tab.id]),
+  }));
 });
 
 const tocPrefix = computed(() => {

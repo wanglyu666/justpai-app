@@ -1,11 +1,11 @@
 <template>
   <SheetPageLayout
-    title="意见反馈"
-    :desc="mode === 'view' ? '查看已提交的意见反馈' : '填写对该报告的意见或建议'"
+    :title="t('reportFeedback.title')"
+    :desc="mode === 'view' ? t('reportFeedback.viewDescription') : t('reportFeedback.createDescription')"
     @back="emit('back')"
   >
     <view class="section-card">
-      <text class="section-title">反馈内容</text>
+      <text class="section-title">{{ t('reportFeedback.content') }}</text>
       <textarea
         v-if="mode === 'view'"
         class="field-textarea"
@@ -17,7 +17,7 @@
         v-else
         v-model="draft"
         class="field-textarea"
-        placeholder="请描述您的问题或建议"
+        :placeholder="t('reportFeedback.placeholder')"
         placeholder-class="input-placeholder"
         maxlength="500"
       />
@@ -29,7 +29,7 @@
         :class="canSubmit ? 'active' : ''"
         @click="handleSubmit"
       >
-        <text class="submit-text">确定</text>
+        <text class="submit-text">{{ t('common.done') }}</text>
       </view>
     </template>
   </SheetPageLayout>
@@ -38,6 +38,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import SheetPageLayout from '@/components/SheetPageLayout.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = withDefaults(
   defineProps<{

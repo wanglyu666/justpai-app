@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索审批"
+          :placeholder="t('approval.search')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -22,8 +22,8 @@
 
     <view class="content">
       <view class="title-block">
-        <text class="page-title">审批配置</text>
-        <text class="page-desc">查看全部审批配置</text>
+        <text class="page-title">{{ t('approval.title') }}</text>
+        <text class="page-desc">{{ t('approval.description') }}</text>
       </view>
 
       <view class="approval-list">
@@ -35,7 +35,7 @@
         >
           <view class="card-header">
             <view class="card-header-main">
-              <text class="type-label">审批类型</text>
+              <text class="type-label">{{ t('approval.type') }}</text>
               <text class="type-title">{{ item.type }}</text>
             </view>
           </view>
@@ -46,14 +46,14 @@
                 <text class="avatar-text">{{ item.initiator.slice(0, 1) }}</text>
               </view>
               <view class="meta-text">
-                <text class="meta-label">发起人</text>
+                <text class="meta-label">{{ t('approval.initiator') }}</text>
                 <text class="meta-value">{{ item.initiator }}</text>
               </view>
             </view>
             <view class="meta-divider" />
             <view class="meta-item meta-item-time">
               <view class="meta-text">
-                <text class="meta-label">发起时间</text>
+                <text class="meta-label">{{ t('approval.startedAt') }}</text>
                 <text class="meta-value">{{ item.time }}</text>
               </view>
             </view>
@@ -62,7 +62,7 @@
           <view class="card-footer">
             <view v-if="item.status === 'in_progress'" class="flow-section">
               <view class="flow-node flow-node-edge">
-                <text class="flow-node-text">开始</text>
+                <text class="flow-node-text">{{ t('approval.start') }}</text>
               </view>
               <view class="flow-connector">
                 <view class="flow-dot" />
@@ -71,7 +71,7 @@
               </view>
               <view class="flow-node flow-node-current">
                 <text class="flow-current-name">{{ item.currentApprover }}</text>
-                <text class="flow-current-label">当前</text>
+                <text class="flow-current-label">{{ t('approval.current') }}</text>
               </view>
               <view class="flow-connector">
                 <view class="flow-dot" />
@@ -79,20 +79,20 @@
                 <view class="flow-dot" />
               </view>
               <view class="flow-node flow-node-edge">
-                <text class="flow-node-text">结束</text>
+                <text class="flow-node-text">{{ t('approval.end') }}</text>
               </view>
             </view>
 
             <view v-else class="done-section">
               <view class="done-badge">
-                <text class="done-badge-text">已完成</text>
+                <text class="done-badge-text">{{ t('approval.completed') }}</text>
               </view>
             </view>
           </view>
         </view>
 
         <view v-if="filteredItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关审批配置</text>
+          <text class="empty-tip-text">{{ t('approval.empty') }}</text>
         </view>
       </view>
     </view>
@@ -144,6 +144,9 @@ import PageApprovalAction from '@/components/PageApprovalAction.vue';
 import { useMaintenanceItems } from '@/composables/useMaintenanceItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 type ApprovalStatus = 'in_progress' | 'done';
 
@@ -335,7 +338,9 @@ const filteredItems = computed(() => {
   const q = keyword.value.trim().toLowerCase();
   if (!q) return items.value;
   return items.value.filter((item) => {
-    const statusText = item.status === 'done' ? '已完成' : '进行中';
+    const statusText = item.status === 'done'
+      ? t('approval.completed')
+      : t('consultTicket.inProgress');
     return (
       item.type.toLowerCase().includes(q) ||
       item.initiator.toLowerCase().includes(q) ||

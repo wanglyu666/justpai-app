@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索维保项目"
+          :placeholder="t('maintenanceProject.search')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,8 +23,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">维保项目管理</text>
-          <text class="page-desc">查看全部维保项目信息</text>
+          <text class="page-title">{{ t('maintenanceProject.title') }}</text>
+          <text class="page-desc">{{ t('maintenanceProject.description') }}</text>
         </view>
       </view>
 
@@ -83,14 +83,14 @@
                 <text class="manager-avatar-text">{{ item.managerName.slice(0, 1) }}</text>
               </view>
               <view class="list-card-meta-text">
-                <text class="info-label">项目负责人</text>
+                <text class="info-label">{{ t('maintenanceProject.manager') }}</text>
                 <text class="info-value">{{ item.managerName }}</text>
               </view>
             </view>
             <view class="list-card-meta-divider" />
             <view class="list-card-meta-item">
               <view class="list-card-meta-text">
-                <text class="info-label">联系方式</text>
+                <text class="info-label">{{ t('maintenanceProject.contact') }}</text>
                 <text class="info-value">{{ formatPhone(item.managerPhone) }}</text>
               </view>
             </view>
@@ -98,7 +98,7 @@
         </view>
 
         <view v-if="filteredProjects.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关维保项目</text>
+          <text class="empty-tip-text">{{ t('maintenanceProject.empty') }}</text>
         </view>
       </view>
     </view>
@@ -120,7 +120,7 @@
         </view>
 
         <view class="sheet-page__body">
-          <text class="sheet-page__title">项目详情</text>
+          <text class="sheet-page__title">{{ t('maintenanceProject.details') }}</text>
 
           <view class="info-card">
             <view class="card-heading">
@@ -136,17 +136,17 @@
             <view class="info-grid">
               <view class="info-row">
                 <view class="info-field">
-                  <text class="info-label">项目负责人</text>
+                  <text class="info-label">{{ t('maintenanceProject.manager') }}</text>
                   <text class="info-value">{{ selectedItem.managerName }}</text>
                 </view>
                 <view class="info-field">
-                  <text class="info-label">联系方式</text>
+                  <text class="info-label">{{ t('maintenanceProject.contact') }}</text>
                   <text class="info-value">{{ formatPhone(selectedItem.managerPhone) }}</text>
                 </view>
               </view>
               <view class="info-row">
                 <view class="info-field">
-                  <text class="info-label">项目编号</text>
+                  <text class="info-label">{{ t('maintenanceProject.projectNumber') }}</text>
                   <text class="info-value">{{ selectedItem.code }}</text>
                 </view>
               </view>
@@ -156,12 +156,12 @@
           <view class="action-card-row">
             <ActionSquareCard
               icon="/static/icons/calendar-clock.svg"
-              label="预约管理"
+              :label="t('maintenanceProject.appointment')"
               @click="openAppointment"
             />
             <ActionSquareCard
               icon="/static/icons/star-yellow.svg"
-              label="评价"
+              :label="t('maintenanceProject.review')"
               @click="openReview"
             />
           </view>
@@ -189,7 +189,7 @@
         <OrderReviewContent
           v-if="reviewSubject"
           :subject="reviewSubject"
-          form-title="项目评价"
+          :form-title="t('engineering.review')"
           :editable="reviewStep === 'form'"
           :existing-rating="reviewRecord?.rating"
           :existing-content="reviewRecord?.content"
@@ -198,7 +198,7 @@
           @submit="handleReviewSubmit"
         />
         <template #success>
-          <OrderReviewSuccessContent back-text="返回项目" @back="closeReview" />
+          <OrderReviewSuccessContent :back-text="t('engineering.backToProject')" @back="closeReview" />
         </template>
       </SuccessPageTransition>
     </SlideOverPanel>
@@ -224,6 +224,9 @@ import {
 import { useOrderReviews } from '@/composables/useOrderReviews';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = withDefaults(
   defineProps<{
@@ -278,7 +281,7 @@ const reviewSubject = computed(() =>
         id: projectReviewId(selectedItem.value.id),
         name: selectedItem.value.name,
         code: selectedItem.value.code,
-        codeLabel: '项目编号',
+        codeLabel: t('maintenanceProject.projectNumber'),
       }
     : null,
 );
@@ -287,24 +290,26 @@ const reviewRecord = computed(() =>
   selectedItem.value ? getReview(projectReviewId(selectedItem.value.id)) : null,
 );
 
-const statusTabs: { id: MaintenanceProjectStatus; label: string }[] = [
-  { id: 'pending_start', label: '待开工' },
-  { id: 'in_progress', label: '施工中' },
-  { id: 'completed', label: '已完工' },
-];
+const statusTabs = computed<{ id: MaintenanceProjectStatus; label: string }[]>(() => [
+  { id: 'pending_start', label: t('maintenanceProject.pendingStart') },
+  { id: 'in_progress', label: t('maintenanceProject.inProgress') },
+  { id: 'completed', label: t('maintenanceProject.completed') },
+]);
 
-const STATUS_LABEL: Record<MaintenanceProjectStatus, string> = {
-  pending_start: '待开工',
-  in_progress: '施工中',
-  completed: '已完工',
-};
+const STATUS_LABEL = computed<Record<MaintenanceProjectStatus, string>>(() => ({
+  pending_start: t('maintenanceProject.pendingStart'),
+  in_progress: t('maintenanceProject.inProgress'),
+  completed: t('maintenanceProject.completed'),
+}));
 
-const statusLabel = (status: MaintenanceProjectStatus) => STATUS_LABEL[status];
+const statusLabel = (status: MaintenanceProjectStatus) => STATUS_LABEL.value[status];
 
-const actionEntries = [
-  { id: 'appointment', label: '预约管理', icon: '/static/icons/calendar-clock.svg' },
-  { id: 'review', label: '评价', icon: '/static/icons/star-yellow.svg' },
-] as const;
+type MaintenanceActionId = 'appointment' | 'review';
+
+const actionEntries = computed<Array<{ id: MaintenanceActionId; label: string; icon: string }>>(() => [
+  { id: 'appointment', label: t('maintenanceProject.appointment'), icon: '/static/icons/calendar-clock.svg' },
+  { id: 'review', label: t('maintenanceProject.review'), icon: '/static/icons/star-yellow.svg' },
+]);
 
 const filteredProjects = computed(() => {
   const q = keyword.value.trim().toLowerCase();
@@ -340,14 +345,14 @@ watch(activeStatus, closeMenu);
 
 const openMenuAction = (
   item: MaintenanceProjectItem,
-  id: (typeof actionEntries)[number]['id'],
+  id: MaintenanceActionId,
 ) => {
   closeMenu();
   selectedItem.value = { ...item, attachments: [...item.attachments] };
   handleActionClick(id);
 };
 
-const handleActionClick = (id: (typeof actionEntries)[number]['id']) => {
+const handleActionClick = (id: MaintenanceActionId) => {
   if (id === 'appointment') openAppointment();
   if (id === 'review') openReview();
 };

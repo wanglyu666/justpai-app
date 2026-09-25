@@ -14,7 +14,7 @@
       <view class="title-row">
         <view class="title-block">
           <text class="page-title">{{ item.title }}</text>
-          <text class="page-desc">查看施工现场报告记录</text>
+          <text class="page-desc">{{ t('construction.reportDescription') }}</text>
         </view>
       </view>
 
@@ -27,7 +27,7 @@
 
         <view v-if="chapter.id === 'summary'" class="section-list">
           <view class="section-card anchor-size-card">
-            <text class="section-title">本周开展的特殊作业</text>
+            <text class="section-title">{{ t('construction.specialWork') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.specialOperations"
@@ -37,23 +37,23 @@
           </view>
           <view class="section-card stat-card">
             <view class="stat-row">
-              <text class="stat-label">本周开展的安全教育次数</text>
+              <text class="stat-label">{{ t('construction.safetyEducationCount') }}</text>
               <view class="stat-num">
                 <text class="stat-count">{{ detail.safetyEducationCount }}</text>
-                <text class="stat-unit">次</text>
+                <text class="stat-unit">{{ t('construction.countUnit') }}</text>
               </view>
             </view>
             <view class="stat-divider" />
             <view class="stat-row">
-              <text class="stat-label">共开展教育与培训总结</text>
+              <text class="stat-label">{{ t('construction.trainingSummary') }}</text>
               <view class="stat-num">
                 <text class="stat-count">{{ detail.trainingSummaryCount }}</text>
-                <text class="stat-unit">次</text>
+                <text class="stat-unit">{{ t('construction.countUnit') }}</text>
               </view>
             </view>
           </view>
           <view class="section-card">
-            <text class="section-title">本周开展的教育培训</text>
+            <text class="section-title">{{ t('construction.training') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.educationTraining"
@@ -81,7 +81,7 @@
 
         <view v-else-if="chapter.id === 'hazards'" class="section-list">
           <view class="section-card">
-            <text class="section-title">隐患排查</text>
+            <text class="section-title">{{ t('construction.hazardInspection') }}</text>
             <view v-if="detail.hazards.length" class="nested-list">
               <view
                 v-for="(hazard, index) in detail.hazards"
@@ -89,12 +89,12 @@
                 class="nested-card"
               >
                 <view class="nested-head">
-                  <text class="nested-label">位置</text>
+                  <text class="nested-label">{{ t('construction.location') }}</text>
                   <text class="nested-location">{{ hazard.location }}</text>
                 </view>
                 <view class="nested-pair">
                   <view class="nested-field">
-                    <text class="nested-label">隐患描述</text>
+                    <text class="nested-label">{{ t('construction.hazardDescription') }}</text>
                     <textarea
                       class="field-textarea"
                       :value="hazard.description"
@@ -103,7 +103,7 @@
                     />
                   </view>
                   <view class="nested-field">
-                    <text class="nested-label">整改措施</text>
+                    <text class="nested-label">{{ t('construction.correctiveAction') }}</text>
                     <textarea
                       class="field-textarea"
                       :value="hazard.measure"
@@ -114,7 +114,7 @@
                 </view>
                 <view class="nested-pair">
                   <view class="nested-field">
-                    <text class="nested-label">隐患照片</text>
+                    <text class="nested-label">{{ t('construction.hazardPhotos') }}</text>
                     <view v-if="hazard.hazardPhotos.length" class="attach-list">
                       <FileAttachmentItem
                         v-for="(file, fileIndex) in hazard.hazardPhotos"
@@ -122,10 +122,10 @@
                         :name="file"
                       />
                     </view>
-                    <text v-else class="attach-empty">暂无隐患照片</text>
+                    <text v-else class="attach-empty">{{ t('construction.noHazardPhotos') }}</text>
                   </view>
                   <view class="nested-field">
-                    <text class="nested-label">整改完成照片</text>
+                    <text class="nested-label">{{ t('construction.rectifiedPhotos') }}</text>
                     <view v-if="hazard.rectifyPhotos.length" class="attach-list">
                       <FileAttachmentItem
                         v-for="(file, fileIndex) in hazard.rectifyPhotos"
@@ -133,15 +133,15 @@
                         :name="file"
                       />
                     </view>
-                    <text v-else class="attach-empty">暂无整改完成照片</text>
+                    <text v-else class="attach-empty">{{ t('construction.noRectifiedPhotos') }}</text>
                   </view>
                 </view>
               </view>
             </view>
-            <text v-else class="attach-empty">暂无隐患记录</text>
+            <text v-else class="attach-empty">{{ t('construction.noHazards') }}</text>
           </view>
           <view class="section-card">
-            <text class="section-title">其他重要事项</text>
+            <text class="section-title">{{ t('construction.otherImportant') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.otherImportantItems"
@@ -155,7 +155,7 @@
           v-else
           title=""
           :files="detail.trainingPhotos"
-          empty-text="暂无培训照片"
+          :empty-text="t('construction.noTrainingPhotos')"
         />
       </view>
     </view>
@@ -173,6 +173,7 @@ import {
 } from '@/composables/useConstructionReports';
 import { reportChapterDomId } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const props = defineProps<{
   item: ConstructionReportItem;
@@ -182,15 +183,28 @@ const emit = defineEmits<{
   back: [];
 }>();
 
+const { t } = useLanguage();
+
 const { getEhsDetail } = useConstructionReports();
-const chapters = EHS_REPORT_TABS;
+const chapterKeys = {
+  summary: 'construction.ehsSummary',
+  nextPlan: 'construction.ehsNext',
+  hazards: 'construction.ehsHazards',
+  trainingPhotos: 'construction.ehsPhotos',
+} as const;
+const chapters = computed(() =>
+  EHS_REPORT_TABS.map((chapter) => ({
+    ...chapter,
+    label: t(chapterKeys[chapter.id]),
+  })),
+);
 const chapterDomId = (id: string) => reportChapterDomId('ehs-chapter', id);
 
 const detail = computed(() => getEhsDetail(props.item.id));
 
 const nextPlanCards = computed(() => [
-  { title: '工作内容及控制措施', value: detail.value.workControlMeasures },
-  { title: '教育与培训计划', value: detail.value.nextTrainingPlan },
+  { title: t('construction.workControls'), value: detail.value.workControlMeasures },
+  { title: t('construction.nextTrainingPlan'), value: detail.value.nextTrainingPlan },
 ]);
 
 const handleBack = usePageBack(() => emit('back'));

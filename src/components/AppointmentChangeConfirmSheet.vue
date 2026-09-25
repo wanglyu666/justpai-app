@@ -5,7 +5,7 @@
       <SuccessPageTransition :show-success="showSuccess">
         <view class="change-sheet-page">
           <view class="change-sheet-header">
-            <text class="change-sheet-title">确认变更时间</text>
+            <text class="change-sheet-title">{{ t('acceptance.changeTime') }}</text>
             <view class="change-sheet-close" @click="handleClose">
               <image
                 src="/static/icons/x.svg"
@@ -16,23 +16,23 @@
           </view>
 
           <view class="change-sheet-body">
-            <text class="field-label">更改原因</text>
+            <text class="field-label">{{ t('acceptance.changeReason') }}</text>
             <textarea
               v-model="reason"
               class="reason-textarea"
-              placeholder="请输入更改原因"
+              :placeholder="t('acceptance.enterChangeReason')"
               placeholder-class="reason-placeholder"
               :maxlength="200"
             />
             <view class="time-block">
-              <text class="time-label">预约时间</text>
+              <text class="time-label">{{ t('appointment.time') }}</text>
               <text class="time-value">{{ scheduledAt }}</text>
             </view>
           </view>
 
           <view class="change-sheet-footer">
             <view class="change-sheet-confirm" @click="handleConfirm">
-              <text class="change-sheet-confirm-text">确认</text>
+              <text class="change-sheet-confirm-text">{{ t('common.confirm') }}</text>
             </view>
           </view>
         </view>
@@ -45,12 +45,12 @@
                 mode="aspectFit"
                 class="success-icon"
               />
-              <text class="success-title">确认成功</text>
-              <text class="success-desc">变更时间已确认</text>
+              <text class="success-title">{{ t('acceptance.confirmationSuccess') }}</text>
+              <text class="success-desc">{{ t('acceptance.timeChanged') }}</text>
             </view>
             <view class="change-sheet-footer">
               <view class="change-sheet-done" @click="handleClose">
-                <text class="change-sheet-done-text">完成</text>
+                <text class="change-sheet-done-text">{{ t('common.done') }}</text>
               </view>
             </view>
           </view>
@@ -63,6 +63,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = defineProps<{
   show: boolean;

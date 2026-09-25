@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索工程项目"
+          :placeholder="t('engineering.search')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,8 +23,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">工程项目管理</text>
-          <text class="page-desc">查看全部工程项目信息</text>
+          <text class="page-title">{{ t('engineering.title') }}</text>
+          <text class="page-desc">{{ t('engineering.description') }}</text>
         </view>
       </view>
 
@@ -78,12 +78,12 @@
 
           <view class="list-card-metrics">
             <view class="metric-amount-block">
-              <text class="metric-label">合同金额</text>
+              <text class="metric-label">{{ t('engineering.contractAmount') }}</text>
               <text class="metric-amount">{{ formatAmount(item.amount) }}</text>
             </view>
             <view class="metric-divider" />
             <view class="metric-date-block">
-              <text class="metric-label">开工日期</text>
+              <text class="metric-label">{{ t('engineering.startDate') }}</text>
               <text class="metric-date">{{ item.startDate }}</text>
             </view>
           </view>
@@ -93,18 +93,18 @@
               <text class="manager-avatar-text">{{ item.managerName.slice(0, 1) }}</text>
             </view>
             <view class="manager-meta">
-              <text class="footer-label">项目负责人</text>
+              <text class="footer-label">{{ t('engineering.manager') }}</text>
               <text class="footer-value">{{ item.managerName }}</text>
             </view>
             <view class="contact-meta">
-              <text class="footer-label">联系方式</text>
+              <text class="footer-label">{{ t('engineering.contact') }}</text>
               <text class="footer-value">{{ formatPhone(item.managerPhone) }}</text>
             </view>
           </view>
         </view>
 
         <view v-if="filteredProjects.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关工程项目</text>
+          <text class="empty-tip-text">{{ t('engineering.empty') }}</text>
         </view>
       </view>
     </view>
@@ -126,7 +126,7 @@
         </view>
 
         <view class="sheet-page__body">
-          <text class="sheet-page__title">项目详情</text>
+          <text class="sheet-page__title">{{ t('engineering.details') }}</text>
 
           <view class="info-card">
             <view class="card-heading">
@@ -142,27 +142,27 @@
             <view class="info-grid">
               <view class="info-row">
                 <view class="info-field">
-                  <text class="info-label">合同金额</text>
+                  <text class="info-label">{{ t('engineering.contractAmount') }}</text>
                   <text class="info-value">{{ formatAmount(selectedItem.amount) }}</text>
                 </view>
                 <view class="info-field">
-                  <text class="info-label">项目负责人</text>
+                  <text class="info-label">{{ t('engineering.manager') }}</text>
                   <text class="info-value">{{ selectedItem.managerName }}</text>
                 </view>
               </view>
               <view class="info-row">
                 <view class="info-field">
-                  <text class="info-label">联系方式</text>
+                  <text class="info-label">{{ t('engineering.contact') }}</text>
                   <text class="info-value">{{ formatPhone(selectedItem.managerPhone) }}</text>
                 </view>
                 <view class="info-field">
-                  <text class="info-label">开工日期</text>
+                  <text class="info-label">{{ t('engineering.startDate') }}</text>
                   <text class="info-value">{{ selectedItem.startDate }}</text>
                 </view>
               </view>
               <view class="info-row">
                 <view class="info-field">
-                  <text class="info-label">项目编号</text>
+                  <text class="info-label">{{ t('engineering.projectNumber') }}</text>
                   <text class="info-value">{{ selectedItem.code }}</text>
                 </view>
               </view>
@@ -193,7 +193,7 @@
         <OrderReviewContent
           v-if="reviewSubject"
           :subject="reviewSubject"
-          form-title="项目评价"
+          :form-title="t('engineering.review')"
           :editable="reviewStep === 'form'"
           :existing-rating="reviewRecord?.rating"
           :existing-content="reviewRecord?.content"
@@ -202,7 +202,7 @@
           @submit="handleReviewSubmit"
         />
         <template #success>
-          <OrderReviewSuccessContent back-text="返回项目" @back="closeReview" />
+          <OrderReviewSuccessContent :back-text="t('engineering.backToProject')" @back="closeReview" />
         </template>
       </SuccessPageTransition>
     </SlideOverPanel>
@@ -249,8 +249,8 @@
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="您的缺陷汇报已提交，我们将尽快处理"
-            back-text="返回项目"
+            :desc="t('engineering.defectSubmitted')"
+            :back-text="t('engineering.backToProject')"
             @back="closeDefectCreate"
           />
         </template>
@@ -278,7 +278,6 @@ import DefectReportListContent from '@/components/DefectReportListContent.vue';
 import DefectReportFormContent from '@/components/DefectReportFormContent.vue';
 import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import {
-  ENGINEERING_PROJECT_STATUS_LABEL,
   ENGINEERING_PROJECT_STATUS_TABS,
   useEngineeringProjects,
   type EngineeringProjectItem,
@@ -288,6 +287,9 @@ import { useOrderReviews } from '@/composables/useOrderReviews';
 import { useDefectReports } from '@/composables/useDefectReports';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -366,7 +368,7 @@ const reviewSubject = computed(() =>
         id: projectReviewId(selectedItem.value.id),
         name: selectedItem.value.name,
         code: selectedItem.value.code,
-        codeLabel: '项目编号',
+        codeLabel: t('engineering.projectNumber'),
       }
     : null,
 );
@@ -375,20 +377,33 @@ const reviewRecord = computed(() =>
   selectedItem.value ? getReview(projectReviewId(selectedItem.value.id)) : null,
 );
 
-const statusTabs = ENGINEERING_PROJECT_STATUS_TABS;
+const statusTabs = computed(() => ENGINEERING_PROJECT_STATUS_TABS.map((tab) => ({
+  id: tab.id,
+  label: statusLabel(tab.id),
+})));
 
-const actionEntries = [
-  { id: 'report', label: '施工报告', icon: '/static/icons/file-text-blue.svg' },
-  { id: 'defect', label: '缺陷汇报', icon: '/static/icons/triangle-alert-rose.svg' },
-  { id: 'acceptance', label: '过程验收', icon: '/static/icons/clipboard-check-orange.svg' },
-  { id: 'review', label: '项目评价', icon: '/static/icons/star-yellow.svg' },
-  { id: 'after-sales', label: '售后计划', icon: '/static/icons/headset-pink.svg' },
-  { id: 'archive', label: '竣工资料', icon: '/static/icons/folder-check-indigo.svg' },
-  { id: 'standard', label: '施工标准', icon: '/static/icons/shield-check-green.svg' },
-] as const;
+type EngineeringActionId = 'report' | 'defect' | 'acceptance' | 'review' | 'after-sales' | 'archive' | 'standard';
 
+const actionEntries = computed<Array<{ id: EngineeringActionId; label: string; icon: string }>>(() => [
+  { id: 'report', label: t('engineering.report'), icon: '/static/icons/file-text-blue.svg' },
+  { id: 'defect', label: t('engineering.defect'), icon: '/static/icons/triangle-alert-rose.svg' },
+  { id: 'acceptance', label: t('engineering.acceptance'), icon: '/static/icons/clipboard-check-orange.svg' },
+  { id: 'review', label: t('engineering.review'), icon: '/static/icons/star-yellow.svg' },
+  { id: 'after-sales', label: t('engineering.afterSales'), icon: '/static/icons/headset-pink.svg' },
+  { id: 'archive', label: t('engineering.archive'), icon: '/static/icons/folder-check-indigo.svg' },
+  { id: 'standard', label: t('engineering.standard'), icon: '/static/icons/shield-check-green.svg' },
+]);
+
+const engineeringStatusKeys = {
+  pending_start: 'engineering.pendingStart',
+  in_progress: 'engineering.inProgress',
+  completed: 'engineering.completed',
+  settled: 'engineering.settled',
+  in_warranty: 'engineering.inWarranty',
+  out_of_warranty: 'engineering.outOfWarranty',
+} as const;
 const statusLabel = (status: EngineeringProjectStatus) =>
-  ENGINEERING_PROJECT_STATUS_LABEL[status];
+  t(engineeringStatusKeys[status]);
 
 const formatPhone = (phone: string) => {
   const digits = phone.replace(/\D/g, '');
@@ -435,7 +450,7 @@ watch(activeStatus, closeMenu);
 
 const openMenuAction = (
   item: EngineeringProjectItem,
-  id: (typeof actionEntries)[number]['id'],
+  id: EngineeringActionId,
 ) => {
   closeMenu();
   selectedItem.value = item;
@@ -454,7 +469,7 @@ const resetDetail = () => {
   closeDefectCreate();
 };
 
-const handleActionClick = (id: (typeof actionEntries)[number]['id']) => {
+const handleActionClick = (id: EngineeringActionId) => {
   if (id === 'review') openReview();
   if (id === 'standard') openStandard();
   if (id === 'report') openReport();

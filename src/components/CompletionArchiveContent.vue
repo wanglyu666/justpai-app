@@ -13,8 +13,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">竣工资料</text>
-          <text class="page-desc">查看项目竣工归档资料</text>
+          <text class="page-title">{{ t('construction.archiveTitle') }}</text>
+          <text class="page-desc">{{ t('construction.archiveDescription') }}</text>
         </view>
       </view>
 
@@ -26,9 +26,9 @@
 
       <FileAttachmentCard
         v-if="activeCategory === 'photos'"
-        title="完工照片"
+        :title="t('construction.completionPhotos')"
         :files="photoFiles"
-        empty-text="暂无完工照片"
+        :empty-text="t('construction.noCompletionPhotos')"
       />
 
       <view v-else class="report-list">
@@ -55,7 +55,7 @@
                   mode="aspectFit"
                   class="meta-icon"
                 />
-                <text class="meta-text">负责人：{{ item.owner }}</text>
+                <text class="meta-text">{{ tf('construction.owner', { name: item.owner }) }}</text>
               </view>
             </view>
             <view class="download-btn">
@@ -69,7 +69,7 @@
         </view>
 
         <view v-if="visibleItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关资料</text>
+          <text class="empty-tip-text">{{ t('construction.noData') }}</text>
         </view>
       </view>
     </view>
@@ -86,13 +86,26 @@ import {
   type CompletionArchiveCategory,
 } from '@/composables/useCompletionArchive';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const emit = defineEmits<{
   back: [];
 }>();
 
-const { tabs, getByCategory } = useCompletionArchive();
+const { t, tf } = useLanguage();
+const { tabs: rawTabs, getByCategory } = useCompletionArchive();
 const activeCategory = ref<CompletionArchiveCategory>('photos');
+
+const archiveTabKeys = {
+  photos: 'construction.archivePhotos',
+  records: 'construction.archiveAcceptance',
+  documents: 'construction.archiveDocuments',
+  materials: 'construction.archiveMaterials',
+  handover: 'construction.archiveHandover',
+} as const;
+const tabs = computed(() =>
+  rawTabs.map((tab) => ({ ...tab, label: t(archiveTabKeys[tab.id]) })),
+);
 
 const visibleItems = computed(() => getByCategory(activeCategory.value));
 const photoFiles = computed(() =>

@@ -3,14 +3,14 @@
     <view class="contact-sheet-mask" :class="{ closing: isClosing }" @click="handleClose" />
     <view class="contact-sheet-panel" :class="{ closing: isClosing }">
       <view class="contact-sheet-header">
-        <text class="contact-sheet-title">现场联系人</text>
+        <text class="contact-sheet-title">{{ t('siteContact.title') }}</text>
         <view
           v-if="draftContacts.length < MAX_CONTACTS"
           class="contact-add-btn"
           :class="{ active: canAdd }"
           @click="addContact"
         >
-          <text class="contact-add-btn-text">添加</text>
+          <text class="contact-add-btn-text">{{ t('common.add') }}</text>
         </view>
         <view class="contact-sheet-close" @click="handleClose">
           <text class="contact-sheet-close-text">×</text>
@@ -29,7 +29,7 @@
               <text class="contact-card-phone">{{ item.phone }}</text>
             </view>
             <view class="contact-card-remove" @click="removeContact(item.id)">
-              <text class="contact-card-remove-text">删除</text>
+              <text class="contact-card-remove-text">{{ t('siteContact.delete') }}</text>
             </view>
           </view>
         </view>
@@ -38,13 +38,13 @@
           <view class="contact-form-field">
             <text class="contact-form-label">
               <text class="required">*</text>
-              姓名
+              {{ t('siteContact.name') }}
             </text>
             <input
               v-model="form.name"
               class="contact-form-input"
               type="text"
-              placeholder="请输入姓名"
+              :placeholder="t('siteContact.enterName')"
               placeholder-class="contact-form-placeholder"
               :maxlength="20"
             />
@@ -52,13 +52,13 @@
           <view class="contact-form-field">
             <text class="contact-form-label">
               <text class="required">*</text>
-              职位
+              {{ t('siteContact.position') }}
             </text>
             <input
               v-model="form.position"
               class="contact-form-input"
               type="text"
-              placeholder="请输入职位"
+              :placeholder="t('siteContact.enterPosition')"
               placeholder-class="contact-form-placeholder"
               :maxlength="20"
             />
@@ -66,25 +66,25 @@
           <view class="contact-form-field">
             <text class="contact-form-label">
               <text class="required">*</text>
-              手机号
+              {{ t('siteContact.phone') }}
             </text>
             <input
               v-model="form.phone"
               class="contact-form-input"
               type="number"
-              placeholder="请输入手机号"
+              :placeholder="t('siteContact.enterPhone')"
               placeholder-class="contact-form-placeholder"
               :maxlength="11"
             />
           </view>
         </view>
 
-        <text class="contact-sheet-hint">最多添加 3 人</text>
+        <text class="contact-sheet-hint">{{ t('siteContact.limit') }}</text>
       </view>
 
       <view class="contact-sheet-footer">
         <view class="contact-sheet-confirm" @click="handleConfirm">
-          <text class="contact-sheet-confirm-text">确定</text>
+          <text class="contact-sheet-confirm-text">{{ t('common.done') }}</text>
         </view>
       </view>
     </view>
@@ -94,6 +94,9 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import type { SiteContact } from '@/composables/useProcessAcceptance';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const MAX_CONTACTS = 3;
 const PHONE_PATTERN = /^1\d{10}$/;
@@ -201,9 +204,9 @@ const invalidContactMessage = () => {
     !form.position.trim() ||
     !form.phone.trim()
   ) {
-    return '请填写完整联系人信息';
+    return t('siteContact.fillAll');
   }
-  return '请输入正确的手机号';
+  return t('siteContact.invalidPhone');
 };
 
 const addContact = () => {

@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索咨询单"
+          :placeholder="t('consultTicket.search')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,11 +23,11 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">咨询单</text>
-          <text class="page-desc">查看全部咨询单信息</text>
+          <text class="page-title">{{ t('consultTicket.title') }}</text>
+          <text class="page-desc">{{ t('consultTicket.description') }}</text>
         </view>
         <view class="add-btn" @click="onAdd">
-          <text class="add-btn-text">新增</text>
+          <text class="add-btn-text">{{ t('common.add') }}</text>
         </view>
       </view>
 
@@ -48,12 +48,12 @@
           <text class="ticket-name" :style="infoCardTitleStyle">{{ item.name }}</text>
 
           <view class="ticket-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">咨询时间</text>
+            <text class="field-label" :style="infoCardLabelStyle">{{ t('consultTicket.time') }}</text>
             <text class="field-value" :style="infoCardValueStyle">{{ item.time }}</text>
           </view>
 
           <view class="ticket-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">需求</text>
+            <text class="field-label" :style="infoCardLabelStyle">{{ t('consultTicket.requirement') }}</text>
             <view class="demand-box">
               <text class="field-value" :style="infoCardValueStyle">{{ item.demand }}</text>
             </view>
@@ -61,7 +61,7 @@
         </view>
 
         <view v-if="filteredTickets.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关咨询单</text>
+          <text class="empty-tip-text">{{ t('consultTicket.empty') }}</text>
         </view>
       </view>
     </view>
@@ -84,49 +84,49 @@
 
         <view class="sheet-page__body">
           <view class="detail-title-row">
-            <text class="sheet-page__title">咨询详情</text>
+            <text class="sheet-page__title">{{ t('consultTicket.details') }}</text>
             <view
               v-if="selectedTicket.status !== 'closed'"
               class="end-btn"
               @click="onEndConsult"
             >
-              <text class="end-btn-text">结束咨询</text>
+              <text class="end-btn-text">{{ t('consultTicket.end') }}</text>
             </view>
           </view>
 
           <view class="info-card">
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">期望勘查时间</text>
+                <text class="info-label">{{ t('consultTicket.surveyTime') }}</text>
                 <text class="info-value">{{ selectedTicket.surveyDate }}</text>
               </view>
               <view class="info-field">
-                <text class="info-label">期望服务开始时间</text>
+                <text class="info-label">{{ t('consultTicket.serviceStart') }}</text>
                 <text class="info-value">{{ selectedTicket.serviceStartDate }}</text>
               </view>
             </view>
 
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">工期</text>
-                <text class="info-value">{{ selectedTicket.duration }}</text>
+                <text class="info-label">{{ t('consultTicket.duration') }}</text>
+                <text class="info-value">{{ displayDuration(selectedTicket.duration) }}</text>
               </view>
               <view class="info-field">
-                <text class="info-label">报价</text>
-                <text class="info-value">{{ selectedTicket.quote }}</text>
+                <text class="info-label">{{ t('consultTicket.quote') }}</text>
+                <text class="info-value">{{ displayQuote(selectedTicket.quote) }}</text>
               </view>
             </view>
 
             <view class="info-row">
               <view class="info-field info-field-full">
-                <text class="info-label">服务地址</text>
+                <text class="info-label">{{ t('consultTicket.serviceAddress') }}</text>
                 <text class="info-value">{{ selectedTicket.address }}</text>
               </view>
             </view>
 
             <view class="info-row">
               <view class="info-field info-field-full">
-                <text class="info-label">需求</text>
+                <text class="info-label">{{ t('consultTicket.requirement') }}</text>
                 <view class="demand-box">
                   <text class="info-value info-value-body">{{ selectedTicket.demand }}</text>
                 </view>
@@ -141,7 +141,7 @@
                 src="/static/icons/order-blue.svg"
                 mode="aspectFit"
               />
-              <text class="action-bar-text">清单</text>
+              <text class="action-bar-text">{{ t('consultTicket.checklist') }}</text>
             </view>
             <view class="action-bar" hover-class="none" @click="onInquiry">
               <image
@@ -149,25 +149,29 @@
                 src="/static/icons/message-circle-pink.svg"
                 mode="aspectFit"
               />
-              <text class="action-bar-text">询价</text>
+              <text class="action-bar-text">{{ t('consultTicket.inquiry') }}</text>
             </view>
           </view>
 
           <view class="info-card">
-            <text class="card-heading">报价时间的确认</text>
+            <text class="card-heading">{{ t('consultTicket.quoteConfirmation') }}</text>
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">是否需要报价</text>
-                <text class="info-value">{{ selectedTicket.needQuote }}</text>
+                <text class="info-label">{{ t('consultTicket.needsQuote') }}</text>
+                <text class="info-value">{{ displayNeedQuote(selectedTicket.needQuote) }}</text>
               </view>
               <view class="info-field">
-                <text class="info-label">报价时间</text>
-                <text class="info-value">{{ selectedTicket.quoteTime }}</text>
+                <text class="info-label">{{ t('consultTicket.quoteTime') }}</text>
+                <text class="info-value">{{ displayQuoteTime(selectedTicket.quoteTime) }}</text>
               </view>
             </view>
           </view>
 
-          <FileAttachmentCard :files="selectedTicket.attachments" />
+          <FileAttachmentCard
+            :files="selectedTicket.attachments"
+            :title="t('common.attachments')"
+            :empty-text="t('common.noAttachments')"
+          />
         </view>
       </view>
     </BottomSheetPanel>
@@ -217,8 +221,10 @@
 
     <FrostedConfirmModal
       :show="endModalVisible"
-      title="确定结束该咨询吗？"
-      message="结束后将无法继续询价"
+      :title="t('consultTicket.endTitle')"
+      :message="t('consultTicket.endMessage')"
+      :cancel-text="t('common.cancel')"
+      :confirm-text="t('common.confirm')"
       @cancel="closeEndModal"
       @confirm="confirmEndConsult"
     />
@@ -249,12 +255,15 @@ import {
 } from '@/composables/useConsultTickets';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 import {
   infoCardFieldStyle,
   infoCardLabelStyle,
   infoCardTitleStyle,
   infoCardValueStyle,
 } from '@/config/infoCard';
+
+const { t, tf } = useLanguage();
 
 const emit = defineEmits<{
   back: [];
@@ -331,11 +340,31 @@ const checklistDetail = computed<ChecklistDetail>(() => {
   };
 });
 
-const statusTabs: { id: ConsultStatus; label: string }[] = [
-  { id: 'pending_reply', label: '待回复' },
-  { id: 'in_progress', label: '进行中' },
-  { id: 'closed', label: '已结束' },
-];
+const statusTabs = computed<{ id: ConsultStatus; label: string }[]>(() => [
+  { id: 'pending_reply', label: t('consultTicket.pendingReply') },
+  { id: 'in_progress', label: t('consultTicket.inProgress') },
+  { id: 'closed', label: t('consultTicket.closed') },
+]);
+
+const displayDuration = (value: string) => {
+  const match = value.match(/^(\d+)\s*天$/);
+  return match ? tf('checkout.days', { count: match[1] }) : value;
+};
+
+const displayNeedQuote = (value: string) => {
+  if (value === '是') return t('consultTicket.yes');
+  if (value === '否') return t('consultTicket.no');
+  return value;
+};
+
+const displayQuote = (value: string) => {
+  if (value === '暂无报价') return t('consultTicket.noQuote');
+  if (value === '待报价') return t('consultTicket.awaitingQuote');
+  if (value === '不需要') return t('consultTicket.notRequired');
+  return value;
+};
+
+const displayQuoteTime = (value: string) => value === '暂无' ? t('review.none') : value;
 
 const filteredTickets = computed(() => {
   const q = keyword.value.trim().toLowerCase();

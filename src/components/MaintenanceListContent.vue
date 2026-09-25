@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索维保"
+          :placeholder="t('maintenance.search')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,11 +23,11 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">维保报修管理</text>
-          <text class="page-desc">查看全部维保报修</text>
+          <text class="page-title">{{ t('maintenance.title') }}</text>
+          <text class="page-desc">{{ t('maintenance.description') }}</text>
         </view>
         <view class="add-btn" @click="onAdd">
-          <text class="add-btn-text">新增</text>
+          <text class="add-btn-text">{{ t('common.add') }}</text>
         </view>
       </view>
 
@@ -49,7 +49,7 @@
 
           <view class="card-body">
             <view class="card-code-row">
-              <text class="card-code-label" :style="infoCardLabelStyle">维保编号</text>
+              <text class="card-code-label" :style="infoCardLabelStyle">{{ t('maintenance.number') }}</text>
               <text class="card-code-value">{{ item.code }}</text>
             </view>
 
@@ -58,7 +58,7 @@
                 <image src="/static/icons/map-pin-gray.svg" mode="aspectFit" class="address-icon" />
               </view>
               <view class="address-content">
-                <text class="field-label" :style="infoCardLabelStyle">项目地址</text>
+                <text class="field-label" :style="infoCardLabelStyle">{{ t('maintenance.address') }}</text>
                 <text class="address-value" :style="infoCardValueStyle">{{ item.address }}</text>
               </view>
             </view>
@@ -69,18 +69,18 @@
               <text class="manager-avatar-text">{{ item.managerName.slice(0, 1) }}</text>
             </view>
             <view class="manager-info">
-              <text class="footer-label">项目主管</text>
+              <text class="footer-label">{{ t('maintenance.manager') }}</text>
               <text class="manager-name">{{ item.managerName }}</text>
             </view>
             <view class="phone-info">
-              <text class="footer-label">联系电话</text>
+              <text class="footer-label">{{ t('maintenance.phone') }}</text>
               <text class="phone-value">{{ item.managerPhone }}</text>
             </view>
           </view>
         </view>
 
         <view v-if="filteredItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关维保</text>
+          <text class="empty-tip-text">{{ t('maintenance.empty') }}</text>
         </view>
       </view>
     </view>
@@ -134,22 +134,25 @@ import {
 } from '@/composables/useMaintenanceItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 import {
   infoCardLabelStyle,
   infoCardTitleStyle,
   infoCardValueStyle,
 } from '@/config/infoCard';
 
-const STATUS_LABEL: Record<MaintenanceStatus, string> = {
-  in_maintenance: '维保中',
-  pending: '待处理',
-  completed: '已完成',
-};
+const { t } = useLanguage();
 
-const TYPE_LABEL: Record<RepairType, string> = {
-  normal: '普通',
-  urgent: '紧急',
-};
+const STATUS_LABEL = computed<Record<MaintenanceStatus, string>>(() => ({
+  in_maintenance: t('maintenanceDetail.inMaintenance'),
+  pending: t('maintenanceDetail.pending'),
+  completed: t('maintenanceDetail.completed'),
+}));
+
+const TYPE_LABEL = computed<Record<RepairType, string>>(() => ({
+  normal: t('maintenanceDetail.normal'),
+  urgent: t('maintenanceDetail.urgent'),
+}));
 
 const emit = defineEmits<{
   back: [];
@@ -176,8 +179,8 @@ const filteredItems = computed(() => {
   const q = keyword.value.trim().toLowerCase();
   if (!q) return items.value;
   return items.value.filter((item) => {
-    const statusText = STATUS_LABEL[item.status];
-    const typeText = TYPE_LABEL[item.repairType];
+    const statusText = STATUS_LABEL.value[item.status];
+    const typeText = TYPE_LABEL.value[item.repairType];
     return (
       item.code.toLowerCase().includes(q) ||
       item.projectName.toLowerCase().includes(q) ||
@@ -190,7 +193,7 @@ const filteredItems = computed(() => {
   });
 });
 
-const statusLabel = (status: MaintenanceStatus) => STATUS_LABEL[status];
+const statusLabel = (status: MaintenanceStatus) => STATUS_LABEL.value[status];
 
 const openDetail = (item: MaintenanceItem) => {
   selectedItem.value = { ...item, media: [...item.media] };

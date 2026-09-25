@@ -13,10 +13,10 @@
     <view class="sheet-page__body">
       <view class="title-row">
         <view class="title-block">
-          <text class="sheet-page__title">询价</text>
+          <text class="sheet-page__title">{{ t('inquiry.title') }}</text>
         </view>
         <view class="add-btn" @click="onShortChat">
-          <text class="add-btn-text">短交流</text>
+          <text class="add-btn-text">{{ t('inquiry.shortChat') }}</text>
         </view>
       </view>
 
@@ -27,15 +27,15 @@
       >
         <view class="meta-row">
           <view class="avatar">
-            <text class="avatar-text">{{ senderInitial(item.sender) }}</text>
+            <text class="avatar-text">{{ senderInitial(displaySender(item.sender)) }}</text>
           </view>
           <view class="meta-main">
             <view class="meta-field">
-              <text class="card-label">发送人</text>
-              <text class="card-value">{{ item.sender }}</text>
+              <text class="card-label">{{ t('inquiry.sender') }}</text>
+              <text class="card-value">{{ displaySender(item.sender) }}</text>
             </view>
             <view class="meta-field meta-field-time">
-              <text class="card-label">发送时间</text>
+              <text class="card-label">{{ t('inquiry.sentAt') }}</text>
               <text class="card-value card-value-time">{{ item.sendTime }}</text>
             </view>
           </view>
@@ -44,7 +44,7 @@
         <view class="content-panel">
           <view class="content-head">
             <view class="content-bar" />
-            <text class="content-title">交流内容</text>
+            <text class="content-title">{{ t('inquiry.content') }}</text>
           </view>
           <text class="card-body">{{ item.content }}</text>
         </view>
@@ -57,13 +57,13 @@
               mode="aspectFit"
               class="download-icon"
             />
-            <text class="download-btn-text">下载附件</text>
+            <text class="download-btn-text">{{ t('inquiry.download') }}</text>
           </view>
         </view>
       </view>
 
       <view v-if="messages.length === 0" class="empty-tip">
-        <text class="empty-tip-text">暂无询价交流记录</text>
+        <text class="empty-tip-text">{{ t('inquiry.empty') }}</text>
       </view>
     </view>
 
@@ -80,6 +80,9 @@ import { ref } from 'vue';
 import FileAttachmentItem from '@/components/FileAttachmentItem.vue';
 import ShortChatSheet from '@/components/ShortChatSheet.vue';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 export type InquiryMessage = {
   id: number;
@@ -107,6 +110,7 @@ const emit = defineEmits<{
 const shortChatVisible = ref(false);
 
 const senderInitial = (name: string) => (name ? name.slice(0, 1) : '?');
+const displaySender = (name: string) => name === '我' ? t('inquiry.me') : name;
 
 const handleBack = usePageBack(() => emit('back'));
 
@@ -129,7 +133,7 @@ const handleShortChatConfirm = (payload: {
 const onDownload = (item: InquiryMessage) => {
   emit('download', item);
   uni.showToast({
-    title: '开始下载',
+    title: t('inquiry.downloadStarted'),
     icon: 'none',
   });
 };

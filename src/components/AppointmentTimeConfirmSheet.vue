@@ -5,7 +5,7 @@
       <SuccessPageTransition :show-success="showSuccess">
         <view class="time-sheet-page">
           <view class="time-sheet-header">
-            <text class="time-sheet-title">确认预约时间</text>
+            <text class="time-sheet-title">{{ t('acceptance.confirmTime') }}</text>
             <view class="time-sheet-close" @click="handleClose">
               <image
                 src="/static/icons/x.svg"
@@ -16,13 +16,13 @@
           </view>
 
           <view class="time-sheet-body">
-            <text class="time-label">预约时间</text>
+            <text class="time-label">{{ t('appointment.time') }}</text>
             <text class="time-value">{{ scheduledAt }}</text>
           </view>
 
           <view class="time-sheet-footer">
             <view class="time-sheet-confirm" @click="handleConfirm">
-              <text class="time-sheet-confirm-text">确认</text>
+              <text class="time-sheet-confirm-text">{{ t('common.confirm') }}</text>
             </view>
           </view>
         </view>
@@ -35,12 +35,12 @@
                 mode="aspectFit"
                 class="success-icon"
               />
-              <text class="success-title">确认成功</text>
-              <text class="success-desc">预约时间已确认</text>
+              <text class="success-title">{{ t('acceptance.confirmationSuccess') }}</text>
+              <text class="success-desc">{{ t('acceptance.timeConfirmed') }}</text>
             </view>
             <view class="time-sheet-footer">
               <view class="time-sheet-done" @click="handleClose">
-                <text class="time-sheet-done-text">完成</text>
+                <text class="time-sheet-done-text">{{ t('common.done') }}</text>
               </view>
             </view>
           </view>
@@ -53,6 +53,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const props = defineProps<{
   show: boolean;

@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索材料"
+          :placeholder="t('acceptance.search')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,8 +23,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">过程验收</text>
-          <text class="page-desc">查看材料与进度验收记录</text>
+          <text class="page-title">{{ t('acceptance.title') }}</text>
+          <text class="page-desc">{{ t('acceptance.description') }}</text>
         </view>
       </view>
 
@@ -55,37 +55,37 @@
           <view v-if="activeCategory === 'arrival'" class="info-grid">
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">品牌</text>
+                <text class="info-label">{{ t('acceptance.brand') }}</text>
                 <text class="info-value">{{ item.brand }}</text>
               </view>
               <view class="info-field">
-                <text class="info-label">型号</text>
+                <text class="info-label">{{ t('acceptance.model') }}</text>
                 <text class="info-value">{{ displayText(item.model) }}</text>
               </view>
             </view>
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">单位</text>
+                <text class="info-label">{{ t('acceptance.unit') }}</text>
                 <text class="info-value">{{ item.unit }}</text>
               </view>
               <view class="info-field">
-                <text class="info-label">数量</text>
+                <text class="info-label">{{ t('acceptance.quantity') }}</text>
                 <text class="info-value">{{ displayText(item.quantity) }}</text>
               </view>
             </view>
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">计划进场时间</text>
+                <text class="info-label">{{ t('acceptance.plannedEntry') }}</text>
                 <text class="info-value">{{ displayText(item.plannedAt) }}</text>
               </view>
               <view class="info-field">
-                <text class="info-label">实际进场时间</text>
+                <text class="info-label">{{ t('acceptance.actualEntry') }}</text>
                 <text class="info-value">{{ displayText(item.actualAt) }}</text>
               </view>
             </view>
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">备注</text>
+                <text class="info-label">{{ t('acceptance.remarks') }}</text>
                 <text class="info-value">{{ displayText(item.remark) }}</text>
               </view>
             </view>
@@ -94,23 +94,23 @@
           <view v-else class="info-grid">
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">计划验收时间</text>
+                <text class="info-label">{{ t('acceptance.plannedTime') }}</text>
                 <text class="info-value">{{ displayText(item.plannedAt) }}</text>
               </view>
               <view class="info-field">
-                <text class="info-label">预约验收时间</text>
+                <text class="info-label">{{ t('acceptance.appointmentTime') }}</text>
                 <text class="info-value">{{ displayText(item.bookedAt) }}</text>
               </view>
             </view>
             <view class="info-row">
               <view class="info-field">
-                <text class="info-label">验收类型</text>
-                <text class="info-value">{{ displayText(item.acceptType) }}</text>
+                <text class="info-label">{{ t('acceptance.type') }}</text>
+                <text class="info-value">{{ acceptTypeDisplay(item.acceptType) }}</text>
               </view>
             </view>
             <view class="card-action-row">
               <view class="book-btn book-btn-muted" @click.stop="openRectify(item)">
-                <text class="book-btn-text">缺陷整改</text>
+                <text class="book-btn-text">{{ t('acceptance.rectify') }}</text>
               </view>
               <view class="book-btn" @click.stop="onPrimaryAction(item)">
                 <text class="book-btn-text">{{ primaryActionLabel(item) }}</text>
@@ -120,7 +120,7 @@
         </view>
 
         <view v-if="visibleItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关记录</text>
+          <text class="empty-tip-text">{{ t('acceptance.empty') }}</text>
         </view>
       </view>
     </view>
@@ -152,8 +152,8 @@
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="您的验收结果已提交"
-            back-text="返回过程验收"
+            :desc="t('acceptance.submitted')"
+            :back-text="t('acceptance.back')"
             @back="closeInspect"
           />
         </template>
@@ -175,8 +175,8 @@
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="您的预约验收已提交，我们将尽快处理"
-            back-text="返回过程验收"
+            :desc="t('afterSales.submitted')"
+            :back-text="t('acceptance.back')"
             @back="closeBook"
           />
         </template>
@@ -207,12 +207,15 @@ import {
 } from '@/composables/useProcessAcceptance';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const emit = defineEmits<{
   back: [];
 }>();
 
-const { tabs, getByCategory, updateProgressBooking, updateProgressAcceptance } =
+const { t } = useLanguage();
+
+const { tabs: rawTabs, getByCategory, updateProgressBooking, updateProgressAcceptance } =
   useProcessAcceptance();
 const activeCategory = ref<ProcessAcceptanceCategory>('arrival');
 const keyword = ref('');
@@ -221,6 +224,13 @@ const bookTarget = ref<ProcessAcceptanceItem | null>(null);
 const bookStep = ref<'form' | 'success'>('form');
 const inspectTarget = ref<ProcessAcceptanceItem | null>(null);
 const inspectStep = ref<'form' | 'success'>('form');
+const tabKeys = {
+  arrival: 'acceptance.arrivalPlan',
+  progress: 'acceptance.progressControl',
+} as const;
+const tabs = computed(() =>
+  rawTabs.map((tab) => ({ ...tab, label: t(tabKeys[tab.id]) })),
+);
 const {
   visible: rectifyVisible,
   open: openRectifyPanel,
@@ -257,8 +267,14 @@ const displayText = (value?: string) => {
   return !text || text === '-' ? '—' : text;
 };
 
+const acceptTypeDisplay = (value?: string) => {
+  if (value === '现场验收') return t('acceptance.onSite');
+  if (value === '线上验收') return t('acceptance.online');
+  return displayText(value);
+};
+
 const acceptStatusLabel = (status: ProgressAcceptStatus) =>
-  PROGRESS_ACCEPT_STATUS_LABEL[status];
+  t(`acceptance.${status}`);
 
 const matchItem = (item: ProcessAcceptanceItem, q: string) => {
   const statusText = item.acceptStatus
@@ -307,7 +323,9 @@ const resetBook = () => {
 };
 
 const primaryActionLabel = (item: ProcessAcceptanceItem) =>
-  item.acceptStatus === 'pending' ? '验收' : '预约时间';
+  item.acceptStatus === 'pending'
+    ? t('acceptance.inspect')
+    : t('acceptance.appointment');
 
 const openInspect = (item: ProcessAcceptanceItem) => {
   inspectTarget.value = item;

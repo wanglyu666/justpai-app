@@ -13,8 +13,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">售后计划</text>
-          <text class="page-desc">查看项目售后巡检计划</text>
+          <text class="page-title">{{ t('afterSales.title') }}</text>
+          <text class="page-desc">{{ t('afterSales.description') }}</text>
         </view>
       </view>
 
@@ -25,22 +25,27 @@
           <view class="info-grid">
             <view class="info-row">
               <view class="info-field" :style="infoCardFieldStyle">
-                <text class="info-label" :style="infoCardLabelStyle">计划时间</text>
+                <text class="info-label" :style="infoCardLabelStyle">{{ t('afterSales.planTime') }}</text>
                 <text class="info-value" :style="infoCardValueStyle">{{ displayText(item.plannedAt) }}</text>
               </view>
               <view class="info-field" :style="infoCardFieldStyle">
-                <text class="info-label" :style="infoCardLabelStyle">开始时间</text>
+                <text class="info-label" :style="infoCardLabelStyle">{{ t('afterSales.startTime') }}</text>
                 <text class="info-value" :style="infoCardValueStyle">{{ displayText(item.startedAt) }}</text>
               </view>
             </view>
             <view class="info-row info-row-end">
               <view class="info-field" :style="infoCardFieldStyle">
-                <text class="info-label" :style="infoCardLabelStyle">结束时间</text>
+                <text class="info-label" :style="infoCardLabelStyle">{{ t('afterSales.endTime') }}</text>
                 <text class="info-value" :style="infoCardValueStyle">{{ displayText(item.endedAt) }}</text>
               </view>
               <view class="info-field info-field-action">
-                <view v-if="item.canBook" class="book-btn" @click.stop="openBook(item)">
-                  <text class="book-btn-text">预约巡检时间</text>
+                <view
+                  v-if="item.canBook"
+                  class="book-btn"
+                  :class="{ 'is-english': currentLanguage === 'en-US' }"
+                  @click.stop="openBook(item)"
+                >
+                  <text class="book-btn-text">{{ t('afterSales.book') }}</text>
                 </view>
               </view>
             </view>
@@ -48,7 +53,7 @@
         </view>
 
         <view v-if="plans.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无售后计划</text>
+          <text class="empty-tip-text">{{ t('afterSales.empty') }}</text>
         </view>
       </view>
     </view>
@@ -69,8 +74,8 @@
         />
         <template #success>
           <FeedbackSuccessContent
-            desc="您的预约验收已提交，我们将尽快处理"
-            back-text="返回售后计划"
+            :desc="t('afterSales.submitted')"
+            :back-text="t('afterSales.back')"
             @back="closeBook"
           />
         </template>
@@ -98,10 +103,13 @@ import {
 import type { ProgressAcceptType, SiteContact } from '@/composables/useProcessAcceptance';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const emit = defineEmits<{
   back: [];
 }>();
+
+const { currentLanguage, t } = useLanguage();
 
 const { plans, updateBooking } = useAfterSalesPlans();
 const bookTarget = ref<AfterSalesPlanItem | null>(null);
@@ -272,11 +280,26 @@ const handleBookSubmit = (payload: {
   flex-shrink: 0;
 }
 
+.book-btn.is-english {
+  width: 248rpx;
+  height: 88rpx;
+  padding: 0 24rpx;
+  align-self: flex-end;
+  box-sizing: border-box;
+}
+
 .book-btn-text {
   font-size: 28rpx;
   font-weight: 700;
   color: #163300;
   line-height: 1;
+}
+
+.book-btn.is-english .book-btn-text {
+  display: block;
+  width: 100%;
+  text-align: center;
+  line-height: 1.15;
 }
 
 .empty-tip {

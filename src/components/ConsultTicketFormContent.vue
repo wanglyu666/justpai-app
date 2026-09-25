@@ -1,17 +1,17 @@
 <template>
   <view class="consult-ticket-form">
     <SheetPageLayout
-      title="新增咨询"
-      desc="填写服务信息后提交，顾问将尽快与您联系"
+      :title="t('consultTicket.addTitle')"
+      :desc="t('consultTicket.addDescription')"
       @back="handleBack"
     >
     <view class="section-card">
-      <text class="section-title">其余内容</text>
+      <text class="section-title">{{ t('consultTicket.otherInformation') }}</text>
       <view class="meta-list">
         <view class="meta-row meta-row--clickable" @click="openEditSheet('address')">
           <text class="meta-label">
             <text class="required">*</text>
-            服务地址
+            {{ t('consultTicket.serviceAddress') }}
           </text>
           <view class="meta-value-group">
             <text
@@ -25,7 +25,7 @@
         </view>
 
         <view class="meta-row meta-row--clickable" @click="openEditSheet('contact')">
-          <text class="meta-label">联系人</text>
+          <text class="meta-label">{{ t('address.contact') }}</text>
           <view class="meta-value-group">
             <text
               class="meta-value"
@@ -38,7 +38,7 @@
         </view>
 
         <view class="meta-row meta-row--clickable" @click="openEditSheet('phone')">
-          <text class="meta-label">联系电话</text>
+          <text class="meta-label">{{ t('address.phone') }}</text>
           <view class="meta-value-group">
             <text
               class="meta-value"
@@ -51,7 +51,7 @@
         </view>
 
         <view class="meta-row meta-row--clickable" @click="openEditSheet('surveyDate')">
-          <text class="meta-label">期望探勘时间</text>
+          <text class="meta-label">{{ t('consultTicket.surveyTimeForm') }}</text>
           <view class="meta-value-group">
             <text
               class="meta-value"
@@ -66,7 +66,7 @@
         <view class="meta-row meta-row--clickable" @click="openEditSheet('serviceStartDate')">
           <text class="meta-label">
             <text class="required">*</text>
-            期望服务开始时间
+            {{ t('consultTicket.serviceStart') }}
           </text>
           <view class="meta-value-group">
             <text
@@ -80,9 +80,9 @@
         </view>
 
         <view class="meta-row meta-row--clickable" @click="openEditSheet('duration')">
-          <text class="meta-label">期望工期</text>
+          <text class="meta-label">{{ t('consultTicket.expectedDuration') }}</text>
           <view class="meta-value-group">
-            <text class="meta-value">{{ form.duration }} 天</text>
+            <text class="meta-value">{{ tf('checkout.days', { count: form.duration }) }}</text>
             <image src="/static/icons/chevron-right.svg" mode="aspectFit" class="meta-chevron" />
           </view>
         </view>
@@ -90,7 +90,7 @@
         <view class="meta-row meta-row--radio">
           <text class="meta-label">
             <text class="required">*</text>
-            是否需要报价
+            {{ t('consultTicket.needsQuote') }}
           </text>
           <view class="radio-group">
             <view
@@ -100,7 +100,7 @@
               <view class="radio-circle" :class="{ active: form.needQuote === true }">
                 <view v-if="form.needQuote === true" class="radio-dot" />
               </view>
-              <text class="radio-text">是</text>
+              <text class="radio-text">{{ t('consultTicket.yes') }}</text>
             </view>
             <view
               class="radio-option"
@@ -109,7 +109,7 @@
               <view class="radio-circle" :class="{ active: form.needQuote === false }">
                 <view v-if="form.needQuote === false" class="radio-dot" />
               </view>
-              <text class="radio-text">否</text>
+              <text class="radio-text">{{ t('consultTicket.no') }}</text>
             </view>
           </view>
         </view>
@@ -119,7 +119,7 @@
           class="meta-row meta-row--clickable"
           @click="openEditSheet('quoteSubmitTime')"
         >
-          <text class="meta-label">报价提交时间</text>
+          <text class="meta-label">{{ t('consultTicket.quoteSubmitTime') }}</text>
           <view class="meta-value-group">
             <text
               class="meta-value"
@@ -137,22 +137,22 @@
       <view class="field-label-row">
         <text class="field-label">
           <text class="required">*</text>
-          需求
+          {{ t('consultTicket.requirement') }}
         </text>
         <text class="field-count">{{ form.demand.length }}/500</text>
       </view>
       <textarea
         v-model="form.demand"
         class="field-textarea"
-        placeholder="请描述您的需求"
+        :placeholder="t('consultTicket.enterRequirement')"
         placeholder-class="input-placeholder"
         :maxlength="500"
       />
     </view>
 
     <view class="section-card">
-      <text class="section-title">相关资料</text>
-      <text class="section-hint">最多上传 {{ MAX_FILES }} 个文件（{{ mediaFiles.length }}/{{ MAX_FILES }}）</text>
+      <text class="section-title">{{ t('consultTicket.relatedFiles') }}</text>
+      <text class="section-hint">{{ tf('consultTicket.fileHint', { max: MAX_FILES, current: mediaFiles.length }) }}</text>
 
       <view class="media-grid">
         <view
@@ -185,7 +185,7 @@
             mode="aspectFit"
             class="media-add-icon"
           />
-          <text class="media-add-text">添加</text>
+          <text class="media-add-text">{{ t('consult.add') }}</text>
         </view>
       </view>
     </view>
@@ -196,7 +196,7 @@
         :class="{ active: isSubmitEnabled }"
         @click="handleSubmit"
       >
-        <text class="submit-text">确定</text>
+        <text class="submit-text">{{ t('common.done') }}</text>
       </view>
     </template>
   </SheetPageLayout>
@@ -226,7 +226,7 @@
         </view>
         <view class="stepper-value-wrap">
           <text class="stepper-value">{{ draftDuration }}</text>
-          <text class="stepper-unit">天</text>
+          <text class="stepper-unit">{{ tf('checkout.days', { count: '' }).trim() }}</text>
         </view>
         <view class="stepper-btn" @click="adjustDuration(1)">
           <text class="stepper-btn-text">+</text>
@@ -239,7 +239,7 @@
         <textarea
           v-model="draftText"
           class="sheet-textarea"
-          placeholder="请输入服务地址"
+          :placeholder="t('consult.enterServiceAddress')"
           placeholder-class="sheet-textarea-placeholder"
           :maxlength="120"
         />
@@ -268,6 +268,9 @@ import CheckoutEditSheet from '@/components/CheckoutEditSheet.vue';
 import DateWheelPicker from '@/components/DateWheelPicker.vue';
 import TimeWheelPicker from '@/components/TimeWheelPicker.vue';
 import { fileExt } from '@/utils/fileDisplay';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 type EditField =
   | 'address'
@@ -324,13 +327,13 @@ const draftTime = ref('');
 const draftDuration = ref(0);
 
 const sheetTitles: Record<EditField, string> = {
-  address: '服务地址',
-  contact: '联系人',
-  phone: '联系电话',
-  surveyDate: '期望探勘时间',
-  serviceStartDate: '期望服务开始时间',
-  duration: '期望工期',
-  quoteSubmitTime: '报价提交时间',
+  address: t('consultTicket.serviceAddress'),
+  contact: t('address.contact'),
+  phone: t('address.phone'),
+  surveyDate: t('consultTicket.surveyTimeForm'),
+  serviceStartDate: t('consultTicket.serviceStart'),
+  duration: t('consultTicket.expectedDuration'),
+  quoteSubmitTime: t('consultTicket.quoteSubmitTime'),
 };
 
 const sheetTitle = computed(() =>
@@ -338,8 +341,8 @@ const sheetTitle = computed(() =>
 );
 
 const textFieldPlaceholder = computed(() => {
-  if (activeSheet.value === 'contact') return '请输入联系人';
-  if (activeSheet.value === 'phone') return '请输入联系电话';
+  if (activeSheet.value === 'contact') return t('address.enterContact');
+  if (activeSheet.value === 'phone') return t('address.enterPhone');
   return '';
 });
 
@@ -372,9 +375,9 @@ const formatTimeValue = (date: Date) => {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
-const addressDisplay = computed(() => form.address.trim() || '请输入服务地址');
-const contactDisplay = computed(() => form.contact.trim() || '请输入联系人');
-const phoneDisplay = computed(() => form.phone.trim() || '请输入联系电话');
+const addressDisplay = computed(() => form.address.trim() || t('consult.enterServiceAddress'));
+const contactDisplay = computed(() => form.contact.trim() || t('address.enterContact'));
+const phoneDisplay = computed(() => form.phone.trim() || t('address.enterPhone'));
 const surveyDateDisplay = computed(() => formatDateDisplay(form.surveyDate));
 const serviceStartDateDisplay = computed(() => formatDateDisplay(form.serviceStartDate));
 const quoteSubmitTimeDisplay = computed(() => formatDateTimeDisplay(form.quoteSubmitTime));

@@ -1,15 +1,15 @@
 <template>
   <SheetPageLayout
-    title="新增反馈"
-    desc="选择项目并填写反馈内容后提交"
+    :title="t('feedback.addTitle')"
+    :desc="t('feedback.addDescription')"
     @back="handleBack"
     @click="closeProjectDropdown"
   >
     <view class="section-card">
-      <text class="section-title">项目选择</text>
+      <text class="section-title">{{ t('feedback.projectSelection') }}</text>
       <view class="field-group" @click.stop>
         <text class="field-label">
-          所属项目
+          {{ t('feedback.project') }}
         </text>
         <view class="dropdown-wrap">
           <view
@@ -21,7 +21,7 @@
               class="picker-text"
               :class="{ placeholder: !selectedProject }"
             >
-              {{ selectedProject?.name || '请选择项目' }}
+              {{ selectedProject?.name || t('feedback.selectProject') }}
             </text>
             <text class="picker-arrow" :class="{ open: projectOpen }">▾</text>
           </view>
@@ -48,19 +48,19 @@
     </view>
 
     <view class="section-card">
-      <text class="section-title">反馈信息</text>
+      <text class="section-title">{{ t('feedback.information') }}</text>
       <view class="field-group">
         <view class="field-label-row">
           <text class="field-label">
             <text class="required">*</text>
-            反馈内容
+            {{ t('feedback.content') }}
           </text>
           <text class="field-count">{{ content.length }}/500</text>
         </view>
         <textarea
           v-model="content"
           class="field-textarea"
-          placeholder="请描述您的问题或建议，便于我们更快处理"
+          :placeholder="t('feedback.enterContent')"
           placeholder-class="input-placeholder"
           :maxlength="500"
         />
@@ -68,8 +68,8 @@
     </view>
 
     <view class="section-card">
-      <text class="section-title">上传附件</text>
-      <text class="section-hint">最多上传 {{ MAX_MEDIA }} 个文件（{{ mediaFiles.length }}/{{ MAX_MEDIA }}）</text>
+      <text class="section-title">{{ t('feedback.upload') }}</text>
+      <text class="section-hint">{{ tf('feedback.uploadHint', { max: MAX_MEDIA, current: mediaFiles.length }) }}</text>
 
       <view class="media-grid">
         <view
@@ -98,7 +98,7 @@
             mode="aspectFit"
             class="media-add-icon"
           />
-          <text class="media-add-text">添加</text>
+          <text class="media-add-text">{{ t('consult.add') }}</text>
         </view>
       </view>
     </view>
@@ -109,7 +109,7 @@
         :class="{ active: isSubmitEnabled }"
         @click="handleSubmit"
       >
-        <text class="submit-text">确定</text>
+        <text class="submit-text">{{ t('common.done') }}</text>
       </view>
     </template>
   </SheetPageLayout>
@@ -118,6 +118,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import SheetPageLayout from '@/components/SheetPageLayout.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, tf } = useLanguage();
 
 type ProjectOption = {
   id: string;

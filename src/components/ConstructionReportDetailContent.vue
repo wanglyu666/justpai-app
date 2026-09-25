@@ -14,7 +14,7 @@
       <view class="title-row">
         <view class="title-block">
           <text class="page-title">{{ item.title }}</text>
-          <text class="page-desc">查看施工现场报告记录</text>
+          <text class="page-desc">{{ t('construction.reportDescription') }}</text>
         </view>
         <ReportFeedbackAction :report-id="item.id" />
       </view>
@@ -28,7 +28,7 @@
 
         <view v-if="chapter.id === 'content'" class="section-list">
           <view class="section-card">
-            <text class="section-title">施工区域</text>
+            <text class="section-title">{{ t('construction.area') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.area"
@@ -37,7 +37,7 @@
             />
           </view>
           <view class="section-card">
-            <text class="section-title">完成进度</text>
+            <text class="section-title">{{ t('construction.progress') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.progress"
@@ -46,7 +46,7 @@
             />
           </view>
           <view class="section-card anchor-size-card">
-            <text class="section-title">施工内容</text>
+            <text class="section-title">{{ t('construction.content') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.content"
@@ -58,11 +58,11 @@
 
         <view v-else-if="chapter.id === 'trades'" class="section-list">
           <view class="section-card">
-            <text class="section-title">工种人员</text>
+            <text class="section-title">{{ t('construction.workforce') }}</text>
             <view class="trade-table">
               <view class="trade-row trade-row--head">
-                <text class="trade-cell">工种</text>
-                <text class="trade-cell trade-cell--count">数量</text>
+                <text class="trade-cell">{{ t('construction.trade') }}</text>
+                <text class="trade-cell trade-cell--count">{{ t('construction.quantity') }}</text>
               </view>
               <view
                 v-for="(staff, index) in detail.tradeStaff"
@@ -75,7 +75,7 @@
             </view>
           </view>
           <view class="section-card">
-            <text class="section-title">进场材料</text>
+            <text class="section-title">{{ t('construction.materials') }}</text>
             <textarea
               class="field-textarea"
               :value="detail.materials"
@@ -105,7 +105,7 @@
           v-else
           title=""
           :files="detail.photos"
-          empty-text="暂无施工照片"
+          :empty-text="t('construction.noConstructionPhotos')"
         />
       </view>
     </view>
@@ -123,6 +123,7 @@ import {
 } from '@/composables/useConstructionReports';
 import { reportChapterDomId } from '@/composables/useReportChapterNav';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const props = defineProps<{
   item: ConstructionReportItem;
@@ -132,17 +133,30 @@ const emit = defineEmits<{
   back: [];
 }>();
 
+const { t } = useLanguage();
+
 const { getDailyDetail } = useConstructionReports();
-const chapters = DAILY_REPORT_TABS;
+const chapterKeys = {
+  content: 'construction.dailyContent',
+  trades: 'construction.dailyTrades',
+  plan: 'construction.dailyPlan',
+  photos: 'construction.dailyPhotos',
+} as const;
+const chapters = computed(() =>
+  DAILY_REPORT_TABS.map((chapter) => ({
+    ...chapter,
+    label: t(chapterKeys[chapter.id]),
+  })),
+);
 const chapterDomId = (id: string) => reportChapterDomId('daily-chapter', id);
 
 const detail = computed(() => getDailyDetail(props.item.id));
 
 const planCards = computed(() => [
-  { title: '现场问题与解决', value: detail.value.issueResolution },
-  { title: '次日施工内容', value: detail.value.nextDayContent },
-  { title: '次日施工区域', value: detail.value.nextDayArea },
-  { title: '次日人员安排', value: detail.value.nextDayStaff },
+  { title: t('construction.issueResolution'), value: detail.value.issueResolution },
+  { title: t('construction.nextDayContent'), value: detail.value.nextDayContent },
+  { title: t('construction.nextDayArea'), value: detail.value.nextDayArea },
+  { title: t('construction.nextDayStaff'), value: detail.value.nextDayStaff },
 ]);
 
 const handleBack = usePageBack(() => emit('back'));

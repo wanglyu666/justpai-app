@@ -14,7 +14,7 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索反馈"
+          :placeholder="t('feedback.search')"
           placeholder-class="search-placeholder"
         />
       </view>
@@ -23,11 +23,11 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">意见反馈</text>
-          <text class="page-desc">查看全部意见反馈</text>
+          <text class="page-title">{{ t('feedback.title') }}</text>
+          <text class="page-desc">{{ t('feedback.description') }}</text>
         </view>
         <view class="add-btn" @click="onAdd">
-          <text class="add-btn-text">新增</text>
+          <text class="add-btn-text">{{ t('common.add') }}</text>
         </view>
       </view>
 
@@ -44,13 +44,13 @@
           </view>
 
           <view class="feedback-field" :style="infoCardFieldStyle">
-            <text class="field-label" :style="infoCardLabelStyle">反馈时间</text>
+            <text class="field-label" :style="infoCardLabelStyle">{{ t('feedback.time') }}</text>
             <text class="field-value" :style="infoCardValueStyle">{{ item.time }}</text>
           </view>
         </view>
 
         <view v-if="filteredItems.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关反馈</text>
+          <text class="empty-tip-text">{{ t('feedback.empty') }}</text>
         </view>
       </view>
     </view>
@@ -72,21 +72,21 @@
         </view>
 
         <view class="detail-content" v-if="selectedItem">
-          <text class="detail-title">反馈详情</text>
+          <text class="detail-title">{{ t('feedback.details') }}</text>
 
           <view class="info-card">
             <view class="info-block">
-              <text class="info-label">项目名称</text>
+              <text class="info-label">{{ t('feedback.projectName') }}</text>
               <text class="info-value info-value-lg">{{ selectedItem.name }}</text>
             </view>
             <view class="info-divider" />
             <view class="info-meta-row">
               <view class="info-block info-block-grow">
-                <text class="info-label">反馈时间</text>
+                <text class="info-label">{{ t('feedback.time') }}</text>
                 <text class="info-value">{{ selectedItem.time }}</text>
               </view>
               <view class="info-block info-block-status">
-                <text class="info-label">状态</text>
+                <text class="info-label">{{ t('feedback.status') }}</text>
                 <StatusBadge :status="selectedItem.status" :label="statusLabel(selectedItem.status)" />
               </view>
             </view>
@@ -94,22 +94,26 @@
 
           <view class="info-card">
             <view class="info-block">
-              <text class="info-label">反馈内容</text>
+              <text class="info-label">{{ t('feedback.content') }}</text>
               <text class="info-value info-value-body">{{ selectedItem.content }}</text>
             </view>
 
             <view class="info-divider" />
 
             <view class="info-block">
-              <text class="info-label">反馈结果</text>
+              <text class="info-label">{{ t('feedback.result') }}</text>
               <view v-if="selectedItem.result" class="result-box">
                 <text class="info-value info-value-body">{{ selectedItem.result }}</text>
               </view>
-              <text v-else class="result-empty">暂无反馈结果</text>
+              <text v-else class="result-empty">{{ t('feedback.noResult') }}</text>
             </view>
           </view>
 
-          <FileAttachmentCard :files="selectedItem.attachments" />
+          <FileAttachmentCard
+            :files="selectedItem.attachments"
+            :title="t('common.attachments')"
+            :empty-text="t('common.noAttachments')"
+          />
         </view>
       </view>
     </BottomSheetPanel>
@@ -144,17 +148,20 @@ import FeedbackSuccessContent from '@/components/FeedbackSuccessContent.vue';
 import { useFeedbackItems, type FeedbackItem, type FeedbackStatus } from '@/composables/useFeedbackItems';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 import {
   infoCardFieldStyle,
   infoCardLabelStyle,
   infoCardValueStyle,
 } from '@/config/infoCard';
 
-const STATUS_LABEL: Record<FeedbackStatus, string> = {
-  pending_reply: '待回复',
-  in_progress: '进行中',
-  closed: '已结束',
-};
+const { t } = useLanguage();
+
+const STATUS_LABEL = computed<Record<FeedbackStatus, string>>(() => ({
+  pending_reply: t('consultTicket.pendingReply'),
+  in_progress: t('consultTicket.inProgress'),
+  closed: t('consultTicket.closed'),
+}));
 
 const emit = defineEmits<{
   back: [];
@@ -181,7 +188,7 @@ const filteredItems = computed(() => {
   const q = keyword.value.trim().toLowerCase();
   if (!q) return items.value;
   return items.value.filter((item) => {
-    const statusText = STATUS_LABEL[item.status];
+    const statusText = STATUS_LABEL.value[item.status];
     return (
       item.name.toLowerCase().includes(q) ||
       item.time.toLowerCase().includes(q) ||
@@ -191,7 +198,7 @@ const filteredItems = computed(() => {
   });
 });
 
-const statusLabel = (status: FeedbackStatus) => STATUS_LABEL[status];
+const statusLabel = (status: FeedbackStatus) => STATUS_LABEL.value[status];
 
 const openDetail = (item: FeedbackItem) => {
   selectedItem.value = {

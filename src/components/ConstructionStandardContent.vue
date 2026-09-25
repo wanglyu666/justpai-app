@@ -13,8 +13,8 @@
     <view class="content">
       <view class="title-row">
         <view class="title-block">
-          <text class="page-title">施工标准</text>
-          <text class="page-desc">查看施工现场管控标准</text>
+          <text class="page-title">{{ t('construction.standardTitle') }}</text>
+          <text class="page-desc">{{ t('construction.standardDescription') }}</text>
         </view>
       </view>
 
@@ -47,13 +47,28 @@ import {
   type ConstructionStandardCategory,
 } from '@/composables/useConstructionStandards';
 import { usePageBack } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 
 const emit = defineEmits<{
   back: [];
 }>();
 
-const { tabs, getByCategory } = useConstructionStandards();
+const { t } = useLanguage();
+const { tabs: rawTabs, getByCategory } = useConstructionStandards();
 const activeCategory = ref<ConstructionStandardCategory>('environment');
+
+const standardTabKeys = {
+  environment: 'construction.standardEnvironment',
+  safety: 'construction.standardSafety',
+  health: 'construction.standardHealth',
+  finished: 'construction.standardFinished',
+  quality: 'construction.standardQuality',
+  hygiene: 'construction.standardHygiene',
+  risk: 'construction.standardRisk',
+} as const;
+const tabs = computed(() =>
+  rawTabs.map((tab) => ({ ...tab, label: t(standardTabKeys[tab.id]) })),
+);
 
 const visibleItems = computed(() => getByCategory(activeCategory.value));
 const categoryIcon = computed(

@@ -14,15 +14,15 @@
           class="search-input"
           type="text"
           v-model="keyword"
-          placeholder="搜索账单"
+          :placeholder="t('bill.search')"
           placeholder-class="search-placeholder"
         />
       </view>
     </view>
 
     <view class="content">
-      <text class="page-title">账单管理</text>
-      <text class="page-desc">查看全部账单信息</text>
+      <text class="page-title">{{ t('bill.title') }}</text>
+      <text class="page-desc">{{ t('bill.description') }}</text>
 
       <StatusCapsuleSwitch
         class="status-capsule-wrap"
@@ -41,18 +41,18 @@
           <text class="bill-name" :style="infoCardTitleStyle">{{ item.name }}</text>
           <view class="bill-meta-row">
             <view class="bill-meta" :style="infoCardFieldStyle">
-              <text class="meta-label" :style="infoCardLabelStyle">账单编号</text>
+              <text class="meta-label" :style="infoCardLabelStyle">{{ t('bill.number') }}</text>
               <text class="meta-value" :style="infoCardValueStyle">{{ item.no }}</text>
             </view>
             <view class="bill-meta bill-meta-amount" :style="infoCardFieldStyle">
-              <text class="meta-label" :style="infoCardLabelStyle">账单金额</text>
+              <text class="meta-label" :style="infoCardLabelStyle">{{ t('bill.amount') }}</text>
               <text class="meta-amount">{{ item.amountText }}</text>
             </view>
           </view>
         </view>
 
         <view v-if="filteredBills.length === 0" class="empty-tip">
-          <text class="empty-tip-text">暂无相关账单</text>
+          <text class="empty-tip-text">{{ t('bill.empty') }}</text>
         </view>
       </view>
     </view>
@@ -74,67 +74,67 @@
         </view>
 
         <view class="detail-content sheet-page__body" v-if="selectedBill">
-          <text class="detail-title sheet-page__title">账单详情</text>
+          <text class="detail-title sheet-page__title">{{ t('bill.details') }}</text>
 
           <view class="detail-card">
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">订单编号</text>
+                <text class="detail-label">{{ t('bill.orderNumber') }}</text>
                 <text class="detail-value">{{ selectedBill.orderNo }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">合同编号</text>
+                <text class="detail-label">{{ t('bill.contractNumber') }}</text>
                 <text class="detail-value">{{ selectedBill.contractNo }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">合同金额</text>
+                <text class="detail-label">{{ t('bill.contractAmount') }}</text>
                 <text class="detail-value">{{ selectedBill.contractAmount }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">已付金额</text>
+                <text class="detail-label">{{ t('bill.paidAmount') }}</text>
                 <text class="detail-value">{{ selectedBill.paidAmount }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">未付金额</text>
+                <text class="detail-label">{{ t('bill.unpaidAmount') }}</text>
                 <text class="detail-value">{{ selectedBill.unpaidAmount }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">项目编号</text>
+                <text class="detail-label">{{ t('bill.projectNumber') }}</text>
                 <text class="detail-value">{{ selectedBill.projectNo }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">付款批次</text>
+                <text class="detail-label">{{ t('bill.paymentBatch') }}</text>
                 <text class="detail-value">{{ selectedBill.paymentBatch }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">申请时间</text>
+                <text class="detail-label">{{ t('bill.appliedAt') }}</text>
                 <text class="detail-value">{{ selectedBill.applyDate }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">本次支付批次</text>
+                <text class="detail-label">{{ t('bill.currentBatch') }}</text>
                 <text class="detail-value">{{ selectedBill.currentBatch }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">本次比例</text>
+                <text class="detail-label">{{ t('bill.currentRatio') }}</text>
                 <text class="detail-value">{{ selectedBill.currentRatio }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field detail-field-full">
-                <text class="detail-label">本次支付说明</text>
+                <text class="detail-label">{{ t('bill.paymentNote') }}</text>
                 <text class="detail-value">{{ selectedBill.paymentNote }}</text>
               </view>
             </view>
@@ -146,45 +146,45 @@
           >
             <view class="card-section-title">
               <view class="card-section-bar" />
-              <text class="card-section-title-text">发票信息</text>
+              <text class="card-section-title-text">{{ t('bill.invoiceInfo') }}</text>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">发票类型</text>
+                <text class="detail-label">{{ t('bill.invoiceType') }}</text>
                 <text class="detail-value">{{ selectedBill.invoice.type }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">发票编号</text>
+                <text class="detail-label">{{ t('bill.invoiceNumber') }}</text>
                 <text class="detail-value">{{ selectedBill.invoice.no }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">开票日期</text>
+                <text class="detail-label">{{ t('bill.issueDate') }}</text>
                 <text class="detail-value">{{ selectedBill.invoice.issueDate }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">支付日期</text>
+                <text class="detail-label">{{ t('bill.paymentDate') }}</text>
                 <text class="detail-value">{{ selectedBill.invoice.payDate }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field">
-                <text class="detail-label">不含税金额</text>
+                <text class="detail-label">{{ t('bill.amountExTax') }}</text>
                 <text class="detail-value">{{ selectedBill.invoice.amountExTax }}</text>
               </view>
               <view class="detail-field">
-                <text class="detail-label">含税金额</text>
+                <text class="detail-label">{{ t('bill.amountInTax') }}</text>
                 <text class="detail-value">{{ selectedBill.invoice.amountInTax }}</text>
               </view>
             </view>
 
             <view class="detail-row">
               <view class="detail-field detail-field-full">
-                <text class="detail-label">备注</text>
+                <text class="detail-label">{{ t('bill.remarks') }}</text>
                 <text class="detail-value">{{ selectedBill.invoice.remark }}</text>
               </view>
             </view>
@@ -193,10 +193,10 @@
 
         <view class="detail-footer sheet-page__footer">
           <view class="footer-btn footer-btn-secondary" @click="onViewRequestFile">
-            <text class="footer-btn-text footer-btn-text-secondary">查看请款文件</text>
+            <text class="footer-btn-text footer-btn-text-secondary">{{ t('bill.viewRequestFile') }}</text>
           </view>
           <view class="footer-btn footer-btn-primary" @click="onConfirm">
-            <text class="footer-btn-text footer-btn-text-primary">确认</text>
+            <text class="footer-btn-text footer-btn-text-primary">{{ t('common.confirm') }}</text>
           </view>
         </view>
       </view>
@@ -210,12 +210,15 @@ import StatusCapsuleSwitch from '@/components/StatusCapsuleSwitch.vue';
 import BottomSheetPanel from '@/components/BottomSheetPanel.vue';
 import { useSlideOver } from '@/composables/useSlideOver';
 import { usePageBack, usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
 import {
   infoCardFieldStyle,
   infoCardLabelStyle,
   infoCardTitleStyle,
   infoCardValueStyle,
 } from '@/config/infoCard';
+
+const { t } = useLanguage();
 
 type BillStatus = 'pending_confirm' | 'pending_pay' | 'paid';
 
@@ -263,11 +266,11 @@ const {
 } = useSlideOver();
 usePageBackWhen(detailVisible, closeDetail);
 
-const statusTabs: { id: BillStatus; label: string }[] = [
-  { id: 'pending_confirm', label: '待确认' },
-  { id: 'pending_pay', label: '待支付' },
-  { id: 'paid', label: '已支付' },
-];
+const statusTabs = computed<{ id: BillStatus; label: string }[]>(() => [
+  { id: 'pending_confirm', label: t('bill.pendingConfirm') },
+  { id: 'pending_pay', label: t('bill.pendingPay') },
+  { id: 'paid', label: t('bill.paid') },
+]);
 
 const bills = ref<BillItem[]>([
   {
@@ -696,9 +699,14 @@ const onConfirm = () => {
 }
 
 .footer-btn-text {
+  display: block;
+  width: 100%;
+  padding: 0 16rpx;
+  box-sizing: border-box;
   font-size: 32rpx;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .footer-btn-text-secondary {

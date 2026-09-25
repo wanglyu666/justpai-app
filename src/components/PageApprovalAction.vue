@@ -1,7 +1,7 @@
 <template>
   <view class="page-approval">
     <view class="page-approval-fab" @click.stop="openSheet">
-      <text class="page-approval-fab-text">{{ fabLabel }}</text>
+      <text class="page-approval-fab-text">{{ resolvedFabLabel }}</text>
     </view>
 
     <view v-if="sheetRendered" class="page-approval-root">
@@ -17,7 +17,7 @@
         <SuccessPageTransition :show-success="step === 'success'">
           <view class="page-approval-page">
             <view class="page-approval-header">
-              <text class="page-approval-title">{{ title }}</text>
+              <text class="page-approval-title">{{ resolvedTitle }}</text>
               <view class="page-approval-close" @click="closeSheet">
                 <image
                   src="/static/icons/x.svg"
@@ -31,7 +31,7 @@
               <textarea
                 v-model="comment"
                 class="page-approval-textarea"
-                :placeholder="placeholder"
+                :placeholder="resolvedPlaceholder"
                 placeholder-class="page-approval-placeholder"
                 maxlength="500"
               />
@@ -43,7 +43,7 @@
                 :class="canSubmit ? 'is-active' : ''"
                 @click="handleConfirm"
               >
-                <text class="page-approval-confirm-text">{{ confirmText }}</text>
+                <text class="page-approval-confirm-text">{{ resolvedConfirmText }}</text>
               </view>
             </view>
           </view>
@@ -56,12 +56,12 @@
                   mode="aspectFit"
                   class="success-icon"
                 />
-                <text class="success-title">{{ successTitle }}</text>
-                <text class="success-desc">{{ successDesc }}</text>
+                <text class="success-title">{{ resolvedSuccessTitle }}</text>
+                <text class="success-desc">{{ resolvedSuccessDesc }}</text>
               </view>
               <view class="page-approval-footer">
                 <view class="page-approval-done" @click="handleDone">
-                  <text class="page-approval-done-text">完成</text>
+                  <text class="page-approval-done-text">{{ t('common.done') }}</text>
                 </view>
               </view>
             </view>
@@ -76,10 +76,13 @@
 import { computed, onUnmounted, ref } from 'vue';
 import SuccessPageTransition from '@/components/SuccessPageTransition.vue';
 import { usePageBackWhen } from '@/composables/usePageBack';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t } = useLanguage();
 
 const CLOSE_DURATION_MS = 320;
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     fabLabel?: string;
     title?: string;
@@ -89,14 +92,21 @@ withDefaults(
     successDesc?: string;
   }>(),
   {
-    fabLabel: '审批',
-    title: '审批意见',
-    placeholder: '请填写审批意见',
-    confirmText: '确认',
-    successTitle: '审批成功',
-    successDesc: '审批意见已提交',
+    fabLabel: '',
+    title: '',
+    placeholder: '',
+    confirmText: '',
+    successTitle: '',
+    successDesc: '',
   },
 );
+
+const resolvedFabLabel = computed(() => props.fabLabel || t('approval.action'));
+const resolvedTitle = computed(() => props.title || t('approval.opinion'));
+const resolvedPlaceholder = computed(() => props.placeholder || t('approval.enterOpinion'));
+const resolvedConfirmText = computed(() => props.confirmText || t('common.confirm'));
+const resolvedSuccessTitle = computed(() => props.successTitle || t('approval.success'));
+const resolvedSuccessDesc = computed(() => props.successDesc || t('approval.submitted'));
 
 const emit = defineEmits<{
   submit: [comment: string];
