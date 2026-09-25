@@ -6,7 +6,10 @@
       </view>
     </view>
 
-    <view class="welcome-copy">
+    <view
+      class="welcome-copy"
+      :class="{ 'is-english': currentLanguage === 'en-US' && activeSlide.id !== 2 }"
+    >
       <text class="welcome-title">{{ activeSlide.title }}</text>
       <text class="welcome-subtitle">{{ activeSlide.subtitle }}</text>
     </view>
@@ -123,6 +126,8 @@
       </swiper>
     </view>
 
+    <view class="welcome-visual-spacer" />
+
     <view class="welcome-dots">
       <view
         v-for="(slide, index) in slides"
@@ -162,7 +167,7 @@ import { useSlideOver } from '@/composables/useSlideOver';
 import { NESTED_PAGE_Z_INDEX } from '@/utils/pageFadeTransition';
 import { useLanguage } from '@/composables/useLanguage';
 
-const { t } = useLanguage();
+const { currentLanguage, t } = useLanguage();
 
 defineProps<{
   exitLeft?: boolean;
@@ -261,6 +266,8 @@ const onOpenRegister = () => {
 }
 
 .page-header {
+  position: relative;
+  z-index: 2;
   padding: 0 48rpx;
 }
 
@@ -281,8 +288,14 @@ const onOpenRegister = () => {
 }
 
 .welcome-copy {
+  position: relative;
+  z-index: 2;
   padding: 32rpx 64rpx 0;
   text-align: center;
+}
+
+.welcome-copy.is-english {
+  margin-top: -56rpx;
 }
 
 .welcome-title {
@@ -303,12 +316,21 @@ const onOpenRegister = () => {
 }
 
 .welcome-visual {
-  flex: 1;
-  min-height: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  top: calc(var(--page-safe-top) + 150rpx);
+  bottom: calc(210rpx + env(safe-area-inset-bottom, 0px));
   display: flex;
   align-items: center;
   overflow: hidden;
-  width: 100%;
+  width: auto;
+}
+
+.welcome-visual-spacer {
+  flex: 1;
+  min-height: 0;
 }
 
 .welcome-swiper {
@@ -694,6 +716,8 @@ const onOpenRegister = () => {
 }
 
 .welcome-dots {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -713,6 +737,8 @@ const onOpenRegister = () => {
 }
 
 .welcome-actions {
+  position: relative;
+  z-index: 2;
   padding: 0 48rpx calc(40rpx + env(safe-area-inset-bottom));
 }
 
